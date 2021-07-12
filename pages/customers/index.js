@@ -36,6 +36,10 @@ function Customers({customer: customers}) {
     console.log(params)
   }, []);
 
+  const handleSelectRow = React.useCallback((params) => {
+    getSelectedRows(params)
+  })
+
   return (
     <div style={{ width: '100%' }}>
       <Box display="flex" flexDirection="row-reverse" p={1} m={1}>
@@ -51,6 +55,7 @@ function Customers({customer: customers}) {
           editRowsModel={editRowsModel}
           onEditRowModelChange={handleEditRowModelChange}
           onCellBlur={handleBlur}
+          checkboxSelection={handleSelectRow}
         />
       </div>
     </div>
