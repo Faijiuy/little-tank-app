@@ -2,6 +2,7 @@
 yarn.lock
 package-lock.json
 
+
 # dependencies
 /node_modules
 /.pnp
@@ -27,6 +28,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env.local
 .env.development.local
 .env.test.local
