@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 // @material-ui/core
@@ -31,6 +31,7 @@ import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
+
 import { bugs, website, server } from "variables/general.js";
 
 import {
@@ -41,13 +42,47 @@ import {
 
 import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
 
+
+import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
+
+
+
+
 function Dashboard() {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
+
+  const sdk = new ChartsEmbedSDK({
+    baseUrl: 'https://charts.mongodb.com/charts-little-tank-jnblp',
+  });
+  const chart = sdk.createChart({
+    chartId: 'ea3bce28-9da6-4aaa-8a16-400b1a2f8d32',
+    width: 640,
+    height: 400,
+    theme: "dark",
+  });
+
+  useEffect(() => {
+    chart
+      .render(document.getElementById('chart'))
+      .catch(() => window.alert('Chart failed to initialise'));
+    
+    
+    // refresh the chart whenenver #refreshButton is clicked
+    
+    // document
+    //   .getElementById('refreshButton')
+    //   .addEventListener('click', () => chart.refresh());
+
+  }, [])
+
   return (
     <div>
-      <GridContainer>
-        <GridItem xs={12} sm={6} md={3}>
+      
+      <GridContainer id="chart" >
+      
+
+        {/* <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
@@ -69,8 +104,8 @@ function Dashboard() {
               </div>
             </CardFooter>
           </Card>
-        </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
+        </GridItem> */}
+        {/* <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="dark" stats icon>
               <CardIcon color="dark">
@@ -86,8 +121,8 @@ function Dashboard() {
               </div>
             </CardFooter>
           </Card>
-        </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
+        </GridItem> */}
+        {/* <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="danger" stats icon>
               <CardIcon color="danger">
@@ -103,8 +138,8 @@ function Dashboard() {
               </div>
             </CardFooter>
           </Card>
-        </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
+        </GridItem> */}
+        {/* <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
@@ -120,9 +155,9 @@ function Dashboard() {
               </div>
             </CardFooter>
           </Card>
-        </GridItem>
+        </GridItem> */}
       </GridContainer>
-      <GridContainer>
+      {/* <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
             <CardHeader color="success">
@@ -260,7 +295,7 @@ function Dashboard() {
             </CardBody>
           </Card>
         </GridItem>
-      </GridContainer>
+      </GridContainer> */}
     </div>
   );
 }
