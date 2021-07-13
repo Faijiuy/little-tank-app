@@ -10,6 +10,8 @@
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf .next/ && npm install && npm run dev"
   },
   "dependencies": {
+    "@line/bot-sdk": "^7.3.0",
+    "@line/liff": "^2.11.0",
     "@material-ui/core": "4.11.3",
     "@material-ui/data-grid": "^4.0.0-alpha.33",
     "@material-ui/icons": "4.11.2",
@@ -31,7 +33,15 @@
     "react-chartist": "0.14.3",
     "react-dom": "17.0.1",
     "react-hook-form": "^7.10.1",
-    "react-swipeable-views": "0.13.9"
+    "react-swipeable-views": "0.13.9",
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
+    "jimp": "^0.16.1",
+    "request": "^2.88.2",
+    "ngrok": "^4.0.1",
+    "qrcode-reader": "^1.0.4",
+    "recharts": "^2.0.9",
+    "redis": "^3.1.2"
   },
   "eslintConfig": {
     "extends": "react-app"
