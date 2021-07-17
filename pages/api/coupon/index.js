@@ -4,11 +4,11 @@ import { ObjectID } from "mongodb";
 import { connectToDatabase } from "../../../util/mongodb";
 
 export default async (req, res) => {
-  console.log("item API", req);
+  // console.log("item API", req);
   console.log("item API method ++++++ " + req.method);
 
   if (req.method === "POST") {
-    console.log("ADDING ", req.body);
+    // console.log("ADDING ", req.body);
     let data = req.body;
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
@@ -47,7 +47,45 @@ export default async (req, res) => {
         }
       }
     ); // if update non-existing record, insert instead.
-  } else {
-    res.json({ message: "Hello, I am not working with GET method" });
+  } else if(req.method === "PUT"){
+    let data = req.body;
+
+    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
+    let {
+        code,
+        companyRef,
+        amount,
+        used,
+        usedDateTime,
+        recordedBy
+    } = data;
+
+    console.log(data._id)
+
+    const { db } = await connectToDatabase();
+    await db.collection("coupons").updateOne(
+      { code: code},
+      {
+        $set: {
+          // _id: ObjectId(_id)
+          // _id: _id
+          
+          used: used,
+          
+        },
+      },
+      // callback
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.json(err);
+        } else {
+          res.json({
+            message: "coupon updated",
+            _id: result.insertedId,
+          });
+        }
+      }
+    );
   }
 };

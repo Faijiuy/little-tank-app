@@ -4,6 +4,8 @@
 /.pnp
 .pnp.js
 .env
+.env.local
+yarn.lock
 
 
 # testing

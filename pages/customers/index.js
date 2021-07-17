@@ -3,6 +3,8 @@ import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
+import { FormControlLabel, IconButton } from '@material-ui/core';
 
 import { connectToDatabase } from "../../util/mongodb";
 import Admin from "layouts/Admin.js";
@@ -36,31 +38,21 @@ function Customers({customer: customers}) {
     console.log(params)
   }, []);
 
-  const handleSelectRow = React.useCallback((params) => {
-    getSelectedRows(params)
-  })
+  
 
-  return (
-    <div style={{ width: '100%' }}>
-      <Box display="flex" flexDirection="row-reverse" p={1} m={1}>
-         <Button variant="contained" color="primary" href="customers/create">
-         เพิ่มบริษัท
-         </Button>
-      </Box>
-      <code>editRowsModel: {JSON.stringify(editRowsModel)}</code>
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={test(customers)}
-          columns={columns}
-          editRowsModel={editRowsModel}
-          onEditRowModelChange={handleEditRowModelChange}
-          onCellBlur={handleBlur}
-          checkboxSelection={handleSelectRow}
-        />
-      </div>
-    </div>
-  );
-}
+  const MatEdit = ({ index }) => {
+
+    const handleEditClick = () => {
+        console.log(index)
+    }
+
+    return <FormControlLabel control={
+        <IconButton color="secondary" aria-label="add an alarm" onClick={handleEditClick} >
+            <EditIcon />
+        </IconButton>
+    }
+/>
+};
 
 const columns = [
   { field: 'company', headerName: 'Company', width: 180, editable: true },
@@ -77,7 +69,46 @@ const columns = [
     width: 220,
     editable: true,
   },
+  {
+    field: "actions",
+    headerName: "Actions",
+    sortable: false,
+    width: 140,
+    disableClickEventBubbling: true,
+    renderCell: (params) => {
+        return (
+            <div className="d-flex justify-content-between align-items-center" style={{ cursor: "pointer" }}>
+                <MatEdit index={params.row.id} />
+             </div>
+        );
+     }
+  }
 ];
+
+  return (
+    <div style={{ width: '100%' }}>
+      <Box display="flex" flexDirection="row-reverse" p={1} m={1}>
+         <Button variant="contained" color="primary" href="customers/create">
+         เพิ่มบริษัท
+         </Button>
+      </Box>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={test(customers)}
+          columns={columns}
+          editRowsModel={editRowsModel}
+          onEditRowModelChange={handleEditRowModelChange}
+          onCellBlur={handleBlur}
+          // checkboxSelection={handleSelectRow}
+          // icons={EditIcon}
+          
+        />
+      </div>
+    </div>
+  );
+}
+
+
 
 const test = (props) => {
   let row = []

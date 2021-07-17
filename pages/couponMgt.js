@@ -175,8 +175,8 @@ function CouponMgt({customer: customers, coupon: coupons}){
     let list = []
 
     coupons.map(coupon => {
-      if(coupon.customer === company._id){
-        console.log(coupon)
+      if(coupon.companyRef === company._id && !coupon.used){
+        // console.log(coupon)
         list.push(coupon)
       }
     })
@@ -271,7 +271,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`${value.coupon_no}`} />
+              <ListItemText id={labelId} primary={`${value.code}`} />
             </ListItem>
           );
         })}
@@ -292,8 +292,6 @@ function CouponMgt({customer: customers, coupon: coupons}){
   }
 
   const onSubmit = (e) => {
-    console.log('onSubmit', qty);
-
 
     for(let i=0; i < qty; i++){
       fetch('/api/coupon', {
@@ -317,6 +315,37 @@ function CouponMgt({customer: customers, coupon: coupons}){
         });
 
     }
+  }
+
+  const onSubmit_missing_coupon = (e) => {
+    console.log("right === ", right)
+
+    right.map(coupon => {
+      coupon["used"] = "missing"
+
+      fetch('/api/coupon', {
+        method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(coupon) // body data type must match "Content-Type" header
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          alert("Add Item:\nResponse from server " + data.message)
+          alert("Newly added _id", data._id)
+        });
+    })
+
+
+    
   }
 
 
@@ -465,6 +494,8 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 </Grid>
                 <Grid item>{customList('Chosen', right)}</Grid>
               </Grid>
+
+              <Button onClick={() => onSubmit_missing_coupon()} color="primary">ลบ</Button>
                
 
               
