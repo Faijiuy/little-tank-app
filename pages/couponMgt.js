@@ -153,8 +153,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
   };
   
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState([0, 1, 2, 3]);
-  const [right, setRight] = React.useState([4, 5, 6, 7]);
+  const [right, setRight] = React.useState([]);
 
   const [company, setCompany] = useState(0);
   const [type, setType] = useState();
@@ -203,7 +202,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
   //List toggle component
 
-  const leftChecked = intersection(checked, left);
+  const leftChecked = intersection(checked, couponList);
   const rightChecked = intersection(checked, right);
 
   const handleToggle = (value) => () => {
@@ -231,12 +230,12 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
   const handleCheckedRight = () => {
     setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));
+    setCouponList(not(couponList, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
+    setCouponList(couponList.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
@@ -272,7 +271,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemText id={labelId} primary={`${value.coupon_no}`} />
             </ListItem>
           );
         })}
@@ -405,7 +404,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
               </FormControl>
 
               
-                  <List className={classes.root}>
+                  {/* <List className={classes.root}>
                 {couponList.map((value, index) => {
                   console.log(value.coupon_no)
                   const labelId = `${index}`;
@@ -430,7 +429,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                     </ListItem>
                   );
                 })}
-              </List>
+              </List> */}
 
               <Grid
                 container
@@ -439,7 +438,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 alignItems="center"
                 className={classes.root}
               >
-                <Grid item>{customList('Choices', left)}</Grid>
+                <Grid item>{customList('Choices', couponList)}</Grid>
                 <Grid item>
                   <Grid container direction="column" alignItems="center">
                     <Button
