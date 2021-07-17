@@ -132,6 +132,17 @@ function CouponMgt({customer: customers, coupon: coupons}){
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
 
+  useEffect(() => {
+    
+
+    if (process.env.NODE_ENV === 'development') {
+      setCompany(customers[0])
+      setType(500)
+      setQty(3)
+      
+    }
+  },[])
+
   useEffect(() =>{
     let list = []
     coupons.map(coupon => {
@@ -220,7 +231,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
     <div>
       <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>Create Coupon</Typography>
+          <Typography>พิมพ์คูปอง</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
@@ -274,7 +285,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
       </Accordion>
       <Accordion square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
         <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-          <Typography>Delete Coupon</Typography>
+          <Typography>คูปองหาย</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
@@ -297,13 +308,10 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 </Select>
               </FormControl>
 
-              {useEffect(() => {
-
-                console.log("testing")
-                return (
+              
                   <List className={classes.root}>
-                {couponList.map((value) => {
-                  const labelId = `${value.coupon_no}`;
+                {[1,2,3,4].map((value) => {
+                  const labelId = `${value}`;
 
                   return (
                     <ListItem key={value} role={undefined} dense button onClick={handleToggle(value)}>
@@ -326,8 +334,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                   );
                 })}
               </List>
-                )
-              }),[couponList]}
+               
 
               
 
