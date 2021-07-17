@@ -145,12 +145,15 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
   useEffect(() =>{
     let list = []
+
     coupons.map(coupon => {
-      if(coupon._id === company._id){
+      if(coupon.customer === company._id){
+        console.log(coupon)
         list.push(coupon)
       }
     })
     setCouponList(list)
+
 
   }, [company])
 
@@ -310,8 +313,9 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
               
                   <List className={classes.root}>
-                {[1,2,3,4].map((value) => {
-                  const labelId = `${value}`;
+                {couponList.map((value, index) => {
+                  console.log(value.coupon_no)
+                  const labelId = `${index}`;
 
                   return (
                     <ListItem key={value} role={undefined} dense button onClick={handleToggle(value)}>
@@ -324,7 +328,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </ListItemIcon>
-                      <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                      <ListItemText id={labelId} primary={`${value.coupon_no}`} />
                       <ListItemSecondaryAction>
                         <IconButton edge="end" aria-label="comments">
                           <CommentIcon />
