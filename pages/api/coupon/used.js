@@ -1,7 +1,7 @@
 import { ObjectID } from "mongodb";
 // import { ObjectId } from 'bson';
 // import { ObjectId} from "bson";
-import { connectToDatabase } from "../../util/mongodb";
+import { connectToDatabase } from "../../../util/mongodb";
 
 export default async (req, res) => {
   // console.log("item API", req);
@@ -38,7 +38,7 @@ export default async (req, res) => {
           amount: data.amount,
           used: data.used,
           usedDateTime: data.usedDateTime,
-          recordedBy: { userID: data.userID, name: data.name },
+          recordedBy: { userID: data.recordedBy.userID, name: data.recordedBy.name },
         },
       },
       // callback
