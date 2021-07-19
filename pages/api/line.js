@@ -59,7 +59,10 @@ export default function test(req, res) {
   let path = "./public/img/QR-Code.png";
 
   let id = event.source.userId;
-  let timeSt = event.timestamp;
+  
+  let getTimeSt = event.timestamp;
+  var date = new Date(getTimeSt);
+  let timeSt = date.toLocaleString()
 
   console.log('couponInfo_Before ===>', couponInfo)
 
