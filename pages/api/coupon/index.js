@@ -15,7 +15,9 @@ export default async (req, res) => {
     let {
         code,
         companyRef,
+        generatedDate,
         amount,
+        runningNo,
         used,
         usedDateTime,
         recordedBy
@@ -24,11 +26,12 @@ export default async (req, res) => {
     const { db } = await connectToDatabase();
     await db.collection("coupons").insertOne(
       {
-        // _id: ObjectId(_id)
-        // _id: _id
+        
         code: code,
         companyRef: companyRef,
+        generatedDate: generatedDate,
         amount: amount,
+        runningNo: runningNo,
         used: used,
         usedDateTime: usedDateTime,
         recordedBy: recordedBy

@@ -23,17 +23,9 @@ import IconButton from '@material-ui/core/IconButton';
 import CommentIcon from '@material-ui/icons/Comment';
 import Button from "components/CustomButtons/Button.js";
 
-// import React from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-// import List from '@material-ui/core/List';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-// import ListItem from '@material-ui/core/ListItem';
-// import ListItemText from '@material-ui/core/ListItemText';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
-// import Checkbox from '@material-ui/core/Checkbox';
-// import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 
 import { connectToDatabase } from "../util/mongodb";
@@ -46,14 +38,12 @@ export async function getServerSideProps() {
     .collection("customer")
     .find()
     .sort({})
-    .limit(20)
     .toArray();
 
   const coupons = await db
     .collection("coupons")
     .find()
     .sort({})
-    .limit(20)
     .toArray();
 
 
@@ -141,10 +131,7 @@ function union(a, b) {
 
 function CouponMgt({customer: customers, coupon: coupons}){
 
-  // console.log(customers)
-  // customers.map(value =>{
-  //   console.log(value._id)
-  // })
+ 
 
   const [expanded, setExpanded] = React.useState('panel1');
 
@@ -160,27 +147,51 @@ function CouponMgt({customer: customers, coupon: coupons}){
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
 
-  useEffect(() => {
-    
+  const [ordered_company, setOrdered_company] = useState([]);
 
-    if (process.env.NODE_ENV === 'development') {
-      setCompany(customers[0])
-      setType(500)
-      setQty(3)
-      
+  function compare( a, b ) {
+    if ( a.runningNo < b.runningNo ){
+      return -1;
     }
-  },[])
+    if ( a.runningNo > b.runningNo ){
+      return 1;
+    }
+    return 0;
+  }
+
+  function removeDuplicates(originalArray, prop) {
+    var newArray = [];
+    var lookupObject  = {};
+
+    for(var i in originalArray) {
+       lookupObject[originalArray[i][prop]] = originalArray[i];
+    }
+
+    for(i in lookupObject) {
+        newArray.push(lookupObject[i]);
+    }
+     return newArray;
+}
 
   useEffect(() =>{
     let list = []
 
     coupons.map(coupon => {
       if(coupon.companyRef === company._id && !coupon.used){
-        // console.log(coupon)
         list.push(coupon)
       }
     })
     setCouponList(list)
+
+    let date = new Date();
+    let timeSt = date.toLocaleString().split(',')[0]
+
+    let runNo = list.filter(a => a.generatedDate === timeSt).sort(compare)
+
+    let uniq = removeDuplicates(runNo, "amount");
+    setOrdered_company(uniq)
+    
+
 
 
   }, [company])
@@ -285,7 +296,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
     companyRef: company._id,
     generatedDate: '',
     amount: type,
-    runningNo: '',
+    runningNo: 0,
     used: false, // missing, true, false
     usedDateTime: "",
     recordedBy: ""
@@ -293,7 +304,20 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
   const onSubmit = (e) => {
 
-    for(let i=0; i < qty; i++){
+    let date = new Date();
+    let timeSt = date.toLocaleString().split(',')[0]
+    
+    ordered_company.map(coupon => {
+      if(info.amount === coupon.amount){
+        info.runningNo = coupon.runningNo
+      }
+    })
+
+    for(let i=1; i <= qty; i++){
+      info["generatedDate"] = timeSt.split(',')[0]
+      info["runningNo"] += 1
+      info["code"] = company._id + "-" + timeSt.split(',')[0] + "-" + type + "-" + info["runningNo"]
+
       fetch('/api/coupon', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -309,9 +333,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
       })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
           alert("Add Item:\nResponse from server " + data.message)
-          alert("Newly added _id", data._id)
         });
 
     }
@@ -432,34 +454,6 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 </Select>
               </FormControl>
 
-              
-                  {/* <List className={classes.root}>
-                {couponList.map((value, index) => {
-                  console.log(value.coupon_no)
-                  const labelId = `${index}`;
-
-                  return (
-                    <ListItem key={value} role={undefined} dense button onClick={handleToggle(value)}>
-                      <ListItemIcon>
-                        <Checkbox
-                          edge="start"
-                          checked={checked.indexOf(value) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText id={labelId} primary={`${value.coupon_no}`} />
-                      <ListItemSecondaryAction>
-                        <IconButton edge="end" aria-label="comments">
-                          <CommentIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  );
-                })}
-              </List> */}
-
               <Grid
                 container
                 spacing={2}
@@ -497,9 +491,6 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
               <Button onClick={() => onSubmit_missing_coupon()} color="primary">ลบ</Button>
                
-
-              
-
             </GridContainer>
           </Typography>
         </AccordionDetails>
