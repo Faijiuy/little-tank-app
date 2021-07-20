@@ -33,7 +33,7 @@ export default async (req, res) => {
         $set: {
           // _id: ObjectId(_id)
           // _id: _id
-          code: data.code,
+          // code: data.code,
           companyRef: data.companyRef,
           amount: data.amount,
           used: data.used,

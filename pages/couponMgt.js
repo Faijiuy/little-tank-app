@@ -283,12 +283,12 @@ function CouponMgt({customer: customers, coupon: coupons}){
   const info = {
     code: "",
     companyRef: company._id,
+    generatedDate: '',
     amount: type,
-    used: false,
+    runningNo: '',
+    used: false, // missing, true, false
     usedDateTime: "",
     recordedBy: ""
-
-
   }
 
   const onSubmit = (e) => {
