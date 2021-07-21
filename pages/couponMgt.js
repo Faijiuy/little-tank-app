@@ -16,17 +16,22 @@ import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
 import Button from "components/CustomButtons/Button.js";
 
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import Divider from '@material-ui/core/Divider';
+
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 import { connectToDatabase } from "../util/mongodb";
 
@@ -146,6 +151,8 @@ function CouponMgt({customer: customers, coupon: coupons}){
   const [type, setType] = useState();
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
+  const [selectedDate, setSelectedDate] = React.useState(new Date().toLocaleString().split(',')[0]);
+
 
   const [ordered_company, setOrdered_company] = useState([]);
 
@@ -177,11 +184,13 @@ function CouponMgt({customer: customers, coupon: coupons}){
     let list = []
 
     coupons.map(coupon => {
-      if(coupon.companyRef === company._id && !coupon.used){
+      if(coupon.companyRef === company._id && !coupon.used && coupon.generatedDate === selectedDate && coupon.amount === type){
         list.push(coupon)
       }
     })
+
     setCouponList(list)
+
 
     let date = new Date();
     let timeSt = date.toLocaleString().split(',')[0]
@@ -190,11 +199,9 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
     let uniq = removeDuplicates(runNo, "amount");
     setOrdered_company(uniq)
-    
 
 
-
-  }, [company])
+  }, [company, selectedDate, type])
 
   const handleChangeCompany = (event) => {
     setCompany(event.target.value);
@@ -291,6 +298,17 @@ function CouponMgt({customer: customers, coupon: coupons}){
     </Card>
   );
 
+
+  const handleDateChange = (date) => {
+    let timeSt = date.toLocaleString().split(',')[0]
+    setSelectedDate(timeSt);
+
+  };
+
+  
+
+  
+
   const info = {
     code: "",
     companyRef: company._id,
@@ -340,7 +358,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
   }
 
   const onSubmit_missing_coupon = (e) => {
-    console.log("right === ", right)
+    // console.log("right === ", right)
 
     right.map(coupon => {
       coupon["used"] = "missing"
@@ -360,7 +378,6 @@ function CouponMgt({customer: customers, coupon: coupons}){
       })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
           alert("Add Item:\nResponse from server " + data.message)
           alert("Newly added _id", data._id)
         });
@@ -453,6 +470,43 @@ function CouponMgt({customer: customers, coupon: coupons}){
                   
                 </Select>
               </FormControl>
+
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Grid container justifyContent="space-around">
+                  <KeyboardDatePicker
+                    disableToolbar
+                    variant="inline"
+                    format="MM/dd/yyyy"
+                    margin="normal"
+                    id="date-picker-inline"
+                    label="Date picker inline"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                  
+                </Grid>
+              </MuiPickersUtilsProvider>
+
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={type}
+                  onChange={handleChangeType}
+                  label="type"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={500}>500</MenuItem>
+                  <MenuItem value={1000}>1,000</MenuItem>
+                </Select>
+              </FormControl>
+
 
               <Grid
                 container
