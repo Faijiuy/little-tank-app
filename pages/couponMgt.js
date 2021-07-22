@@ -147,7 +147,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
   const [checked, setChecked] = React.useState([]);
   const [right, setRight] = React.useState([]);
 
-  const [company, setCompany] = useState(0);
+  const [company, setCompany] = useState("");
   const [type, setType] = useState();
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
@@ -276,11 +276,11 @@ function CouponMgt({customer: customers, coupon: coupons}){
       />
       <Divider />
       <List className={classes.list} dense component="div" role="list">
-        {items.map((value) => {
+        {items.map((value, index) => {
           const labelId = `transfer-list-all-item-${value}-label`;
 
           return (
-            <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
+            <ListItem key={index} role="listitem" button onClick={handleToggle(value)}>
               <ListItemIcon>
                 <Checkbox
                   checked={checked.indexOf(value) !== -1}
@@ -404,8 +404,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
-                  value={company}
-                  
+                  value={company ? company : ''}
                   onChange={handleChangeCompany}
                   label="Company"
                 >
@@ -424,7 +423,8 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
-                  value={type}
+                  value={type ? type : ''}
+                  defaultValue=''
                   onChange={handleChangeType}
                   label="type"
                 >
@@ -458,8 +458,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
-                  value={company}
-                  
+                  value={company ? company : ''}                  
                   onChange={handleChangeCompany}
                   label="Company"
                 >
@@ -495,7 +494,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
-                  value={type}
+                  value={type ? type : ''}
                   onChange={handleChangeType}
                   label="type"
                 >
@@ -540,7 +539,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid item>{customList('Chosen', right)}</Grid>
+                <Grid item>{customList('Missing', right)}</Grid>
               </Grid>
 
               <Button onClick={() => onSubmit_missing_coupon()} color="primary">ลบ</Button>
