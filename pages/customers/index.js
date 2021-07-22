@@ -43,11 +43,11 @@ function Customers({customer: customers}) {
   const MatEdit = ({ index }) => {
 
     const handleEditClick = () => {
-        console.log(index)
+        console.log(customers[index]._id)
     }
 
     return <FormControlLabel control={
-        <IconButton color="secondary" aria-label="add an alarm" onClick={handleEditClick} >
+        <IconButton href={"/customers/"+customers[index]._id} color="secondary" aria-label="add an alarm" onClick={handleEditClick} >
             <EditIcon />
         </IconButton>
     }

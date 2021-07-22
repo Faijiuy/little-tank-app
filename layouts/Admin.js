@@ -88,11 +88,11 @@ export default function Admin({ children, ...rest }) {
         {...rest}
       />
       <div className={classes.mainPanel} ref={mainPanel}>
-        <Navbar
+        {/* <Navbar
           routes={routes}
           handleDrawerToggle={handleDrawerToggle}
           {...rest}
-        />
+        /> */}
         {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
         {getRoute() ? (
           <div className={classes.content}>
@@ -101,7 +101,7 @@ export default function Admin({ children, ...rest }) {
         ) : (
           <div className={classes.map}>{children}</div>
         )}
-        {getRoute() ? <Footer /> : null}
+        {/* {getRoute() ? <Footer /> : null} */}
         {/* <FixedPlugin
           handleImageClick={handleImageClick}
           handleColorClick={handleColorClick}

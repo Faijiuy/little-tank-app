@@ -19,6 +19,8 @@ import { useForm } from "react-hook-form";
 
 import avatar from "assets/img/faces/marc.jpg";
 import { connectToDatabase } from "../../util/mongodb";
+import { ObjectId } from 'bson';
+
 
 const customer1 = {
   company: "company",
@@ -31,21 +33,30 @@ const customer1 = {
   address: "address1, address2, Bangkok"
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(props) {
   const { db } = await connectToDatabase();
+  let id = props.params.customerId
 
-  const customers = await db
-    .collection("customer")
-    .find()
-    .sort({})
-    .limit(20)
-    .toArray();
+  if(id !== 'create'){  
+    const customer = await db
+      .collection("customer")
+      .findOne(
+        { _id: ObjectId(id) }
+      )
 
-  return {
-    props: {
-      customer: JSON.parse(JSON.stringify(customers)),
-    },
-  };
+    return {
+      props: {
+        customer: JSON.parse(JSON.stringify(customer)),
+      },
+    };
+
+  }else{
+    return {
+      props: {
+        customer: JSON.parse(null),
+      },
+    };
+  }
 }
 
 const styles = {
@@ -67,7 +78,8 @@ const styles = {
   },
 };
 
-function CreateCustomer() {
+function CreateCustomer({customer:customer}) {
+
 
   const [company, setCompany] = useState()
   const [owner, setOwner] = useState()
@@ -91,15 +103,24 @@ function CreateCustomer() {
       address: "address1, address2, Bangkok"
     }
 
-    if (process.env.NODE_ENV === 'development') {
+    if (customer !== null) {
+      setCompany(customer.company)
+      setOwner(customer.owner)
+      setOwner_tel(customer.owner_tel)
+      setOwner_email(customer.owner_email)
+      setContact_name(customer.contact_name)
+      setContact_tel(customer.contact_tel)
+      setContact_email(customer.contact_email)
+      setAddress(customer.address)
+    }else{
       setCompany(customer1.company)
-      setOwner(customer1.value)
-      setOwner_tel(customer1.value)
-      setOwner_email(customer1.value)
-      setContact_name(customer1.value)
-      setContact_tel(customer1.value)
-      setContact_email(customer1.value)
-      setAddress(customer1.value)
+      setOwner(customer1.owner)
+      setOwner_tel(customer1.owner_tel)
+      setOwner_email(customer1.owner_email)
+      setContact_name(customer1.contact_name)
+      setContact_tel(customer1.contact_tel)
+      setContact_email(customer1.contact_email)
+      setAddress(customer1.address)
     }
   },[])
 
@@ -184,7 +205,7 @@ function CreateCustomer() {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      defaultValue: company,
+                      defaultValue: customer !== null ? customer.company : customer1.company,
                       // onChange: handleChange,
                       onBlur: handleSetState
                     }}
@@ -202,7 +223,7 @@ function CreateCustomer() {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: owner,
+                      defaultValue: customer !== null ? customer.owner : customer1.owner,
                       onBlur: handleSetState
                     }}
                   />
@@ -216,7 +237,7 @@ function CreateCustomer() {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: process.env.NODE_ENV == 'development' ? customer1.owner_tel : '',
+                      defaultValue: customer !== null ? customer.owner_tel : customer1.owner_tel,
                       onBlur: handleSetState
                     }}
                   />
@@ -232,6 +253,7 @@ function CreateCustomer() {
                     }}
                     inputProps={{
                       // onChange: handleChange,
+                      defaultValue: customer !== null ? customer.owner_email : customer1.owner_email,
                       onBlur: handleSetState
                     }}
                   />
@@ -245,6 +267,7 @@ function CreateCustomer() {
                     }}
                     inputProps={{
                       // onChange: handleChange,
+                      defaultValue: customer !== null ? customer.contact_name : customer1.contact_name,
                       onBlur: handleSetState
                     }}
                   />
@@ -260,6 +283,7 @@ function CreateCustomer() {
                     }}
                     inputProps={{
                       // onChange: handleChange,
+                      defaultValue: customer !== null ? customer.contact_tel : customer1.contact_tel,
                       onBlur: handleSetState
                     }}
                   />
@@ -273,6 +297,7 @@ function CreateCustomer() {
                     }}
                     inputProps={{
                       // onChange: handleChange,
+                      defaultValue: customer !== null ? customer.contact_email : customer1.contact_email,
                       onBlur: handleSetState
                     }}
                   />
@@ -286,54 +311,20 @@ function CreateCustomer() {
                     }}
                     inputProps={{
                       // onChange: handleChange,
+                      defaultValue: customer !== null ? customer.address : customer1.address,
                       onBlur: handleSetState
                     }}
                   />
                 </GridItem>
               </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                  <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
-                  <CustomInput
-                    labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                    id="about-me"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      multiline: true,
-                      rows: 5,
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
+              
             </CardBody>
             <CardFooter>
               <Button type="submit" color="primary">ลงทะเบียน</Button>
             </CardFooter>
           </Card>
         </GridItem>
-        {/* <GridItem xs={12} sm={12} md={4}>
-          <Card profile>
-            <CardAvatar profile>
-              <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                <img src={avatar} alt="..." />
-              </a>
-            </CardAvatar>
-            <CardBody profile>
-              <h6 className={classes.cardCategory}>CEO / CO-FOUNDER</h6>
-              <h4 className={classes.cardTitle}>Alec Thompson</h4>
-              <p className={classes.description}>
-                Don{"'"}t be scared of the truth because we need to restart the
-                human foundation in truth And I love you like Kanye loves Kanye
-                I love Rick Owens’ bed design but the back is...
-              </p>
-              <Button color="primary" round>
-                Follow
-              </Button>
-            </CardBody>
-          </Card>
-        </GridItem> */}
+        
       </GridContainer>
     </form>
   );
