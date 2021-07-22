@@ -76,6 +76,13 @@ function Dashboard() {
     theme: "dark",
   });
 
+  const chart4 = sdk.createChart({
+    chartId: '9188d9fb-81e8-49f2-b939-d724888136e7',
+    width: 640,
+    height: 400,
+    theme: "dark",
+  });
+
   useEffect(() => {
     chart
       .render(document.getElementById('chart'))
@@ -87,6 +94,10 @@ function Dashboard() {
 
     chart3
       .render(document.getElementById('chart3'))
+      .catch(() => window.alert('Chart failed to initialise'));
+
+    chart4
+      .render(document.getElementById('chart4'))
       .catch(() => window.alert('Chart failed to initialise'));
     
     
@@ -104,6 +115,7 @@ function Dashboard() {
       <GridContainer id="chart" />
       <GridContainer id="chart2" />
       <GridContainer id="chart3" />
+      <GridContainer id="chart4" />
       
       
     </div>
