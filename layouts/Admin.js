@@ -79,7 +79,7 @@ export default function Admin({ children, ...rest }) {
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={"Coupon Management"}
+        logoText={"Little Tank Coupon Management"}
         logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}

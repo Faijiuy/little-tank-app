@@ -51,7 +51,7 @@ export default function AdminNavbarLinks() {
   return (
     <div>
       <div className={classes.searchWrapper}>
-        <CustomInput
+        {/* <CustomInput
           formControlProps={{
             className: classes.margin + " " + classes.search,
           }}
@@ -64,7 +64,7 @@ export default function AdminNavbarLinks() {
         />
         <Button color="white" aria-label="edit" justIcon round>
           <Search />
-        </Button>
+        </Button> */}
       </div>
       <Button
         color={size.width > 959 ? "transparent" : "white"}

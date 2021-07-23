@@ -103,6 +103,7 @@ const AccordionDetails = withStyles((theme) => ({
 
 
 const styles = {
+  
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
     margin: "0",
@@ -398,11 +399,13 @@ function CouponMgt({customer: customers, coupon: coupons}){
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <GridContainer>
+            {/* <GridContainer> */}
+            <div>
+
               <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">Company</InputLabel>
+                <InputLabel id="demo-simple-select-outlined-label1">Company</InputLabel>
                 <Select
-                  labelId="demo-simple-select-outlined-label"
+                  labelId="demo-simple-select-outlined-label1"
                   id="demo-simple-select-outlined"
                   value={company ? company : ''}
                   onChange={handleChangeCompany}
@@ -414,14 +417,17 @@ function CouponMgt({customer: customers, coupon: coupons}){
                   })}
                   
                 </Select>
+
+                
               </FormControl>
 
+            </div>
              
 
               <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
+                <InputLabel id="demo-simple-select-outlined-label2">Type</InputLabel>
                 <Select
-                  labelId="demo-simple-select-outlined-label"
+                  labelId="demo-simple-select-outlined-label2"
                   id="demo-simple-select-outlined"
                   value={type ? type : ''}
                   defaultValue=''
@@ -442,7 +448,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
               <Button onClick={() => onSubmit()} color="primary">พิมพ์</Button>
 
-            </GridContainer>
+            {/* </GridContainer> */}
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -470,6 +476,23 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 </Select>
               </FormControl>
 
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={type ? type : ''}
+                  onChange={handleChangeType}
+                  label="type"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={500}>500</MenuItem>
+                  <MenuItem value={1000}>1,000</MenuItem>
+                </Select>
+              </FormControl>
+
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <Grid container justifyContent="space-around">
                   <KeyboardDatePicker
@@ -489,22 +512,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 </Grid>
               </MuiPickersUtilsProvider>
 
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={type ? type : ''}
-                  onChange={handleChangeType}
-                  label="type"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={500}>500</MenuItem>
-                  <MenuItem value={1000}>1,000</MenuItem>
-                </Select>
-              </FormControl>
+              
 
 
               <Grid

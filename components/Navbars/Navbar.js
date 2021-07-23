@@ -24,13 +24,8 @@ export default function Header(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   function makeBrand() {
-    var name = "NextJS Material Dashboard";
-    props.routes.map((prop) => {
-      if (router.route.indexOf(prop.layout + prop.path) !== -1) {
-        name = props.rtlActive ? prop.rtlName : prop.name;
-      }
-      return null;
-    });
+    var name = "Little Tank - " + router.route.slice(1);
+    
     return name;
   }
   const { color } = props;
@@ -46,9 +41,9 @@ export default function Header(props) {
             {makeBrand()}
           </Button>
         </div>
-        <Hidden smDown implementation="css">
+        {/* <Hidden smDown implementation="css">
           {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
-        </Hidden>
+        </Hidden> */}
         <Hidden mdUp implementation="css">
           <IconButton
             color="inherit"
