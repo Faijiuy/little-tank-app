@@ -113,6 +113,10 @@
   margin-left: 0.5rem;
 }
 
+.right {
+  float: right;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;

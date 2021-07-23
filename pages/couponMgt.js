@@ -1,56 +1,46 @@
 import Admin from "layouts/Admin.js";
-import React, {useState, useEffect} from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from "react";
+import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-import Typography from '@material-ui/core/Typography';
+import MuiAccordion from "@material-ui/core/Accordion";
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
+import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from "@material-ui/core/Typography";
 import GridContainer from "components/Grid/GridContainer.js";
 import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Checkbox from '@material-ui/core/Checkbox';
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Checkbox from "@material-ui/core/Checkbox";
 import Button from "components/CustomButtons/Button.js";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Divider from '@material-ui/core/Divider';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import Divider from "@material-ui/core/Divider";
 
-import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
+import "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
   KeyboardDatePicker,
-} from '@material-ui/pickers';
+} from "@material-ui/pickers";
 
 import { connectToDatabase } from "../util/mongodb";
-
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
 
-  const customers = await db
-    .collection("customer")
-    .find()
-    .sort({})
-    .toArray();
+  const customers = await db.collection("customer").find().sort({}).toArray();
 
-  const coupons = await db
-    .collection("coupons")
-    .find()
-    .sort({})
-    .toArray();
-
+  const coupons = await db.collection("coupons").find().sort({}).toArray();
 
   return {
     props: {
@@ -61,49 +51,47 @@ export async function getServerSideProps() {
 }
 
 const Accordion = withStyles({
-    root: {
-      border: '1px solid rgba(0, 0, 0, .125)',
-      boxShadow: 'none',
-      '&:not(:last-child)': {
-        borderBottom: 0,
-      },
-      '&:before': {
-        display: 'none',
-      },
-      '&$expanded': {
-        margin: 'auto',
-      },
+  root: {
+    border: "1px solid rgba(0, 0, 0, .125)",
+    boxShadow: "none",
+    "&:not(:last-child)": {
+      borderBottom: 0,
     },
-    expanded: {},
-  })(MuiAccordion);
+    "&:before": {
+      display: "none",
+    },
+    "&$expanded": {
+      margin: "auto",
+    },
+  },
+  expanded: {},
+})(MuiAccordion);
 
 const AccordionSummary = withStyles({
-    root: {
-      backgroundColor: 'rgba(0, 0, 0, .03)',
-      borderBottom: '1px solid rgba(0, 0, 0, .125)',
-      marginBottom: -1,
+  root: {
+    backgroundColor: "rgba(0, 0, 0, .03)",
+    borderBottom: "1px solid rgba(0, 0, 0, .125)",
+    marginBottom: -1,
+    minHeight: 56,
+    "&$expanded": {
       minHeight: 56,
-      '&$expanded': {
-        minHeight: 56,
-      },
     },
-    content: {
-      '&$expanded': {
-        margin: '12px 0',
-      },
+  },
+  content: {
+    "&$expanded": {
+      margin: "12px 0",
     },
-    expanded: {},
-  })(MuiAccordionSummary);
-  
-const AccordionDetails = withStyles((theme) => ({
-    root: {
-      padding: theme.spacing(2),
-    },
-  }))(MuiAccordionDetails);
+  },
+  expanded: {},
+})(MuiAccordionSummary);
 
+const AccordionDetails = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiAccordionDetails);
 
 const styles = {
-  
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
     margin: "0",
@@ -120,7 +108,20 @@ const styles = {
     marginBottom: "3px",
     textDecoration: "none",
   },
+  right: {
+    float: "right",
+  },
 };
+
+const useStyles2 = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -134,17 +135,15 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
+function CouponMgt({ customer: customers, coupon: coupons }) {
+  const classes2 = useStyles2();
 
-function CouponMgt({customer: customers, coupon: coupons}){
-
- 
-
-  const [expanded, setExpanded] = React.useState('panel1');
+  const [expanded, setExpanded] = React.useState("panel1");
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
-  
+
   const [checked, setChecked] = React.useState([]);
   const [right, setRight] = React.useState([]);
 
@@ -152,16 +151,17 @@ function CouponMgt({customer: customers, coupon: coupons}){
   const [type, setType] = useState();
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
-  const [selectedDate, setSelectedDate] = React.useState(new Date().toLocaleString().split(',')[0]);
-
+  const [selectedDate, setSelectedDate] = React.useState(
+    new Date().toLocaleString().split(",")[0]
+  );
 
   const [ordered_company, setOrdered_company] = useState([]);
 
-  function compare( a, b ) {
-    if ( a.runningNo < b.runningNo ){
+  function compare(a, b) {
+    if (a.runningNo < b.runningNo) {
       return -1;
     }
-    if ( a.runningNo > b.runningNo ){
+    if (a.runningNo > b.runningNo) {
       return 1;
     }
     return 0;
@@ -169,40 +169,42 @@ function CouponMgt({customer: customers, coupon: coupons}){
 
   function removeDuplicates(originalArray, prop) {
     var newArray = [];
-    var lookupObject  = {};
+    var lookupObject = {};
 
-    for(var i in originalArray) {
-       lookupObject[originalArray[i][prop]] = originalArray[i];
+    for (var i in originalArray) {
+      lookupObject[originalArray[i][prop]] = originalArray[i];
     }
 
-    for(i in lookupObject) {
-        newArray.push(lookupObject[i]);
+    for (i in lookupObject) {
+      newArray.push(lookupObject[i]);
     }
-     return newArray;
-}
+    return newArray;
+  }
 
-  useEffect(() =>{
-    let list = []
+  useEffect(() => {
+    let list = [];
 
-    coupons.map(coupon => {
-      if(coupon.companyRef === company._id && !coupon.used && coupon.generatedDate === selectedDate && coupon.amount === type){
-        list.push(coupon)
+    coupons.map((coupon) => {
+      if (
+        coupon.companyRef === company._id &&
+        !coupon.used &&
+        coupon.generatedDate === selectedDate &&
+        coupon.amount === type
+      ) {
+        list.push(coupon);
       }
-    })
+    });
 
-    setCouponList(list)
-
+    setCouponList(list);
 
     let date = new Date();
-    let timeSt = date.toLocaleString().split(',')[0]
+    let timeSt = date.toLocaleString().split(",")[0];
 
-    let runNo = list.filter(a => a.generatedDate === timeSt).sort(compare)
+    let runNo = list.filter((a) => a.generatedDate === timeSt).sort(compare);
 
     let uniq = removeDuplicates(runNo, "amount");
-    setOrdered_company(uniq)
-
-
-  }, [company, selectedDate, type])
+    setOrdered_company(uniq);
+  }, [company, selectedDate, type]);
 
   const handleChangeCompany = (event) => {
     setCompany(event.target.value);
@@ -215,7 +217,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
   const handleQty = (event) => {
     setQty(event.target.value);
   };
-  
+
   const useStyles = makeStyles(styles);
   const classes = useStyles();
 
@@ -266,10 +268,15 @@ function CouponMgt({customer: customers, coupon: coupons}){
         avatar={
           <Checkbox
             onClick={handleToggleAll(items)}
-            checked={numberOfChecked(items) === items.length && items.length !== 0}
-            indeterminate={numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0}
+            checked={
+              numberOfChecked(items) === items.length && items.length !== 0
+            }
+            indeterminate={
+              numberOfChecked(items) !== items.length &&
+              numberOfChecked(items) !== 0
+            }
             disabled={items.length === 0}
-            inputProps={{ 'aria-label': 'all items selected' }}
+            inputProps={{ "aria-label": "all items selected" }}
           />
         }
         title={title}
@@ -281,13 +288,18 @@ function CouponMgt({customer: customers, coupon: coupons}){
           const labelId = `transfer-list-all-item-${value}-label`;
 
           return (
-            <ListItem key={index} role="listitem" button onClick={handleToggle(value)}>
+            <ListItem
+              key={index}
+              role="listitem"
+              button
+              onClick={handleToggle(value)}
+            >
               <ListItemIcon>
                 <Checkbox
                   checked={checked.indexOf(value) !== -1}
                   tabIndex={-1}
                   disableRipple
-                  inputProps={{ 'aria-labelledby': labelId }}
+                  inputProps={{ "aria-labelledby": labelId }}
                 />
               </ListItemIcon>
               <ListItemText id={labelId} primary={`${value.code}`} />
@@ -299,101 +311,98 @@ function CouponMgt({customer: customers, coupon: coupons}){
     </Card>
   );
 
-
   const handleDateChange = (date) => {
-    let timeSt = date.toLocaleString().split(',')[0]
+    let timeSt = date.toLocaleString().split(",")[0];
     setSelectedDate(timeSt);
-
   };
-
-  
-
-  
 
   const info = {
     code: "",
     companyRef: company._id,
-    generatedDate: '',
+    generatedDate: "",
     amount: type,
     runningNo: 0,
     used: false, // missing, true, false
     usedDateTime: "",
-    recordedBy: ""
-  }
+    recordedBy: "",
+  };
 
   const onSubmit = (e) => {
-
     let date = new Date();
-    let timeSt = date.toLocaleString().split(',')[0]
-    
-    ordered_company.map(coupon => {
-      if(info.amount === coupon.amount){
-        info.runningNo = coupon.runningNo
+    let timeSt = date.toLocaleString().split(",")[0];
+
+    ordered_company.map((coupon) => {
+      if (info.amount === coupon.amount) {
+        info.runningNo = coupon.runningNo;
       }
-    })
+    });
 
-    for(let i=1; i <= qty; i++){
-      info["generatedDate"] = timeSt.split(',')[0]
-      info["runningNo"] += 1
-      info["code"] = company._id + "-" + timeSt.split(',')[0] + "-" + type + "-" + info["runningNo"]
+    for (let i = 1; i <= qty; i++) {
+      info["generatedDate"] = timeSt.split(",")[0];
+      info["runningNo"] += 1;
+      info["code"] =
+        company._id +
+        "-" +
+        timeSt.split(",")[0] +
+        "-" +
+        type +
+        "-" +
+        info["runningNo"];
 
-      fetch('/api/coupon', {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+      fetch("/api/coupon", {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(info) // body data type must match "Content-Type" header
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(info), // body data type must match "Content-Type" header
       })
-        .then(response => response.json())
-        .then(data => {
-          alert("Add Item:\nResponse from server " + data.message)
+        .then((response) => response.json())
+        .then((data) => {
+          alert("Add Item:\nResponse from server " + data.message);
         });
-
     }
-  }
+  };
 
   const onSubmit_missing_coupon = (e) => {
     // console.log("right === ", right)
 
-    right.map(coupon => {
-      coupon["used"] = "missing"
+    right.map((coupon) => {
+      coupon["used"] = "missing";
 
-      fetch('/api/coupon', {
-        method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+      fetch("/api/coupon", {
+        method: "PUT", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(coupon) // body data type must match "Content-Type" header
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(coupon), // body data type must match "Content-Type" header
       })
-        .then(response => response.json())
-        .then(data => {
-          alert("Add Item:\nResponse from server " + data.message)
-          alert("Newly added _id", data._id)
+        .then((response) => response.json())
+        .then((data) => {
+          alert("Add Item:\nResponse from server " + data.message);
+          alert("Newly added _id", data._id);
         });
-    })
-
-
-    
-  }
-
-
-
+    });
+  };
 
   return (
     <div>
-      <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+      <Accordion
+        square
+        expanded={expanded === "panel1"}
+        onChange={handleChange("panel1")}
+      >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
           <Typography>พิมพ์คูปอง</Typography>
         </AccordionSummary>
@@ -401,36 +410,35 @@ function CouponMgt({customer: customers, coupon: coupons}){
           <Typography>
             {/* <GridContainer> */}
             <div>
-
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label1">Company</InputLabel>
+              <FormControl variant="outlined" className={classes2.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label1">
+                  Company
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label1"
                   id="demo-simple-select-outlined"
-                  value={company ? company : ''}
+                  value={company ? company : ""}
                   onChange={handleChangeCompany}
                   label="Company"
                 >
-                  
-                  {customers.map(company =>{
-                    return <MenuItem value={company}>{company.company}</MenuItem>
+                  {customers.map((company) => {
+                    return (
+                      <MenuItem value={company}>{company.company}</MenuItem>
+                    );
                   })}
-                  
                 </Select>
-
-                
               </FormControl>
-
             </div>
-             
-
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label2">Type</InputLabel>
+            <span className={styles.right}>
+              <FormControl variant="outlined" className={classes2.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label2">
+                  Type
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label2"
                   id="demo-simple-select-outlined"
-                  value={type ? type : ''}
-                  defaultValue=''
+                  value={type ? type : ""}
+                  defaultValue=""
                   onChange={handleChangeType}
                   label="type"
                 >
@@ -441,57 +449,78 @@ function CouponMgt({customer: customers, coupon: coupons}){
                   <MenuItem value={1000}>1,000</MenuItem>
                 </Select>
               </FormControl>
+            </span>
 
-              <form className={classes.root} noValidate autoComplete="off">
-               <TextField id="outlined-basic" label="จำนวน" variant="outlined" onBlur={handleQty} />
-              </form>
+            <form className={classes.root} noValidate autoComplete="off">
+              <TextField
+                id="outlined-basic"
+                label="จำนวน"
+                variant="outlined"
+                onBlur={handleQty}
+              />
+            </form>
 
-              <Button onClick={() => onSubmit()} color="primary">พิมพ์</Button>
+            <Button onClick={() => onSubmit()} color="primary">
+              พิมพ์
+            </Button>
 
             {/* </GridContainer> */}
           </Typography>
         </AccordionDetails>
       </Accordion>
-      <Accordion square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+      <Accordion
+        square
+        expanded={expanded === "panel2"}
+        onChange={handleChange("panel2")}
+      >
         <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
           <Typography>คูปองหาย</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-          <GridContainer>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">Company</InputLabel>
+            <GridContainer>
+              <FormControl variant="outlined" className={classes2.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label">
+                  Company
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
-                  value={company ? company : ''}                  
+                  value={company ? company : ""}
                   onChange={handleChangeCompany}
                   label="Company"
                 >
-                  
-                  {customers.map(company =>{
-                    return <MenuItem value={company}>{company.company}</MenuItem>
+                  {customers.map((company) => {
+                    return (
+                      <MenuItem value={company}>{company.company}</MenuItem>
+                    );
                   })}
-                  
                 </Select>
               </FormControl>
 
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={type ? type : ''}
-                  onChange={handleChangeType}
-                  label="type"
+              <span className={styles.right}>
+                <FormControl
+                  variant="outlined"
+                  className={classes2.formControl}
                 >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={500}>500</MenuItem>
-                  <MenuItem value={1000}>1,000</MenuItem>
-                </Select>
-              </FormControl>
+                  <InputLabel id="demo-simple-select-outlined-label">
+                    Type
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={type ? type : ""}
+                    onChange={handleChangeType}
+                    label="type"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={500}>500</MenuItem>
+                    <MenuItem value={1000}>1,000</MenuItem>
+                  </Select>
+                </FormControl>
+              </span>
 
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <Grid container justifyContent="space-around">
@@ -505,15 +534,11 @@ function CouponMgt({customer: customers, coupon: coupons}){
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{
-                      'aria-label': 'change date',
+                      "aria-label": "change date",
                     }}
                   />
-                  
                 </Grid>
               </MuiPickersUtilsProvider>
-
-              
-
 
               <Grid
                 container
@@ -522,7 +547,7 @@ function CouponMgt({customer: customers, coupon: coupons}){
                 alignItems="center"
                 className={classes.root}
               >
-                <Grid item>{customList('Choices', couponList)}</Grid>
+                <Grid item>{customList("Choices", couponList)}</Grid>
                 <Grid item>
                   <Grid container direction="column" alignItems="center">
                     <Button
@@ -547,21 +572,20 @@ function CouponMgt({customer: customers, coupon: coupons}){
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid item>{customList('Missing', right)}</Grid>
+                <Grid item>{customList("Missing", right)}</Grid>
               </Grid>
 
-              <Button onClick={() => onSubmit_missing_coupon()} color="primary">ลบ</Button>
-               
+              <Button onClick={() => onSubmit_missing_coupon()} color="primary">
+                ลบ
+              </Button>
             </GridContainer>
           </Typography>
         </AccordionDetails>
       </Accordion>
-      
     </div>
   );
-
 }
 
-CouponMgt.layout = Admin
+CouponMgt.layout = Admin;
 
-export default CouponMgt
+export default CouponMgt;
