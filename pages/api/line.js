@@ -26,22 +26,26 @@ let calState = false;
 
 const line = require("@line/bot-sdk");
 
-let resultData = {};
+let botReply = "";
 
-const couponInfo = {
-  // _id : "60f01e4d606a532bc094b7f2",
-  code: "",
-  companyRef: "",
-  amount: 1000,
-  used: false,
-  usedDateTime: "",
-  recordedBy: {
-    userID: "",
-    name: "",
-  },
-};
+let customerData = [];
 
 export default function test(req, res) {
+  const couponInfo = {
+    // _id : "60f01e4d606a532bc094b7f2",
+    code: "",
+    companyRef: "",
+    generatedDate: "",
+    amount: 0,
+    runningNo: 0,
+    used: false,
+    usedDateTime: "",
+    recordedBy: {
+      userID: "",
+      name: "",
+    },
+  };
+
   // handle LINE BOT webhook verification
   // The verification message does not contain any event, so length is zero.
   if (req.body.events.length === 0) {
@@ -59,27 +63,39 @@ export default function test(req, res) {
   let path = "./public/img/QR-Code.png";
 
   let id = event.source.userId;
-  
+
   let getTimeSt = event.timestamp;
   var date = new Date(getTimeSt);
-  let timeSt = date.toLocaleString()
+  let timeSt = date.toLocaleString();
 
-  console.log('couponInfo_Before ===>', couponInfo)
+  console.log("couponInfo_Before ===>", couponInfo);
+
+  fetch(process.env.API + "/toDB", {
+    method: "GET", // *GET, POST, PUT, DELETE, etc.
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      data.map((d) => {
+        customerData.push(d);
+      });
+      // console.log("data ==> ",data);
+    });
 
   if (event.message.type !== "text") {
+    
+
     const client = new line.Client({
       channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
     });
 
     client
-.getProfile(id)
+      .getProfile(id)
       .then((profile) => {
         couponInfo.recordedBy.userID = profile.userId;
         couponInfo.recordedBy.name = profile.displayName;
-        couponInfo.usedDateTime = timeSt
-        console.log(profile.displayName);
-        console.log(profile.userId);
-        console.log("TimeStamp ==> ", timeSt);
+        // console.log(profile.displayName);
+        // console.log(profile.userId);
+        // console.log("TimeStamp ==> ", timeSt);
       })
       .catch((err) => {
         console.error(err);
@@ -87,7 +103,7 @@ export default function test(req, res) {
 
     client.getMessageContent(event.message.id).then((stream) => {
       stream.on("data", (chunk) => {
-        console.log(chunk);
+        // console.log(chunk);
         arr.push(chunk);
       });
 
@@ -117,68 +133,105 @@ export default function test(req, res) {
             // TODO handle error
           }
 
-          let t,ComRef,AM,Num = ''
+          let temp = "";
           let detectCode = false;
 
           var qr = new QrCode();
           qr.callback = function (err, value) {
             if (value) {
               detectCode = true;
+              temp = value.result;
+              console.log(value);
             } else if (err) {
               detectCode = false;
               console.error(err);
               // TODO handle error
             }
 
-            if (detectCode == true) {
-              console.log(value);
+            //Split Code
+            let splitT = temp.split("-");
 
-              //Split Code
-              t = value.result
-              let splitT = t.split("-")
-              if (splitT.length == 3) {
-                ComRef = splitT[0].slice(6)
-                AM = splitT[1].slice(2)
-                Num = splitT[2].slice(3)
-              } else {
-                ComRef = ''
-                AM = 0
-                Num = ''
-              }
 
-              //Assign input to  couponInfo
+            // if (couponInfo.used == true)
+            if (detectCode == true && splitT.length == 4) {
+              // console.log(value);
+
+              //Assign input to  couponInfo & Check Code Form
+
+              // if (splitT.length == 4) {
               couponInfo.code = value.result;
+              couponInfo.companyRef = splitT[0];
+              couponInfo.generatedDate = splitT[1];
+              couponInfo.amount = parseInt(splitT[2]);
+              couponInfo.runningNo = parseInt(splitT[3]);
               couponInfo.used = true;
-              couponInfo.companyRef = ComRef;
-              couponInfo.amount = parseInt(AM);
+              couponInfo.usedDateTime = timeSt;
+              // } else {
+              //   resultData.result =
+              //   "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. \nขอคุณช่วยถ่ายรูปใหม่อีกที.";
+              // }
+
+              // console.log("customerData ===> ", customerData)
+
+              let companyName = "";
+
+              customerData.map((cd) => {
+                if (couponInfo.companyRef == cd._id) {
+                  companyName = cd.company;
+                  // console.log("companyName ===>  ", companyName)
+                }
+              });
 
               //Print Detected Code in Console
               console.log("resultData ====> ", value.result);
-              console.log("splitT ===> ", splitT)
-            //   console.log("comRef ==> ", ComRef)
-            //   console.log("AM ==> ", AM)
-            //   console.log("num ==> ", Num)
+              console.log("splitT ===> ", splitT);
 
               //Send Code to LINE to Reply
-            //   reply(reply_token, value.result);
-              resultData.result =
-                "Code detected.";
-              reply(reply_token, resultData.result);
+              //   reply(reply_token, value.result);
+
+              botReply =
+                "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
+                companyName +
+                "\nQR-Code: " +
+                couponInfo.code +
+                "\nวันที่ถูกพิมพ์: " +
+                couponInfo.generatedDate +
+                "\nคูปองราคา: " +
+                couponInfo.amount +
+                "\nเลขคูปองที่: " +
+                couponInfo.runningNo +
+                "\nวันและเวลาที่บันทึก: " +
+                couponInfo.usedDateTime +
+                "\nบันทึกโดย: " +
+                couponInfo.recordedBy.name;
+
+              reply(reply_token, botReply);
+
+              const message = {
+                type: "text",
+                text: "คูปองนี้ได้ถูกบันทึกว่าใช้ไปแล้ว",
+              };
+
+              client
+                .pushMessage(id, message)
+                .then(() => {})
+                .catch((err) => {
+                  // error handling
+                });
+            } else if (detectCode == true && splitT.length != 4) {
+              botReply =
+                "รูปที่คุณถ่ายมาไม่ใช่คูปอง. \nขอคุณช่วยถ่ายรูปใหม่อีกที.";
+              reply(reply_token, botReply);
             } else if (detectCode == false) {
-              resultData.result =
-                "Code not detected. Please take a new picture again.";
-              reply(reply_token, resultData.result);
+              botReply =
+                "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. ขอคุณช่วยถ่ายรูปใหม่อีกที.";
+              reply(reply_token, botReply);
             }
             // if (err) {
             //     console.error(err);
             //     // TODO handle error
             // }
-            // resultData = value
-            // console.log(value);
-            // console.log('resultData ====> ', resultData.result)
-            // reply(reply_token, resultData.result)
-            console.log('couponInfo_After ===>', couponInfo)
-            
+            console.log("couponInfo_After ===>", couponInfo);
           };
           qr.decode(image.bitmap);
           // fetch(process.env.API+'/coupon/used', {
@@ -204,11 +257,10 @@ export default function test(req, res) {
       });
     });
 
-    reply(reply_token, event.message.text);
+    // reply(reply_token, event.message.text);
   } else {
     postToDialogflow(req);
   }
-  
 }
 
 function reply(reply_token, msg) {
@@ -251,20 +303,3 @@ const postToDialogflow = (req) => {
     data: req.body,
   });
 };
-
-export async function getServerSideProps() {
-  const { db } = await connectToDatabase();
-
-  const coupons = await db
-    .collection("coupons")
-    .find()
-    .sort({})
-    .limit(20)
-    .toArray();
-
-  return {
-    props: {
-      coupon: JSON.parse(JSON.stringify(coupons)),
-    },
-  };
-}

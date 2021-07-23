@@ -105,5 +105,14 @@ export default async (req, res) => {
         }
       }
     )
+  } else if(req.method === 'GET'){
+    const { db } = await connectToDatabase();
+    const customer = await db
+      .collection("customer")
+      .find({})
+      .sort({})
+      .limit(20)
+      .toArray();
+    res.json(customer);
   }
 };

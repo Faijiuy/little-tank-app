@@ -16,7 +16,9 @@ export default async (req, res) => {
       // _id : "60f01e4d606a532bc094b7f2",
       code,
       companyRef,
+      generated,
       amount,
+      runningNo,
       used,
       usedDateTime,
       recordedBy: { userID, name },
@@ -34,8 +36,8 @@ export default async (req, res) => {
           // _id: ObjectId(_id)
           // _id: _id
           // code: data.code,
-          companyRef: data.companyRef,
-          amount: data.amount,
+          // companyRef: data.companyRef,
+          // amount: data.amount,
           used: data.used,
           usedDateTime: data.usedDateTime,
           recordedBy: { userID: data.recordedBy.userID, name: data.recordedBy.name },
@@ -55,7 +57,14 @@ export default async (req, res) => {
         }
       }
     ); // if update non-existing record, insert instead.
-  } else {
-    res.json({ message: "Hello, I am not working with GET method" });
+  } else if(req.method === 'GET'){
+    const { db } = await connectToDatabase();
+    const coupon = await db
+      .collection("coupons")
+      .find({})
+      .sort({})
+      .limit(20)
+      .toArray();
+    res.json(coupon);
   }
 };
