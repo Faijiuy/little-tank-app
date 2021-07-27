@@ -29,6 +29,7 @@ const line = require("@line/bot-sdk");
 let botReply = "";
 
 let customerData = [];
+let couponData = [];
 
 export default function test(req, res) {
   const couponInfo = {
@@ -81,9 +82,19 @@ export default function test(req, res) {
       // console.log("data ==> ",data);
     });
 
+  fetch(process.env.API + "/coupon/used", {
+    method: "GET", // *GET, POST, PUT, DELETE, etc.
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      data.map((d) => {
+        couponData.push(d);
+      });
+      // console.log("data ==> ",data);
+    });
+
   if (event.message.type !== "text") {
     
-
     const client = new line.Client({
       channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
     });
@@ -150,81 +161,96 @@ export default function test(req, res) {
 
             //Split Code
             let splitT = temp.split("-");
+            // console.log("customerData ===> ", customerData);
+            // console.log("couponData ===> ", couponData);
 
+            couponInfo.code = value.result;
+            couponInfo.companyRef = splitT[0];
+            couponInfo.generatedDate = splitT[1];
+            couponInfo.amount = parseInt(splitT[2]);
+            couponInfo.runningNo = parseInt(splitT[3]);
 
-            // if (couponInfo.used == true)
-            if (detectCode == true && splitT.length == 4) {
-              // console.log(value);
+            couponData.map( couD => {
+              if (couponInfo.code == couD.code) {
+                couponInfo.used = couD.used
+              }
+            })
 
-              //Assign input to  couponInfo & Check Code Form
+            if (couponInfo.used == false) {
+              if (detectCode == true && splitT.length == 4) {
+                // console.log(value);
 
-              // if (splitT.length == 4) {
-              couponInfo.code = value.result;
-              couponInfo.companyRef = splitT[0];
-              couponInfo.generatedDate = splitT[1];
-              couponInfo.amount = parseInt(splitT[2]);
-              couponInfo.runningNo = parseInt(splitT[3]);
-              couponInfo.used = true;
-              couponInfo.usedDateTime = timeSt;
-              // } else {
-              //   resultData.result =
-              //   "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. \nขอคุณช่วยถ่ายรูปใหม่อีกที.";
-              // }
+                //Assign input to  couponInfo & Check Code Form
 
-              // console.log("customerData ===> ", customerData)
+                // if (splitT.length == 4) {
+                couponInfo.used = true;
+                couponInfo.usedDateTime = timeSt;
+                // } else {
+                //   resultData.result =
+                //   "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. \nขอคุณช่วยถ่ายรูปใหม่อีกที.";
+                // }
 
-              let companyName = "";
+                let companyName = "";
 
-              customerData.map((cd) => {
-                if (couponInfo.companyRef == cd._id) {
-                  companyName = cd.company;
-                  // console.log("companyName ===>  ", companyName)
-                }
-              });
-
-              //Print Detected Code in Console
-              console.log("resultData ====> ", value.result);
-              console.log("splitT ===> ", splitT);
-
-              //Send Code to LINE to Reply
-              //   reply(reply_token, value.result);
-
-              botReply =
-                "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
-                companyName +
-                "\nQR-Code: " +
-                couponInfo.code +
-                "\nวันที่ถูกพิมพ์: " +
-                couponInfo.generatedDate +
-                "\nคูปองราคา: " +
-                couponInfo.amount +
-                "\nเลขคูปองที่: " +
-                couponInfo.runningNo +
-                "\nวันและเวลาที่บันทึก: " +
-                couponInfo.usedDateTime +
-                "\nบันทึกโดย: " +
-                couponInfo.recordedBy.name;
-
-              reply(reply_token, botReply);
-
-              const message = {
-                type: "text",
-                text: "คูปองนี้ได้ถูกบันทึกว่าใช้ไปแล้ว",
-              };
-
-              client
-                .pushMessage(id, message)
-                .then(() => {})
-                .catch((err) => {
-                  // error handling
+                customerData.map((cusD) => {
+                  if (couponInfo.companyRef == cusD._id) {
+                    companyName = cusD.company;
+                    // console.log("companyName ===>  ", companyName)
+                  }
                 });
-            } else if (detectCode == true && splitT.length != 4) {
+
+                //Print Detected Code in Console
+                console.log("resultData ====> ", value.result);
+                console.log("splitT ===> ", splitT);
+
+                //Send Code to LINE to Reply
+                //   reply(reply_token, value.result);
+
+                botReply =
+                  "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
+                  companyName +
+                  "\nQR-Code: " +
+                  couponInfo.code +
+                  "\nวันที่ถูกพิมพ์: " +
+                  couponInfo.generatedDate +
+                  "\nคูปองราคา: " +
+                  couponInfo.amount +
+                  "\nเลขคูปองที่: " +
+                  couponInfo.runningNo +
+                  "\nวันและเวลาที่บันทึก: " +
+                  couponInfo.usedDateTime +
+                  "\nบันทึกโดย: " +
+                  couponInfo.recordedBy.name;
+
+                reply(reply_token, botReply);
+
+                const message = {
+                  type: "text",
+                  text: "คูปองนี้ได้ถูกบันทึกแล้ว",
+                };
+
+                client
+                  .pushMessage(id, message)
+                  .then(() => {})
+                  .catch((err) => {
+                    // error handling
+                  });
+              } else if (detectCode == true && splitT.length != 4) {
+                botReply =
+                  "รูปที่คุณถ่ายมาไม่ใช่คูปอง. \nขอคุณช่วยถ่ายรูปใหม่อีกที.";
+                reply(reply_token, botReply);
+              } else if (detectCode == false) {
+                botReply =
+                  "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. ขอคุณช่วยถ่ายรูปใหม่อีกที.";
+                reply(reply_token, botReply);
+              }
+            } else if (couponInfo.used == true) {
               botReply =
-                "รูปที่คุณถ่ายมาไม่ใช่คูปอง. \nขอคุณช่วยถ่ายรูปใหม่อีกที.";
+                    "คูปองนี้ได้ถูกใช้แล้ว.";
               reply(reply_token, botReply);
-            } else if (detectCode == false) {
+            } else if (couponInfo.used == 'missing') {
               botReply =
-                "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. ขอคุณช่วยถ่ายรูปใหม่อีกที.";
+                    "คูปองนี้ได้ถูกบันทึกว่า สูญหาย.";
               reply(reply_token, botReply);
             }
             // if (err) {
@@ -232,7 +258,7 @@ export default function test(req, res) {
             //     // TODO handle error
             // }
             console.log("couponInfo_After ===>", couponInfo);
-          };
+          } 
           qr.decode(image.bitmap);
           // fetch(process.env.API+'/coupon/used', {
           //     method: 'PUT', // *GET, POST, PUT, DELETE, etc.

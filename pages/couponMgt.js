@@ -113,9 +113,6 @@ const styles = {
     marginBottom: "3px",
     textDecoration: "none",
   },
-  right: {
-    float: "right",
-  },
 };
 
 const useStyles2 = makeStyles((theme) => ({
@@ -481,7 +478,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 </Select>
               </FormControl>
             </div>
-            <span className={styles.right}>
+            <span className={styles}>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label2">
                   Type
@@ -550,29 +547,24 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 </Select>
               </FormControl>
 
-              <span className={styles.right}>
-                <FormControl
-                  variant="outlined"
-                  className={classes2.formControl}
+              <FormControl variant="outlined" className={classes2.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label">
+                  Type
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={type ? type : ""}
+                  onChange={handleChangeType}
+                  label="type"
                 >
-                  <InputLabel id="demo-simple-select-outlined-label">
-                    Type
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={type ? type : ""}
-                    onChange={handleChangeType}
-                    label="type"
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={500}>500</MenuItem>
-                    <MenuItem value={1000}>1,000</MenuItem>
-                  </Select>
-                </FormControl>
-              </span>
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={500}>500</MenuItem>
+                  <MenuItem value={1000}>1,000</MenuItem>
+                </Select>
+              </FormControl>
 
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <Grid container justifyContent="space-around">
