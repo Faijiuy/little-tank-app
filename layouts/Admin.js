@@ -101,7 +101,7 @@ export default function Admin({ children, ...rest }) {
         ) : (
           null
         )}
-        {getRoute() ? <Footer /> : null}
+        {/* {getRoute() ? <Footer /> : null} */}
         {/* <FixedPlugin
           handleImageClick={handleImageClick}
           handleColorClick={handleColorClick}

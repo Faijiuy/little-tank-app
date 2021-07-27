@@ -33,6 +33,11 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 
+
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton';
+import CommentIcon from '@material-ui/icons/Comment';
+
 import { connectToDatabase } from "../util/mongodb";
 
 export async function getServerSideProps() {
@@ -146,11 +151,14 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   const [checked, setChecked] = React.useState([]);
   const [right, setRight] = React.useState([]);
+  const [right2, setRight2] = React.useState([]);
+
 
   const [company, setCompany] = useState("");
   const [type, setType] = useState();
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
+  const [missingList, setMissingList] = useState([])
   const [selectedDate, setSelectedDate] = React.useState(
     new Date().toLocaleString().split(",")[0]
   );
@@ -182,7 +190,12 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   }
 
   useEffect(() => {
+    console.log(checked)
+  },[checked])
+
+  useEffect(() => {
     let list = [];
+    let miss = []
 
     coupons.map((coupon) => {
       if (
@@ -192,10 +205,18 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
         coupon.amount === type
       ) {
         list.push(coupon);
+      }else if(
+        coupon.companyRef === company._id &&
+        coupon.used === 'missing' &&
+        coupon.generatedDate === selectedDate &&
+        coupon.amount === type
+      ){
+        miss.push(coupon)
       }
     });
 
     setCouponList(list);
+    setMissingList(miss)
 
     let date = new Date();
     let timeSt = date.toLocaleString().split(",")[0];
@@ -225,6 +246,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   const leftChecked = intersection(checked, couponList);
   const rightChecked = intersection(checked, right);
+
+  const leftChecked2 = intersection(checked, missingList);
+  const rightChecked2 = intersection(checked, right2);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -260,6 +284,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
+
 
   const customList = (title, items) => (
     <Card>
@@ -374,6 +399,33 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
     right.map((coupon) => {
       coupon["used"] = "missing";
+
+      fetch("/api/coupon", {
+        method: "PUT", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+          "Content-Type": "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(coupon), // body data type must match "Content-Type" header
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert("Add Item:\nResponse from server " + data.message);
+          alert("Newly added _id", data._id);
+        });
+    });
+  };
+
+  const onSubmit_found_coupon = (e) => {
+    // console.log("right === ", right)
+
+    checked.map((coupon) => {
+      coupon["used"] = false;
 
       fetch("/api/coupon", {
         method: "PUT", // *GET, POST, PUT, DELETE, etc.
@@ -577,6 +629,107 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
               <Button onClick={() => onSubmit_missing_coupon()} color="primary">
                 ลบ
+              </Button>
+            </GridContainer>
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        square
+        expanded={expanded === "panel3"}
+        onChange={handleChange("panel3")}
+      >
+        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+          <Typography>เจอคุปอง</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <GridContainer>
+              <FormControl variant="outlined" className={classes2.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label2">
+                  Company
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={company ? company : ""}
+                  onChange={handleChangeCompany}
+                  label="Company"
+                >
+                  {customers.map((company) => {
+                    return (
+                      <MenuItem value={company}>{company.company}</MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+
+              <span className={styles.right}>
+                <FormControl
+                  variant="outlined"
+                  className={classes2.formControl}
+                >
+                  <InputLabel id="demo-simple-select-outlined-label2">
+                    Type
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={type ? type : ""}
+                    onChange={handleChangeType}
+                    label="type"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={500}>500</MenuItem>
+                    <MenuItem value={1000}>1,000</MenuItem>
+                  </Select>
+                </FormControl>
+              </span>
+
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Grid container justifyContent="space-around">
+                  <KeyboardDatePicker
+                    disableToolbar
+                    variant="inline"
+                    format="MM/dd/yyyy"
+                    margin="normal"
+                    id="date-picker-inline2"
+                    label="Date picker inline"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    KeyboardButtonProps={{
+                      "aria-label": "change date",
+                    }}
+                  />
+                </Grid>
+              </MuiPickersUtilsProvider>
+
+              <List className={classes.root}>
+      {missingList.map((value) => {
+        const labelId = `checkbox-list-label-${value._id}`;
+
+        return (
+          <ListItem key={value._id} role={undefined} dense button onClick={handleToggle(value)}>
+            <ListItemIcon>
+              <Checkbox
+                edge="start"
+                checked={checked.indexOf(value) !== -1}
+                tabIndex={-1}
+                disableRipple
+                inputProps={{ 'aria-labelledby': labelId }}
+              />
+            </ListItemIcon>
+            <ListItemText id={labelId} primary={`${value.code}`} />
+            
+          </ListItem>
+        );
+      })}
+    </List>
+
+              <Button onClick={() => onSubmit_found_coupon()} color="primary">
+                ยืนยัน
               </Button>
             </GridContainer>
           </Typography>
