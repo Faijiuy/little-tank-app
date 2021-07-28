@@ -29,14 +29,9 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 
-
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
 
 import { connectToDatabase } from "../util/mongodb";
 
@@ -138,6 +133,8 @@ function union(a, b) {
 }
 
 function CouponMgt({ customer: customers, coupon: coupons }) {
+
+
   const classes2 = useStyles2();
 
   const [expanded, setExpanded] = React.useState("panel1");
@@ -155,6 +152,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const [type, setType] = useState();
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
+  const [printList, setPrintList] = useState([]);
   const [missingList, setMissingList] = useState([])
   const [selectedDate, setSelectedDate] = React.useState(
     new Date().toLocaleString().split(",")[0]
@@ -186,9 +184,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     return newArray;
   }
 
-  useEffect(() => {
-    console.log(checked)
-  },[checked])
+ 
 
   useEffect(() => {
     let list = [];
@@ -244,8 +240,6 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const leftChecked = intersection(checked, couponList);
   const rightChecked = intersection(checked, right);
 
-  const leftChecked2 = intersection(checked, missingList);
-  const rightChecked2 = intersection(checked, right2);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -353,6 +347,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     let date = new Date();
     let timeSt = date.toLocaleString().split(",")[0];
 
+
     ordered_company.map((coupon) => {
       if (info.amount === coupon.amount) {
         info.runningNo = coupon.runningNo;
@@ -386,9 +381,12 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          alert("Add Item:\nResponse from server " + data.message);
+          
+          alert("Add Item:\nResponse from server " + data._id);
         });
+            
     }
+
   };
 
   const onSubmit_missing_coupon = (e) => {
@@ -512,6 +510,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             <Button onClick={() => onSubmit()} color="primary">
               พิมพ์
             </Button>
+
+            <Button href="/coupon/printPage">หน้าปริ้น</Button>
 
             {/* </GridContainer> */}
           </Typography>
