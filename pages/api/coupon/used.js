@@ -63,7 +63,7 @@ export default async (req, res) => {
       .collection("coupons")
       .find({})
       .sort({})
-      .limit(20)
+      .limit(0)
       .toArray();
     res.json(coupon);
   }
