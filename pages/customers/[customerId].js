@@ -15,7 +15,6 @@ import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import { useForm } from "react-hook-form";
 
 import avatar from "assets/img/faces/marc.jpg";
 import { connectToDatabase } from "../../util/mongodb";
@@ -30,7 +29,8 @@ const customer1 = {
   contact_name: "Contact 1",
   contact_tel: "0969641234",
   contact_email: "customer1@gmail.com",
-  address: "address1, address2, Bangkok"
+  address: "address1, address2, Bangkok",
+  TIN: "1234567890123"
 }
 
 export async function getServerSideProps(props) {
@@ -89,6 +89,7 @@ function CreateCustomer({customer:customer}) {
   const [contact_tel, setContact_tel] = useState()
   const [contact_email, setContact_email] = useState()
   const [address, setAddress] = useState()
+  const [TIN, setTIN] = useState()
 
 
   useEffect(() => {
@@ -100,7 +101,8 @@ function CreateCustomer({customer:customer}) {
       contact_name: "Contact 1",
       contact_tel: "0969641234",
       contact_email: "customer1@gmail.com",
-      address: "address1, address2, Bangkok"
+      address: "address1, address2, Bangkok",
+      TIN: "1234567890123"
     }
 
     if (customer !== null) {
@@ -112,6 +114,7 @@ function CreateCustomer({customer:customer}) {
       setContact_tel(customer.contact_tel)
       setContact_email(customer.contact_email)
       setAddress(customer.address)
+      setTIN(customer.TIN)
     }else{
       setCompany(customer1.company)
       setOwner(customer1.owner)
@@ -121,10 +124,12 @@ function CreateCustomer({customer:customer}) {
       setContact_tel(customer1.contact_tel)
       setContact_email(customer1.contact_email)
       setAddress(customer1.address)
+      setTIN(customer1.TIN)
+
+      
     }
   },[])
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
   const useStyles = makeStyles(styles);
 
@@ -145,6 +150,8 @@ function CreateCustomer({customer:customer}) {
       setContact_email(event.target.value)
     } else if (event.target.id === 'address') {
       setAddress(event.target.value)
+    } else if (event.target.id === 'TIN') {
+      setTIN(event.target.value)
     }
   }
 
@@ -156,9 +163,8 @@ function CreateCustomer({customer:customer}) {
     contact_name: contact_name,
     contact_tel: contact_tel,
     contact_email: contact_email,
-    address: address
-
-
+    address: address,
+    TIN: TIN
   }
 
   const onSubmit = (e) => {
@@ -344,6 +350,22 @@ function CreateCustomer({customer:customer}) {
                     inputProps={{
                       // onChange: handleChange,
                       defaultValue: customer !== null ? customer.address : customer1.address,
+                      onBlur: handleSetState
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+              <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="เลขประจำตัวผู้เสียภาษี"
+                    id="TIN"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      // onChange: handleChange,
+                      defaultValue: customer !== null ? customer.TIN : customer1.TIN,
                       onBlur: handleSetState
                     }}
                   />

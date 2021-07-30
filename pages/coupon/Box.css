@@ -6,3 +6,17 @@
 .child + .child {
     margin-left: 12px;
   }
+
+@media print {
+.no-print, .no-print *{
+    display: none !important;
+}
+
+.print-only{
+    display: block;
+}
+
+.full-height-div {
+    height: 100%;
+}
+}

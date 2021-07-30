@@ -21,6 +21,7 @@ export default async (req, res) => {
       contact_tel,
       contact_email,
       address,
+      TIN
     } = data;
 
     const { db } = await connectToDatabase();
@@ -36,6 +37,7 @@ export default async (req, res) => {
         contact_tel: contact_tel,
         contact_email: contact_email,
         address: address,
+        TIN: TIN
       },
       // callback
       (err, result) => {
@@ -65,6 +67,7 @@ export default async (req, res) => {
       contact_tel,
       contact_email,
       address,
+      TIN
     } = data;
 
     // let _id = ObjectId(data._id)
@@ -89,6 +92,7 @@ export default async (req, res) => {
           contact_tel: contact_tel,
           contact_email: contact_email,
           address: address,
+          TIN: TIN
         }
       },
       // callback

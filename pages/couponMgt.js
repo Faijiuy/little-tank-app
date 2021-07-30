@@ -341,6 +341,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     used: false, // missing, true, false
     usedDateTime: "",
     recordedBy: "",
+    printed: false,
   };
 
   const onSubmit = (e) => {

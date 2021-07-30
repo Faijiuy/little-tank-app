@@ -13,7 +13,8 @@ export default async (req, res) => {
         runningNo,
         used,
         usedDateTime,
-        recordedBy
+        recordedBy,
+        printed,
     } = data;
 
     const { db } = await connectToDatabase();
@@ -27,7 +28,8 @@ export default async (req, res) => {
         runningNo: runningNo,
         used: used,
         usedDateTime: usedDateTime,
-        recordedBy: recordedBy
+        recordedBy: recordedBy,
+        printed: printed
       },
       // callback
       (err, result) => {
