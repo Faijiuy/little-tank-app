@@ -13,7 +13,7 @@ export default async (req, res) => {
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
-      // _id : "60f01e4d606a532bc094b7f2",
+      _id,
       code,
       companyRef,
       generated,
@@ -26,18 +26,13 @@ export default async (req, res) => {
 
     console.log("DATA ====> ", data)
 
-    let _id = ObjectID(data._id);
+    let id = ObjectID(data._id);
 
     const { db } = await connectToDatabase();
     let doc = await db.collection("coupons").updateOne(
-      { code: data.code},
+      {  _id: id},
       {
         $set: {
-          // _id: ObjectId(_id)
-          // _id: _id
-          // code: data.code,
-          // companyRef: data.companyRef,
-          // amount: data.amount,
           used: data.used,
           usedDateTime: data.usedDateTime,
           recordedBy: { userID: data.recordedBy.userID, name: data.recordedBy.name },
