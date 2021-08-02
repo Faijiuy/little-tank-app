@@ -229,7 +229,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   };
 
   const handleQty = (event) => {
-    setQty(event.target.value);
+    setQty(Number(event.target.value));
   };
 
   const useStyles = makeStyles(styles);
@@ -344,7 +344,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     printed: false,
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = () => {
     let date = new Date();
     let timeSt = date.toLocaleString().split(",")[0];
 
@@ -387,6 +387,12 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
         });
             
     }
+
+    setCompany("")
+    setType("")
+    setQty("")
+
+    console.log(company, type, qty)
 
   };
 
@@ -504,7 +510,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 id="outlined-basic"
                 label="จำนวน"
                 variant="outlined"
-                onBlur={handleQty}
+                value={qty}
+                onChange={handleQty}
               />
             </form>
 

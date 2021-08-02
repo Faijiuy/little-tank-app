@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import fs, { read } from "fs";
 import { connectToDatabase } from "../../util/mongodb";
 
@@ -25,6 +25,8 @@ const cal_state = [];
 let calState = false;
 //
 
+
+
 const line = require("@line/bot-sdk");
 
 let botReply = "";
@@ -33,6 +35,9 @@ let customerData = [];
 let couponData = [];
 
 export default function test(req, res) {
+
+  
+
   const couponInfo = {
     // _id : "60f01e4d606a532bc094b7f2",
     code: "",
@@ -73,6 +78,10 @@ export default function test(req, res) {
   let event = req.body.events[0];
 
   let reply_token = event.replyToken;
+
+  // useEffect(() => {
+  //   reply(reply_token, notification)
+  // }, [])
 
   let arr = [];
   let path = "./public/img/QR-Code.png";
@@ -229,24 +238,37 @@ export default function test(req, res) {
                   //Send Code to LINE to Reply
                   //   reply(reply_token, value.result);
 
+                  console.log("Test  ",couponInfo.companyRef)
+
+                  
                   botReply =
-                    "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
-                    companyName +
-                    "\nQR-Code: " +
-                    couponInfo.code +
-                    "\nวันที่ถูกพิมพ์: " +
-                    couponInfo.generatedDate +
-                    "\nคูปองราคา: " +
-                    couponInfo.amount +
-                    "\nเลขคูปองที่: " +
-                    couponInfo.runningNo +
-                    "\nวันและเวลาที่บันทึก: " +
-                    couponInfo.usedDateTime +
-                    "\nบันทึกโดย: " +
-                    couponInfo.recordedBy.name +
-                    "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
+                  "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
+                  companyName +
+                  "\nQR-Code: " +
+                  couponInfo.code +
+                  "\nวันที่ถูกพิมพ์: " +
+                  couponInfo.generatedDate +
+                  "\nคูปองราคา: " +
+                  couponInfo.amount +
+                  "\nเลขคูปองที่: " +
+                  couponInfo.runningNo +
+                  "\nวันและเวลาที่บันทึก: " +
+                  couponInfo.usedDateTime +
+                  "\nบันทึกโดย: " +
+                  couponInfo.recordedBy.name +
+                  "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
+                  
+                  if(notification(couponInfo.companyRef)){
+                    botReply += "\n--------------------------------------------------- \nยอดคูปองของคุณเหลือ " + notification(couponInfo.companyRef)+
+                    " กรุณาเติมเงิน"
+                    // reply(reply_token, "Test notification")
+                  }else{
+                    console.log("false")
+                  }
 
                   reply(reply_token, botReply);
+                  
+                  
 
                   // const message = {
                   //   type: "text",
@@ -282,6 +304,7 @@ export default function test(req, res) {
               console.log("couponInfo_After ===>", couponInfo);
             };
             qr.decode(image.bitmap);
+
             // fetch(process.env.API+'/coupon/used', {
             //     method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             //     mode: 'cors', // no-cors, *cors, same-origin
@@ -470,3 +493,22 @@ const postToDialogflow = (req) => {
     data: req.body,
   });
 };
+
+function notification(companyRef){
+  let amount = 0
+
+  couponData.map(coupon => {
+    if(coupon.companyRef === companyRef && coupon.used === false){
+      amount += coupon.amount
+      // console.log(amount)
+    }
+  })
+  
+
+  if(amount <= 3000){
+    return amount
+  }
+
+  
+ 
+}
