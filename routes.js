@@ -50,7 +50,13 @@ const dashboardRoutes = [
 
     // layout: "/admin",
   },
-  
+  {
+    path: "/adminMgt",
+    name: "Admin Management",
+    icon: Person,
+
+    // layout: "/admin",
+  },
  
   
 ];

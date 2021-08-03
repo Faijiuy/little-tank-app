@@ -106,9 +106,9 @@ export default function test(req, res) {
     text: "",
   };
 
-  setTimeout(() => {
-    processMessage();
-  }, 3000);
+  // setTimeout(() => {
+  processMessage();
+  // }, 3000);
 
   function processMessage() {
     if (event.message.type !== "text") {
@@ -473,7 +473,6 @@ function reply(reply_token, msg) {
       },
     ],
   });
-  console.log("reply =============> ", body);
 
   request.post(
     {
@@ -496,15 +495,10 @@ function notification(companyRef){
   couponData.map(coupon => {
     if(coupon.companyRef === companyRef && coupon.used === false){
       amount += coupon.amount
-      // console.log(amount)
     }
   })
   
-
   if(amount <= 3000){
     return amount
   }
-
-  
- 
 }
