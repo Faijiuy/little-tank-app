@@ -106,9 +106,10 @@ export default function test(req, res) {
     text: "",
   };
 
-  // setTimeout(() => {
+  setTimeout(() => {
   processMessage();
-  // }, 3000);
+  }, 3000);
+
 
   function processMessage() {
     if (event.message.type !== "text") {

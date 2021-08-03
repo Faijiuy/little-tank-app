@@ -94,7 +94,7 @@ const columns = [
       </Box>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={test(customers)}
+          rows={rowCustomer(customers)}
           columns={columns}
           editRowsModel={editRowsModel}
           onEditRowModelChange={handleEditRowModelChange}
@@ -110,7 +110,7 @@ const columns = [
 
 
 
-const test = (props) => {
+const rowCustomer = (props) => {
   let row = []
   props.map((customer, index) =>{
     row.push({
