@@ -1,6 +1,5 @@
 // import { useEffect, useState } from "react";
 import fs, { read } from "fs";
-import { connectToDatabase } from "../../util/mongodb";
 
 import axios from "axios";
 var QrCode = require("qrcode-reader");
@@ -18,7 +17,7 @@ let couponData = [];
 
 export default function test(req, res) {
 
-  
+
 
   const couponInfo = {
     _id: "",
@@ -112,6 +111,7 @@ export default function test(req, res) {
 
   function processMessage() {
     if (event.message.type !== "text") {
+      //(if admin.status == 'SO' || admin.status == 'SA')
       console.log("couponInfo_Before ===>", couponInfo);
       console.log("customerData ===> ", customerData);
       console.log("couponData ===> ", couponData);
@@ -217,24 +217,24 @@ export default function test(req, res) {
 
                   console.log("Test  ",couponInfo.companyRef)
 
-                  
+
                   botReply =
-                  "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
-                  companyName +
-                  "\nQR-Code: " +
-                  couponInfo.code +
-                  "\nวันที่ถูกพิมพ์: " +
-                  couponInfo.generatedDate +
-                  "\nคูปองราคา: " +
-                  couponInfo.amount +
-                  "\nเลขคูปองที่: " +
-                  couponInfo.runningNo +
-                  "\nวันและเวลาที่บันทึก: " +
-                  couponInfo.usedDateTime +
-                  "\nบันทึกโดย: " +
-                  couponInfo.recordedBy.name +
-                  "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
-                  
+                    "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
+                    companyName +
+                    "\nQR-Code: " +
+                    couponInfo.code +
+                    "\nวันที่ถูกพิมพ์: " +
+                    couponInfo.generatedDate +
+                    "\nคูปองราคา: " +
+                    couponInfo.amount +
+                    "\nเลขคูปองที่: " +
+                    couponInfo.runningNo +
+                    "\nวันและเวลาที่บันทึก: " +
+                    couponInfo.usedDateTime +
+                    "\nบันทึกโดย: " +
+                    couponInfo.recordedBy.name +
+                    "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
+
                   if(notification(couponInfo.companyRef)){
                     botReply += "\n--------------------------------------------------- \nยอดคูปองของคุณเหลือ " + notification(couponInfo.companyRef)+
                     " กรุณาเติมเงิน"
@@ -304,6 +304,7 @@ export default function test(req, res) {
           });
         });
       });
+      // (else if admin.status == 'Customer)
 
       // reply(reply_token, event.message.text);
     } else if (event.message.type == "text") {
@@ -332,6 +333,8 @@ export default function test(req, res) {
           }
         }
       } else if (event.message.text == "สอบถามยอด") {
+
+        //(if admin.status == 'SO' || admin.status == 'Customer')
         console.log("Inquire for total of coupon.");
         // console.log("couponData ===> ", couponData);
         customerData.map((cusD) => {
@@ -406,9 +409,11 @@ export default function test(req, res) {
             reply(reply_token, replyLeftCoupon);
           }
         });
+         //(else admin.status == 'SA')
       } else if (event.message.text == "คำสั่งบอท") {
         let replyCommand =
           "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
+
         reply(reply_token, replyCommand);
       } else {
         // Maybe do not need this since groupID remain the same even delete group chat. But when new company is registerd.
@@ -428,31 +433,28 @@ export default function test(req, res) {
               customerInfo.address = customerData[i].address;
               customerInfo.groupID = GID;
               break;
-            } else {
-              let inCorrectNameReply = "คุณพิมพ์ชื่อบริษัทผิด น้องรถถังไม่พบชื่อบริษัทที่ตรงกัน. กรุณาพิมพ์ใหม่."
-              reply(reply_token, inCorrectNameReply);
             }
           }
           console.log("customerInfo", customerInfo);
-          // fetch(process.env.API + "/toDB", {
-          //   method: "PUT", // *GET, POST, PUT, DELETE, etc.
-          //   mode: "cors", // no-cors, *cors, same-origin
-          //   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          //   credentials: "same-origin", // include, *same-origin, omit
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //     // 'Content-Type': 'application/x-www-form-urlencoded',
-          //   },
-          //   redirect: "follow", // manual, *follow, error
-          //   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          //   body: JSON.stringify(customerInfo), // body data type must match "Content-Type" header
-          // })
-          //   .then((response) => response.json())
-          //   .then((data) => {
-          //     console.log(data);
-          //     // alert("Update:\nResponse from server " + data.message)
-          //     // alert("Update", data._id)
-          //   });
+          fetch(process.env.API + "/toDB", {
+            method: "PUT", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(customerInfo), // body data type must match "Content-Type" header
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              // alert("Update:\nResponse from server " + data.message)
+              // alert("Update", data._id)
+            });
 
           let confirmGIDReply =
             "บันทึก GroupID ใหม่ไปที่ Database แล้ว. \nGroupID คือ " +
@@ -529,5 +531,5 @@ function notification(companyRef){
   }
 
   
- 
+
 }
