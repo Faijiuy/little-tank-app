@@ -34,7 +34,7 @@ let couponData = [];
 
 export default function test(req, res) {
   const couponInfo = {
-    _id : "",
+    _id: "",
     code: "",
     companyRef: "",
     generatedDate: "",
@@ -196,7 +196,7 @@ export default function test(req, res) {
               couponData.map((couD) => {
                 if (couponInfo.code == couD.code) {
                   couponInfo.used = couD.used;
-                  couponInfo._id = couD._id
+                  couponInfo._id = couD._id;
                 }
               });
 
@@ -326,7 +326,6 @@ export default function test(req, res) {
             continue;
           }
         }
-
       } else if (event.message.text == "สอบถามยอด") {
         console.log("Inquire for total of coupon.");
         // console.log("couponData ===> ", couponData);
@@ -336,53 +335,69 @@ export default function test(req, res) {
             console.log("tempComRef", tempComRef);
             let totalLeft = 0;
             let typeCoupon = [];
-            let couponValue = []
+            let couponValue = [];
 
             // for (var i = 0; i < couponData.length; i++) {
             //   typeCoupon.push(couponData[i].amount);
             // }
 
             couponData.map((couD) => {
-              typeCoupon.push(couD.amount)
-            })
+              typeCoupon.push(couD.amount);
+            });
 
-            let tempTypeCoupon = new Set(typeCoupon)
-            typeCoupon = [...tempTypeCoupon]
+            let tempTypeCoupon = new Set(typeCoupon);
+            typeCoupon = [...tempTypeCoupon];
 
-            console.log("typeCoupon ======> ", typeCoupon)
+            console.log("typeCoupon ======> ", typeCoupon);
 
             for (var i = 0; i < typeCoupon.length; i++) {
-              couponValue.push({ID: i+1, type: typeCoupon[i], unit: 0, value: 0})
+              couponValue.push({
+                ID: i + 1,
+                type: typeCoupon[i],
+                unit: 0,
+                value: 0,
+              });
             }
-            console.log("couponValue Before ==> ", couponValue)
+            console.log("couponValue Before ==> ", couponValue);
 
             couponData.map((couD) => {
               if (tempComRef == couD.companyRef && couD.used == false) {
                 // totalLeft += couD.amount;
                 couponValue.map((v) => {
                   if (couD.amount == v.type) {
-                    v.unit += 1
+                    v.unit += 1;
                   }
-                })
+                });
               }
             });
 
             couponValue.map((v) => {
-              v.value = v.type * v.unit
-              totalLeft += v.value
-            })
-            console.log("couponValue After ==> ", couponValue)
+              v.value = v.type * v.unit;
+              totalLeft += v.value;
+            });
+            console.log("couponValue After ==> ", couponValue);
 
-            let couponReply = []
+            let couponReply = [];
             couponValue.map((cv) => {
-              couponReply.push({replyID: cv.ID, reply: 'คูปองมูลค่า ' + cv.type + ' บาท. จำนวน ' + cv.unit + ' ใบ. (' + cv.value + ' บาท)'})
-            })
-            console.log("couponReply ==> ", couponReply)
+              couponReply.push({
+                replyID: cv.ID,
+                reply:
+                  "คูปองมูลค่า " +
+                  cv.type +
+                  " บาท. จำนวน " +
+                  cv.unit +
+                  " ใบ. (" +
+                  cv.value +
+                  " บาท)",
+              });
+            });
+            console.log("couponReply ==> ", couponReply);
 
             let replyLeftCoupon =
               "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " +
               totalLeft +
-              " บาท.\n\n" + printCouponReply(couponReply)
+              " บาท.\n\n" +
+              printCouponReply(couponReply);
             reply(reply_token, replyLeftCoupon);
           }
         });
@@ -408,6 +423,9 @@ export default function test(req, res) {
               customerInfo.address = customerData[i].address;
               customerInfo.groupID = GID;
               break;
+            } else {
+              let inCorrectNameReply = "คุณพิมพ์ชื่อบริษัทผิด น้องรถถังไม่พบชื่อบริษัทที่ตรงกัน. กรุณาพิมพ์ใหม่."
+              reply(reply_token, inCorrectNameReply);
             }
           }
           console.log("customerInfo", customerInfo);
@@ -431,10 +449,15 @@ export default function test(req, res) {
           //     // alert("Update", data._id)
           //   });
 
-          let confirmGIDReply = 'บันทึก GroupID ใหม่ไปที่ Database แล้ว. \nGroupID คือ ' + customerInfo.groupID 
+          let confirmGIDReply =
+            "บันทึก GroupID ใหม่ไปที่ Database แล้ว. \nGroupID คือ " +
+            customerInfo.groupID;
           reply(reply_token, confirmGIDReply);
-        } else { 
-          reply(reply_token, 'ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง')
+        } else {
+          reply(
+            reply_token,
+            "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
+          );
         }
       }
     }
@@ -445,11 +468,11 @@ export default function test(req, res) {
 }
 
 function printCouponReply(arr) {
-  var string = ''
+  var string = "";
   arr.map((cr) => {
-    string = string + cr.reply + '\n'
-  })
-  return string
+    string = string + cr.reply + "\n";
+  });
+  return string;
 }
 
 function reply(reply_token, msg) {
