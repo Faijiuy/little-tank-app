@@ -8,12 +8,15 @@ export async function getServerSideProps() {
   const { db } = await connectToDatabase();
 
   const coupons = await db.collection("coupons").find().sort({}).toArray();
+  const customers = await db.collection("customer").find().sort({}).toArray();
+
 
   let printList = coupons.filter((coupon) => coupon.printed === false);
 
   return {
     props: {
       coupon: JSON.parse(JSON.stringify(printList)),
+      customer: JSON.parse(JSON.stringify(customers)), 
     },
   };
 }
@@ -22,7 +25,13 @@ const divStyle = {
   fontSize: "15px",
 };
 
-export default function PrintPage({ coupon: printList }) {
+const pStyle = {
+  fontSize: "12px",
+};
+
+export default function PrintPage({ coupon: printList, customer: customers }) {
+  // console.log(customers)
+
   const handleClick = () => {
     //   window.old_print=window.print
     //   window.print=function() {
@@ -64,21 +73,23 @@ export default function PrintPage({ coupon: printList }) {
           return (
             <>
               <div className="box" style={divStyle}>
-                <p>ID 5 ตัวท้าย: {coupon._id.substr(coupon._id.length - 5)}</p>
+                <p>บริษัท: {customers.map(customer => {if(coupon.companyRef === customer._id){return customer.company}})}</p>
                 <p>ลำดับ: {coupon.runningNo}</p>
                 <p>ราคา: {coupon.amount}</p>
                 <p>วันที่ผลิต: {coupon.generatedDate}</p>
               </div>
               <div className="box">
                 <div className="child left">
-                  <p>ID: {coupon._id}</p>
+                  <p>บริษัท: {customers.map(customer => {if(coupon.companyRef === customer._id){return customer.company}})}</p>
                   <p>ลำดับ: {coupon.runningNo}</p>
                   <p>ราคา: {coupon.amount}</p>
                   <p>วันที่ผลิต: {coupon.generatedDate}</p>
                 </div>
                 <span className="right">
                   <QRCode value={coupon.code} size="150" />
+                  <p style={pStyle}>{coupon._id}</p>
                 </span>
+                
               </div>
             </>
           );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import fs, { read } from "fs";
 import { connectToDatabase } from "../../util/mongodb";
 
@@ -9,22 +9,6 @@ var Jimp = require("jimp");
 const request = require("request");
 require("dotenv").config();
 
-// const redis = require('redis')
-// const client = redis.createClient();
-
-// client.on("error", function(error) {s
-//   console.error(error);
-// });
-
-// client.set("key", "value", redis.print);
-// client.get("key", redis.print);
-let count = 0;
-
-const cal_state = [];
-
-let calState = false;
-//
-
 const line = require("@line/bot-sdk");
 
 let botReply = "";
@@ -33,6 +17,9 @@ let customerData = [];
 let couponData = [];
 
 export default function test(req, res) {
+
+  
+
   const couponInfo = {
     _id: "",
     code: "",
@@ -73,6 +60,10 @@ export default function test(req, res) {
   let event = req.body.events[0];
 
   let reply_token = event.replyToken;
+
+  // useEffect(() => {
+  //   reply(reply_token, notification)
+  // }, [])
 
   let arr = [];
   let path = "./public/img/QR-Code.png";
@@ -224,24 +215,37 @@ export default function test(req, res) {
                   //Send Code to LINE to Reply
                   //   reply(reply_token, value.result);
 
+                  console.log("Test  ",couponInfo.companyRef)
+
+                  
                   botReply =
-                    "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
-                    companyName +
-                    "\nQR-Code: " +
-                    couponInfo.code +
-                    "\nวันที่ถูกพิมพ์: " +
-                    couponInfo.generatedDate +
-                    "\nคูปองราคา: " +
-                    couponInfo.amount +
-                    "\nเลขคูปองที่: " +
-                    couponInfo.runningNo +
-                    "\nวันและเวลาที่บันทึก: " +
-                    couponInfo.usedDateTime +
-                    "\nบันทึกโดย: " +
-                    couponInfo.recordedBy.name +
-                    "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
+                  "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
+                  companyName +
+                  "\nQR-Code: " +
+                  couponInfo.code +
+                  "\nวันที่ถูกพิมพ์: " +
+                  couponInfo.generatedDate +
+                  "\nคูปองราคา: " +
+                  couponInfo.amount +
+                  "\nเลขคูปองที่: " +
+                  couponInfo.runningNo +
+                  "\nวันและเวลาที่บันทึก: " +
+                  couponInfo.usedDateTime +
+                  "\nบันทึกโดย: " +
+                  couponInfo.recordedBy.name +
+                  "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
+                  
+                  if(notification(couponInfo.companyRef)){
+                    botReply += "\n--------------------------------------------------- \nยอดคูปองของคุณเหลือ " + notification(couponInfo.companyRef)+
+                    " กรุณาเติมเงิน"
+                    // reply(reply_token, "Test notification")
+                  }else{
+                    console.log("false")
+                  }
 
                   reply(reply_token, botReply);
+                  
+                  
 
                   // const message = {
                   //   type: "text",
@@ -277,6 +281,7 @@ export default function test(req, res) {
               console.log("couponInfo_After ===>", couponInfo);
             };
             qr.decode(image.bitmap);
+
             // fetch(process.env.API+'/coupon/used', {
             //     method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             //     mode: 'cors', // no-cors, *cors, same-origin
@@ -506,12 +511,23 @@ function reply(reply_token, msg) {
   );
 }
 
-// const postToDialogflow = (req) => {
-//   req.headers.host = "dialogflow.cloud.google.com";
-//   axios({
-//     url: "https://dialogflow.cloud.google.com/v1/integrations/line/webhook/e8cc963c-2816-4340-892f-f424247eb2f5",
-//     headers: req.headers,
-//     method: "post",
-//     data: req.body,
-//   });
-// };
+
+
+function notification(companyRef){
+  let amount = 0
+
+  couponData.map(coupon => {
+    if(coupon.companyRef === companyRef && coupon.used === false){
+      amount += coupon.amount
+      // console.log(amount)
+    }
+  })
+  
+
+  if(amount <= 3000){
+    return amount
+  }
+
+  
+ 
+}

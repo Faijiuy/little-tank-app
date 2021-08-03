@@ -9,7 +9,12 @@
 
 .right {
   float: right;
-  padding: 10px 0px 20px 20px;
+  line-height: 0.5;
+}
+
+.font {
+  font-size: "5px";
+
 }
 
 .left {
