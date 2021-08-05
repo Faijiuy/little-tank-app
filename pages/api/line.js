@@ -65,7 +65,7 @@ export default function test(req, res) {
   //   reply(reply_token, notification)
   // }, [])
 
-  let arr = [];
+  let newArr = [];
   let path = "./public/img/QR-Code.png";
 
   let id = event.source.userId;
@@ -133,7 +133,7 @@ export default function test(req, res) {
       client.getMessageContent(event.message.id).then((stream) => {
         stream.on("data", (chunk) => {
           // console.log(chunk);
-          arr.push(chunk);
+          newArr.push(chunk);
         });
 
         stream.on("error", (err) => {
@@ -143,7 +143,7 @@ export default function test(req, res) {
         stream.on("end", function () {
           //fs.writeFile('logo.png', imagedata, 'binary', function(err){
 
-          var buffer = Buffer.concat(arr);
+          var buffer = Buffer.concat(newArr);
           fs.writeFileSync(path, buffer, function (err) {
             if (err) throw err;
             console.log("File saved.");
@@ -396,7 +396,140 @@ export default function test(req, res) {
         let replyCommand =
           "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
         reply(reply_token, replyCommand);
-      } else {
+      } else if(event.message.text.includes("ขอเป็น admin")){
+
+          const findAdmin = new Promise(function(resolve, reject){
+            fetch(process.env.API + "/admin", {
+              method: "GET", // *GET, POST, PUT, DELETE, etc.
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                let newArray = [GID]
+                 let groupArray = data.map(admin => {
+                   if(admin.userId === id){
+                     let group = admin.groupId
+                     group.push(GID)
+
+                     return group
+                   }
+                 })
+
+                 if(groupArray[0] != undefined){
+                   resolve(groupArray)
+
+                 }else{
+                   reject(newArray)
+                 }
+                 
+                
+              })
+          })
+
+          findAdmin.then(function(done){
+            // console.log(done)
+            let groupId = done.pop()
+            
+            fetch(process.env.API + "/admin/password", {
+              method: "GET", // *GET, POST, PUT, DELETE, etc.
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                data.map((data) => {
+                  if(event.message.text.includes(data.password)){
+                    fetch(process.env.API+'/admin', {
+                      method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+                      mode: 'cors', // no-cors, *cors, same-origin
+                      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                      credentials: 'same-origin', // include, *same-origin, omit
+                      headers: {
+                        'Content-Type': 'application/json'
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                      },
+                      redirect: 'follow', // manual, *follow, error
+                      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                      body: JSON.stringify({userId: id,
+                                            status: "SA",
+                                            groupId: groupId}) // body data type must match "Content-Type" header
+                    }).then(
+                      fetch(process.env.API+'/admin/password', {
+                        method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+                        mode: 'cors', // no-cors, *cors, same-origin
+                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: 'same-origin', // include, *same-origin, omit
+                        headers: {
+                          'Content-Type': 'application/json'
+                          // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: 'follow', // manual, *follow, error
+                        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                        body: JSON.stringify({password: data.password})
+                      }) // body data type must match "Content-Type" header
+                    )
+                    .then(reply(reply_token, "เอา admin ไป"))
+                      
+                      
+                }
+                });
+                // console.log("data ==> ",data);
+              })
+              
+          }).catch(function(newArr){
+            console.log("arr ",newArr)
+
+            fetch(process.env.API + "/admin/password", {
+                method: "GET", // *GET, POST, PUT, DELETE, etc.
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  data.map((data) => {
+                    if(event.message.text.includes(data.password)){
+                      fetch(process.env.API+'/admin', {
+                        method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+                        mode: 'cors', // no-cors, *cors, same-origin
+                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: 'same-origin', // include, *same-origin, omit
+                        headers: {
+                          'Content-Type': 'application/json'
+                          // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: 'follow', // manual, *follow, error
+                        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                        body: JSON.stringify({userId: id,
+                                              status: "SA",
+                                              groupId: newArr}) // body data type must match "Content-Type" header
+                      }).then(
+                        fetch(process.env.API+'/admin/password', {
+                          method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+                          mode: 'cors', // no-cors, *cors, same-origin
+                          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                          credentials: 'same-origin', // include, *same-origin, omit
+                          headers: {
+                            'Content-Type': 'application/json'
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                          },
+                          redirect: 'follow', // manual, *follow, error
+                          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                          body: JSON.stringify({password: data.password})
+                        }) // body data type must match "Content-Type" header
+                      )
+                      .then(reply(reply_token, "เอา admin ไป"))
+                        
+                        
+                  }
+                  });
+                  // console.log("data ==> ",data);
+                })
+          })
+          
+          
+          
+
+          
+        
+          
+
+
+      }else {
         // Maybe do not need this since groupID remain the same even delete group chat. But when new company is registerd.
         let tempText = event.message.text;
         let splitTempText = tempText.split("-");

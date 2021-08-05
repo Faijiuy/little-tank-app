@@ -2,12 +2,14 @@ import { connectToDatabase } from "../../../util/mongodb";
 
 export default async (req, res) => {
 
-  if (req.method === "POST") {
+  if (req.method === "PUT") {
     let data = req.body;
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
-      password
+      userId,
+      status,
+      groupID
     } = data;
 
     console.log("DATA ====> ", data)
@@ -15,13 +17,13 @@ export default async (req, res) => {
     // let _id = ObjectID(data._id);
 
     const { db } = await connectToDatabase();
-    let doc = await db.collection("password").insertOne(
-      
+    let doc = await db.collection("admin").updateOne({userId: userId}, { $set: data },
       {
-        
-        password: data
-        
+        new: true,
+        runValidators: true,
+        upsert: true
       },
+    
       // callback
       (err, result) => {
         if (err) {
@@ -38,20 +40,12 @@ export default async (req, res) => {
     ); // if update non-existing record, insert instead.
   }else if(req.method === 'GET'){
     const { db } = await connectToDatabase();
-    const password = await db
-      .collection("password")
+    const admin = await db
+      .collection("admin")
       .find({})
       .sort({})
       .limit(0)
       .toArray();
-    res.json(password);
-  }else if(req.method === 'DELETE'){
-    let data = req.body
-    let { password } = data;
-    const { db } = await connectToDatabase();
-    let doc = await db
-      .collection('password')
-      .deleteOne({ password: password })
-    res.json({ delete: true, message: 'Delete data', data: {} })
+    res.json(admin);
   }
 }
