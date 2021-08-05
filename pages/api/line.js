@@ -1,6 +1,5 @@
 // import { useEffect, useState } from "react";
 import fs, { read } from "fs";
-import { connectToDatabase } from "../../util/mongodb";
 
 import axios from "axios";
 var QrCode = require("qrcode-reader");
@@ -18,10 +17,10 @@ let couponData = [];
 
 export default function test(req, res) {
 
-  
+
 
   const couponInfo = {
-    _id : "",
+    _id: "",
     code: "",
     companyRef: "",
     generatedDate: "",
@@ -113,6 +112,7 @@ export default function test(req, res) {
 
   function processMessage() {
     if (event.message.type !== "text") {
+      //(if admin.status == 'SO' || admin.status == 'SA')
       console.log("couponInfo_Before ===>", couponInfo);
       console.log("customerData ===> ", customerData);
       console.log("couponData ===> ", couponData);
@@ -188,7 +188,7 @@ export default function test(req, res) {
               couponData.map((couD) => {
                 if (couponInfo.code == couD.code) {
                   couponInfo.used = couD.used;
-                  couponInfo._id = couD._id
+                  couponInfo._id = couD._id;
                 }
               });
 
@@ -218,24 +218,24 @@ export default function test(req, res) {
 
                   console.log("Test  ",couponInfo.companyRef)
 
-                  
+
                   botReply =
-                  "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
-                  companyName +
-                  "\nQR-Code: " +
-                  couponInfo.code +
-                  "\nวันที่ถูกพิมพ์: " +
-                  couponInfo.generatedDate +
-                  "\nคูปองราคา: " +
-                  couponInfo.amount +
-                  "\nเลขคูปองที่: " +
-                  couponInfo.runningNo +
-                  "\nวันและเวลาที่บันทึก: " +
-                  couponInfo.usedDateTime +
-                  "\nบันทึกโดย: " +
-                  couponInfo.recordedBy.name +
-                  "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
-                  
+                    "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
+                    companyName +
+                    "\nQR-Code: " +
+                    couponInfo.code +
+                    "\nวันที่ถูกพิมพ์: " +
+                    couponInfo.generatedDate +
+                    "\nคูปองราคา: " +
+                    couponInfo.amount +
+                    "\nเลขคูปองที่: " +
+                    couponInfo.runningNo +
+                    "\nวันและเวลาที่บันทึก: " +
+                    couponInfo.usedDateTime +
+                    "\nบันทึกโดย: " +
+                    couponInfo.recordedBy.name +
+                    "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
+
                   if(notification(couponInfo.companyRef)){
                     botReply += "\n--------------------------------------------------- \nยอดคูปองของคุณเหลือ " + notification(couponInfo.companyRef)+
                     " กรุณาเติมเงิน"
@@ -305,6 +305,7 @@ export default function test(req, res) {
           });
         });
       });
+      // (else if admin.status == 'Customer)
 
       // reply(reply_token, event.message.text);
     } else if (event.message.type == "text") {
@@ -332,8 +333,9 @@ export default function test(req, res) {
             continue;
           }
         }
-
       } else if (event.message.text == "สอบถามยอด") {
+
+        //(if admin.status == 'SO' || admin.status == 'Customer')
         console.log("Inquire for total of coupon.");
         // console.log("couponData ===> ", couponData);
         customerData.map((cusD) => {
@@ -342,59 +344,77 @@ export default function test(req, res) {
             console.log("tempComRef", tempComRef);
             let totalLeft = 0;
             let typeCoupon = [];
-            let couponValue = []
+            let couponValue = [];
 
             // for (var i = 0; i < couponData.length; i++) {
             //   typeCoupon.push(couponData[i].amount);
             // }
 
             couponData.map((couD) => {
-              typeCoupon.push(couD.amount)
-            })
+              typeCoupon.push(couD.amount);
+            });
 
-            let tempTypeCoupon = new Set(typeCoupon)
-            typeCoupon = [...tempTypeCoupon]
+            let tempTypeCoupon = new Set(typeCoupon);
+            typeCoupon = [...tempTypeCoupon];
 
-            console.log("typeCoupon ======> ", typeCoupon)
+            console.log("typeCoupon ======> ", typeCoupon);
 
             for (var i = 0; i < typeCoupon.length; i++) {
-              couponValue.push({ID: i+1, type: typeCoupon[i], unit: 0, value: 0})
+              couponValue.push({
+                ID: i + 1,
+                type: typeCoupon[i],
+                unit: 0,
+                value: 0,
+              });
             }
-            console.log("couponValue Before ==> ", couponValue)
+            console.log("couponValue Before ==> ", couponValue);
 
             couponData.map((couD) => {
               if (tempComRef == couD.companyRef && couD.used == false) {
                 // totalLeft += couD.amount;
                 couponValue.map((v) => {
                   if (couD.amount == v.type) {
-                    v.unit += 1
+                    v.unit += 1;
                   }
-                })
+                });
               }
             });
 
             couponValue.map((v) => {
-              v.value = v.type * v.unit
-              totalLeft += v.value
-            })
-            console.log("couponValue After ==> ", couponValue)
+              v.value = v.type * v.unit;
+              totalLeft += v.value;
+            });
+            console.log("couponValue After ==> ", couponValue);
 
-            let couponReply = []
+            let couponReply = [];
             couponValue.map((cv) => {
-              couponReply.push({replyID: cv.ID, reply: 'คูปองมูลค่า ' + cv.type + ' บาท. จำนวน ' + cv.unit + ' ใบ. (' + cv.value + ' บาท)'})
-            })
-            console.log("couponReply ==> ", couponReply)
+              couponReply.push({
+                replyID: cv.ID,
+                reply:
+                  "คูปองมูลค่า " +
+                  cv.type +
+                  " บาท. จำนวน " +
+                  cv.unit +
+                  " ใบ. (" +
+                  cv.value +
+                  " บาท)",
+              });
+            });
+            console.log("couponReply ==> ", couponReply);
 
             let replyLeftCoupon =
               "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " +
               totalLeft +
-              " บาท.\n\n" + printCouponReply(couponReply)
+              " บาท.\n\n" +
+              printCouponReply(couponReply);
             reply(reply_token, replyLeftCoupon);
           }
         });
+         //(else admin.status == 'SA')
       } else if (event.message.text == "คำสั่งบอท") {
         let replyCommand =
           "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
+
         reply(reply_token, replyCommand);
       } else if(event.message.text.includes("ขอเป็น admin")){
 
@@ -550,30 +570,35 @@ export default function test(req, res) {
             }
           }
           console.log("customerInfo", customerInfo);
-          // fetch(process.env.API + "/toDB", {
-          //   method: "PUT", // *GET, POST, PUT, DELETE, etc.
-          //   mode: "cors", // no-cors, *cors, same-origin
-          //   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          //   credentials: "same-origin", // include, *same-origin, omit
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //     // 'Content-Type': 'application/x-www-form-urlencoded',
-          //   },
-          //   redirect: "follow", // manual, *follow, error
-          //   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          //   body: JSON.stringify(customerInfo), // body data type must match "Content-Type" header
-          // })
-          //   .then((response) => response.json())
-          //   .then((data) => {
-          //     console.log(data);
-          //     // alert("Update:\nResponse from server " + data.message)
-          //     // alert("Update", data._id)
-          //   });
+          fetch(process.env.API + "/toDB", {
+            method: "PUT", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(customerInfo), // body data type must match "Content-Type" header
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              // alert("Update:\nResponse from server " + data.message)
+              // alert("Update", data._id)
+            });
 
-          let confirmGIDReply = 'บันทึก GroupID ใหม่ไปที่ Database แล้ว. \nGroupID คือ ' + customerInfo.groupID 
+          let confirmGIDReply =
+            "บันทึก GroupID ใหม่ไปที่ Database แล้ว. \nGroupID คือ " +
+            customerInfo.groupID;
           reply(reply_token, confirmGIDReply);
-        } else { 
-          reply(reply_token, 'ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง')
+        } else {
+          reply(
+            reply_token,
+            "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
+          );
         }
       }
     }
@@ -584,11 +609,11 @@ export default function test(req, res) {
 }
 
 function printCouponReply(arr) {
-  var string = ''
+  var string = "";
   arr.map((cr) => {
-    string = string + cr.reply + '\n'
-  })
-  return string
+    string = string + cr.reply + "\n";
+  });
+  return string;
 }
 
 function reply(reply_token, msg) {
