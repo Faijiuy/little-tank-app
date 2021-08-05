@@ -85,6 +85,13 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
                   <p>ราคา: {coupon.amount}</p>
                   <p>วันที่ผลิต: {coupon.generatedDate}</p>
                 </div>
+                <span className="center" >
+                  <p>.......................................</p>
+                  <p>อนุมัติโดย</p>
+                  
+                  <p>.......................................</p>
+                  <p>เลขทะเบียนรถ</p>
+                </span>
                 <span className="right">
                   <QRCode value={coupon.code} size="150" />
                   <p style={pStyle}>{coupon._id}</p>
