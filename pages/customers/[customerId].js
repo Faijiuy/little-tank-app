@@ -14,6 +14,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import TextField from '@material-ui/core/TextField';
 
 
 import avatar from "assets/img/faces/marc.jpg";
@@ -30,7 +31,8 @@ const customer1 = {
   contact_tel: "0969641234",
   contact_email: "customer1@gmail.com",
   address: "address1, address2, Bangkok",
-  TIN: "1234567890123"
+  TIN: "1234567890123",
+  groupID: "C2345467ref24325346213"
 }
 
 export async function getServerSideProps(props) {
@@ -88,8 +90,18 @@ function CreateCustomer({customer:customer}) {
   const [contact_name, setContact_name] = useState()
   const [contact_tel, setContact_tel] = useState()
   const [contact_email, setContact_email] = useState()
+
+  const [companyError, setCompanyError] = useState(false)
+  const [ownerError, setOwnerError] = useState(false)
+  const [owner_telError, setOwner_telError] = useState(false)
+  const [owner_emailError, setOwner_emailError] = useState(false)
+  const [contact_nameError, setContact_nameError] = useState(false)
+  const [contact_telError, setContact_telError] = useState(false)
+  const [contact_emailError, setContact_emailError] = useState(false)
+
   const [address, setAddress] = useState()
   const [TIN, setTIN] = useState()
+  const [groupID, setGroupID] = useState()
 
 
   useEffect(() => {
@@ -102,7 +114,8 @@ function CreateCustomer({customer:customer}) {
       contact_tel: "0969641234",
       contact_email: "customer1@gmail.com",
       address: "address1, address2, Bangkok",
-      TIN: "1234567890123"
+      TIN: "1234567890123",
+      groupID: "C2345467ref24325346213"
     }
 
     if (customer !== null) {
@@ -115,6 +128,7 @@ function CreateCustomer({customer:customer}) {
       setContact_email(customer.contact_email)
       setAddress(customer.address)
       setTIN(customer.TIN)
+      setGroupID(customer.groupID)
     }else{
       setCompany(customer1.company)
       setOwner(customer1.owner)
@@ -125,6 +139,7 @@ function CreateCustomer({customer:customer}) {
       setContact_email(customer1.contact_email)
       setAddress(customer1.address)
       setTIN(customer1.TIN)
+      setGroupID(customer1.groupID)
 
       
     }
@@ -164,7 +179,8 @@ function CreateCustomer({customer:customer}) {
     contact_tel: contact_tel,
     contact_email: contact_email,
     address: address,
-    TIN: TIN
+    TIN: TIN,
+    groupID: groupID
   }
 
   const onSubmit = (e) => {
@@ -225,7 +241,7 @@ function CreateCustomer({customer:customer}) {
   const classes = useStyles();
   return (
     // <form onSubmit={handleSubmit(onSubmit)}>
-    <div>
+    <form>
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
@@ -235,29 +251,34 @@ function CreateCustomer({customer:customer}) {
             </CardHeader>
             <CardBody>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="บริษัทของคุณ"
                     id="company"
                     formControlProps={{
                       fullWidth: true,
+                      required: true,
+                      error: companyError
                     }}
                     inputProps={{
                       defaultValue: customer !== null ? customer.company : customer1.company,
                       // onChange: handleChange,
-                      onBlur: handleSetState
+                      onBlur: handleSetState,      
                     }}
-
-
-
                   />
+
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
+                
+              </GridContainer>
+              <GridContainer>
+              <GridItem xs={12} sm={12} md={5}>
                   <CustomInput
                     labelText="ชื่อเจ้าของบริษัท"
                     id="owner"
                     formControlProps={{
                       fullWidth: true,
+                      required: true,
+                      error: ownerError
                     }}
                     inputProps={{
                       // onChange: handleChange,
@@ -266,12 +287,14 @@ function CreateCustomer({customer:customer}) {
                     }}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={3}>
                   <CustomInput
                     labelText="เบอร์โทรศัพท์"
                     id="owner_tel"
                     formControlProps={{
                       fullWidth: true,
+                      required: true,
+                      error: owner_telError
                     }}
                     inputProps={{
                       // onChange: handleChange,
@@ -280,9 +303,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                   />
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={6}>
+                <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="อีเมล"
                     id="owner_email"
@@ -296,7 +317,10 @@ function CreateCustomer({customer:customer}) {
                     }}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
+              </GridContainer>
+              
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={5}>
                   <CustomInput
                     labelText="ชื่อ"
                     id="contact_name"
@@ -310,9 +334,8 @@ function CreateCustomer({customer:customer}) {
                     }}
                   />
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
+
+                <GridItem xs={12} sm={12} md={3}>
                   <CustomInput
                     labelText="เบอร์ติดต่ออื่น"
                     id="contact_tel"
@@ -340,23 +363,28 @@ function CreateCustomer({customer:customer}) {
                     }}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="ที่อยู่"
-                    id="address"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.address : customer1.address,
-                      onBlur: handleSetState
-                    }}
-                  />
-                </GridItem>
+                
               </GridContainer>
               <GridContainer>
-              <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={12}>
+                <CustomInput
+                  labelText="ที่อยู่"
+                  id="address"
+                  formControlProps={{
+                    fullWidth: true,
+                  }}
+                  // fullWidth={true}
+                  inputProps={{
+                    // onChange: handleChange,
+                    defaultValue: customer !== null ? customer.address : customer1.address,
+                    onBlur: handleSetState
+                  }}
+                />
+                </GridItem>
+              </GridContainer>
+
+              <GridContainer>
+              <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="เลขประจำตัวผู้เสียภาษี"
                     id="TIN"
@@ -370,7 +398,25 @@ function CreateCustomer({customer:customer}) {
                     }}
                   />
                 </GridItem>
+
+                <GridItem xs={12} sm={12} md={6}>
+                  <CustomInput
+                    labelText="รหัสไลน์กลุ่ม"
+                    id="groupID"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      // onChange: handleChange,
+                      defaultValue: customer !== null ? customer.groupID : customer1.groupID,
+                      onBlur: handleSetState
+                    }}
+                  />
+                </GridItem>
               </GridContainer>
+              
+
+              
               
             </CardBody>
             <CardFooter>
@@ -380,7 +426,7 @@ function CreateCustomer({customer:customer}) {
         </GridItem>
         
       </GridContainer>
-      </div>
+      </form>
   );
 }
 
