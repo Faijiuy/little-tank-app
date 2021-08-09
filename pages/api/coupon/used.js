@@ -8,7 +8,6 @@ export default async (req, res) => {
   console.log("item API method ++++++ " + req.method);
 
   if (req.method === "PUT") {
-    console.log("UPDATE", req.body);
     let data = req.body;
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
@@ -24,7 +23,7 @@ export default async (req, res) => {
       recordedBy: { userID, name },
     } = data;
 
-    console.log("DATA ====> ", data)
+    console.log("DATA inside used api ====> ", data)
 
     let id = ObjectID(data._id);
 

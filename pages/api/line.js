@@ -2,6 +2,7 @@
 import fs, { read } from "fs";
 
 import axios from "axios";
+// import admin from "./admin";
 var QrCode = require("qrcode-reader");
 var Jimp = require("jimp");
 
@@ -101,16 +102,25 @@ export default function test(req, res) {
       // console.log("data ==> ",data);
     });
 
-  fetch(process.env.API + "/admin", {
-    method: "GET", // *GET, POST, PUT, DELETE, etc.
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      data.map((d) => {
-        adminData.push(d);
-      });
-      // console.log("data ==> ",data);
-    });
+
+  async function findAdmin(){
+    try{
+      let adminList = await fetch(process.env.API + "/admin", {
+                  method: "GET", // *GET, POST, PUT, DELETE, etc.
+                  }).then((response) => response.json())
+
+      // console.log("adminList  ", adminList)
+      await adminList.map(admin => {
+        if(id === admin.userId && admin.groupId.includes(GID)){
+          // console.log("admin status ",admin.status)
+          adminInfo.status = admin.status
+        }
+      })
+
+    }catch{
+
+    }
+  }
 
   const client = new line.Client({
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -121,23 +131,41 @@ export default function test(req, res) {
     text: "",
   };
 
-  setTimeout(() => {
+  // setTimeout(() => {
     processMessage();
-  }, 2500);
+  // }, 2500);
 
-  function processMessage() {
+  async function processMessage() {
+    // (async () => { await findAdmin() })
+    await findAdmin()
     if (event.message.type !== "text") {
-      console.log("couponInfo_Before ===>", couponInfo);
+      await console.log(" this is my status ", adminInfo.status)
+      // if(async () => { await findAdmin() }){
+      //   console.log("this is working")
+      // }else{
+      //   console.log("still nopeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+      // }
+
+      // findAdmin.then(console.log("Yesssssssssssssssssssssssssssssssssss"))
+      // .catch(console.log("Not workingggggggggggggggggggggggggggggggg"))
+      
+
+
+
+      // console.log("couponInfo_Before ===>", couponInfo);
       // console.log("customerData ===> ", customerData);
       // console.log("couponData ===> ", couponData);
-      adminData.map((amD) => {
-        if (id == amD.userId) {
-          adminInfo._id = amD._id;
-          adminInfo.userId = amD.userId;
-          adminInfo.groupId = amD.groupId;
-          adminInfo.status = amD.status;
-        }
-      });
+
+      // adminData.map((amD) => {
+      //   if (id == amD.userId) {
+      //     adminInfo._id = amD._id;
+      //     adminInfo.userId = amD.userId;
+      //     adminInfo.groupId = amD.groupId;
+      //     adminInfo.status = amD.status;
+      //     console.log("admininfo ==> ", adminInfo)
+
+      //   }
+      // });
 
       client
         .getProfile(id)
@@ -303,6 +331,7 @@ export default function test(req, res) {
                   reply(reply_token, botReply);
                 }
               } else {
+                console.log("Your status ===> ", adminInfo.status)
                 reply(reply_token, "คุณไม่มีสิทธิถ่ายรูปคูปองค่ะ");
               }
               // if (err) {
@@ -313,25 +342,25 @@ export default function test(req, res) {
             };
             qr.decode(image.bitmap);
 
-            fetch(process.env.API+'/coupon/used', {
-                method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                  'Content-Type': 'application/json'
-                  // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(couponInfo) // body data type must match "Content-Type" header
-              })
-                .then(response => response.json())
-                .then(data => {
-                  console.log(data);
-                  // alert("Update:\nResponse from server " + data.message)
-                  // alert("Update", data._id)
-                });
+            // fetch(process.env.API+'/coupon/used', {
+            //     method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            //     mode: 'cors', // no-cors, *cors, same-origin
+            //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            //     credentials: 'same-origin', // include, *same-origin, omit
+            //     headers: {
+            //       'Content-Type': 'application/json'
+            //       // 'Content-Type': 'application/x-www-form-urlencoded',
+            //     },
+            //     redirect: 'follow', // manual, *follow, error
+            //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            //     body: JSON.stringify(couponInfo) // body data type must match "Content-Type" header
+            //   })
+            //     .then(response => response.json())
+            //     .then(data => {
+            //       console.log(data);
+            //       // alert("Update:\nResponse from server " + data.message)
+            //       // alert("Update", data._id)
+            //     });
           });
         });
       });
@@ -339,42 +368,31 @@ export default function test(req, res) {
 
       // reply(reply_token, event.message.text);
     } else if (event.message.type == "text") {
-      // console.log("customerData ===> ", customerData);
-      adminData.map((amD) => {
-        if (id == amD.userId) {
-          adminInfo._id = amD._id;
-          adminInfo.userId = amD.userId;
-          adminInfo.groupId = amD.groupId;
-          adminInfo.status = amD.status;
-        }
-      });
-      console.log("adminInfo ===> ", adminInfo);
-
+      
       if (event.message.text == "สอบถาม GroupID") {
-        // let GID = event.source.groupId;
-        // message.text = "ได้โปรดใส่ชื่อบริษัทของคุณ";
-        // client
-        //   .pushMessage(GID, message)
-        //   .then(() => {})
-        //   .catch((err) => {
-        //     // error handling
-        //   });
+        
 
         if (adminInfo.status == "SA" || adminInfo.status == "SO") {
-          let replyCheckGroupID = "";
-          for (var i = 0; i < customerData.length; i++) {
-            if (GID == customerData[i].groupID) {
-              replyCheckGroupID = "GroupID คือ " + GID;
-              reply(reply_token, replyCheckGroupID);
-              break;
-            } else if (GID !== customerData[i].groupID) {
-              replyCheckGroupID =
-                "บริษัทของคุณยังไม่ได้ทำการบันทึก LINE GroupID. \nได้โปรดบันทึก GroupId นี้ที่ Website. \nGroupID คือ " +
-                GID;
-              reply(reply_token, replyCheckGroupID);
-              continue;
-            }
-          }
+          console.log("admin status inside  ", adminInfo.status)
+
+          let replyCheckGroupID = "GroupID คือ " + GID;
+
+          reply(reply_token, replyCheckGroupID);
+          // reply(reply_token, replyCheckGroupID2);
+
+          // for (var i = 0; i < customerData.length; i++) {
+          //   if (GID == customerData[i].groupID) {
+          //     replyCheckGroupID = "GroupID คือ " + GID;
+          //     reply(reply_token, replyCheckGroupID);
+          //     break;
+          //   } else if (GID !== customerData[i].groupID) {
+          //     replyCheckGroupID =
+          //       "บริษัทของคุณยังไม่ได้ทำการบันทึก LINE GroupID. \nได้โปรดบันทึก GroupId นี้ที่ Website. \nGroupID คือ " +
+          //       GID;
+          //     reply(reply_token, replyCheckGroupID);
+          //     continue;
+          //   }
+          // }
         } else {
           reply(reply_token, "คุณไม่มีสิทธิใช้คำสั่งนี้ค่ะ");
         }
@@ -385,6 +403,8 @@ export default function test(req, res) {
         if (adminInfo.status == "SA") {
           reply(reply_token, "คุณไม่มีสิทธิใช้คำสั่งนี้ค่ะ");
         } else {
+
+
           customerData.map((cusD) => {
             if (GID == cusD.groupID) {
               let tempComRef = cusD._id;
@@ -721,33 +741,61 @@ function printCouponReply(arr) {
 }
 
 function reply(reply_token, msg) {
+  
   let headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer {" + process.env.CHANNEL_ACCESS_TOKEN + "}",
   };
-
-  // console.log('msg:', msg)
-  let body = JSON.stringify({
-    replyToken: reply_token,
-    messages: [
+  
+  if(Array.isArray(msg)){
+    msg.map(message => {
+      let body = JSON.stringify({
+      replyToken: reply_token,
+      messages: [
+        {
+          type: "text",
+          text: message,
+        },
+      ],
+    });
+  
+    request.post(
       {
-        type: "text",
-        text: msg,
+        url: "https://api.line.me/v2/bot/message/reply",
+        headers: headers,
+        body: body,
       },
-    ],
-  });
-
-  request.post(
-    {
-      url: "https://api.line.me/v2/bot/message/reply",
-      headers: headers,
-      body: body,
-    },
-    (err, res, body) => {
-      // console.log('status = ' + res.statusCode);
-      // console.log("body ====> ", res.body)
-    }
-  );
+      (err, res, body) => {
+        // console.log('status = ' + res.statusCode);
+        // console.log("body ====> ", res.body)
+      }
+    );
+  })
+  }else{
+    let body = JSON.stringify({
+      replyToken: reply_token,
+      messages: [
+        {
+          type: "text",
+          text: msg,
+        },
+      ],
+    });
+  
+    request.post(
+      {
+        url: "https://api.line.me/v2/bot/message/reply",
+        headers: headers,
+        body: body,
+      },
+      (err, res, body) => {
+        // console.log('status = ' + res.statusCode);
+        // console.log("body ====> ", res.body)
+      }
+    );
+  }
+  // console.log('msg:', msg)
+  
 }
 
 function notification(companyRef) {
