@@ -472,59 +472,33 @@ export default function test(req, res) {
 
         reply(reply_token, replyCommand);
       } else if (event.message.text.includes("ขอเป็น admin")) {
-        const findAdmin = new Promise(function (resolve, reject) {
-          fetch(process.env.API + "/admin", {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              let newArray = [GID];
-              let groupArray = data.map((admin) => {
-                if (admin.userId === id) {
-                  let group = admin.groupId;
-                  group.push(GID);
 
-                  return group;
-                }
-              });
+          fetch(process.env.API + "/admin/password", {
+                method: "GET", // *GET, POST, PUT, DELETE, etc.
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log("data ",data)
+                  data.map(data => {
+                    if(event.message.text.includes(data.password)){
 
-              if (groupArray[0] != undefined) {
-                resolve(groupArray);
-              } else {
-                reject(newArray);
-              }
-            });
-        });
-
-        findAdmin
-          .then(function (done) {
-            // console.log(done)
-            let groupId = done.pop();
-
-            fetch(process.env.API + "/admin/password", {
-              method: "GET", // *GET, POST, PUT, DELETE, etc.
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                data.map((data) => {
-                  if (event.message.text.includes(data.password)) {
-                    fetch(process.env.API + "/admin", {
-                      method: "PUT", // *GET, POST, PUT, DELETE, etc.
-                      mode: "cors", // no-cors, *cors, same-origin
-                      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                      credentials: "same-origin", // include, *same-origin, omit
-                      headers: {
-                        "Content-Type": "application/json",
-                        // 'Content-Type': 'application/x-www-form-urlencoded',
-                      },
-                      redirect: "follow", // manual, *follow, error
-                      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                      body: JSON.stringify({
-                        userId: id,
-                        status: "SA",
-                        groupId: groupId,
-                      }), // body data type must match "Content-Type" header
-                    })
+                      fetch(process.env.API + "/admin", {
+                        method: "PUT", // *GET, POST, PUT, DELETE, etc.
+                        mode: "cors", // no-cors, *cors, same-origin
+                        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: "same-origin", // include, *same-origin, omit
+                        headers: {
+                          "Content-Type": "application/json",
+                          // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: "follow", // manual, *follow, error
+                        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                        body: JSON.stringify({
+                          userId: id,
+                          status: "SA",
+                          groupId: GID,
+                        }), // body data type must match "Content-Type" header
+                      }).then(reply(reply_token, "เอา admin ไป"))
                       .then(
                         fetch(process.env.API + "/admin/password", {
                           method: "DELETE", // *GET, POST, PUT, DELETE, etc.
@@ -540,60 +514,135 @@ export default function test(req, res) {
                           body: JSON.stringify({ password: data.password }),
                         }) // body data type must match "Content-Type" header
                       )
-                      .then(reply(reply_token, "เอา admin ไป"));
-                  }
-                });
-                // console.log("data ==> ",data);
-              });
-          })
-          .catch(function (newArr) {
-            console.log("arr ", newArr);
 
-            fetch(process.env.API + "/admin/password", {
-              method: "GET", // *GET, POST, PUT, DELETE, etc.
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                data.map((data) => {
-                  if (event.message.text.includes(data.password)) {
-                    fetch(process.env.API + "/admin", {
-                      method: "PUT", // *GET, POST, PUT, DELETE, etc.
-                      mode: "cors", // no-cors, *cors, same-origin
-                      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                      credentials: "same-origin", // include, *same-origin, omit
-                      headers: {
-                        "Content-Type": "application/json",
-                        // 'Content-Type': 'application/x-www-form-urlencoded',
-                      },
-                      redirect: "follow", // manual, *follow, error
-                      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                      body: JSON.stringify({
-                        userId: id,
-                        status: "SA",
-                        groupId: newArr,
-                      }), // body data type must match "Content-Type" header
-                    })
-                      .then(
-                        fetch(process.env.API + "/admin/password", {
-                          method: "DELETE", // *GET, POST, PUT, DELETE, etc.
-                          mode: "cors", // no-cors, *cors, same-origin
-                          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                          credentials: "same-origin", // include, *same-origin, omit
-                          headers: {
-                            "Content-Type": "application/json",
-                            // 'Content-Type': 'application/x-www-form-urlencoded',
-                          },
-                          redirect: "follow", // manual, *follow, error
-                          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                          body: JSON.stringify({ password: data.password }),
-                        }) // body data type must match "Content-Type" header
-                      )
-                      .then(reply(reply_token, "เอา admin ไป"));
-                  }
-                });
-                // console.log("data ==> ",data);
-              });
-          });
+                    }
+                  })
+                })
+                
+
+
+        // const findAdmin = new Promise(function (resolve, reject) {
+        //   fetch(process.env.API + "/admin", {
+        //     method: "GET", // *GET, POST, PUT, DELETE, etc.
+        //   })
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //       let newArray = [GID];
+        //       let groupArray = data.map((admin) => {
+        //         if (admin.userId === id) {
+        //           let group = admin.groupId;
+        //           group.push(GID);
+
+        //           return group;
+        //         }
+        //       });
+
+        //       if (groupArray[0] != undefined) {
+        //         resolve(groupArray);
+        //       } else {
+        //         reject(newArray);
+        //       }
+        //     });
+        // });
+
+        // findAdmin
+        //   .then(function (done) {
+        //     // console.log(done)
+        //     let groupId = done.pop();
+
+        //     fetch(process.env.API + "/admin/password", {
+        //       method: "GET", // *GET, POST, PUT, DELETE, etc.
+        //     })
+        //       .then((response) => response.json())
+        //       .then((data) => {
+        //         data.map((data) => {
+        //           if (event.message.text.includes(data.password)) {
+        //             fetch(process.env.API + "/admin", {
+        //               method: "PUT", // *GET, POST, PUT, DELETE, etc.
+        //               mode: "cors", // no-cors, *cors, same-origin
+        //               cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //               credentials: "same-origin", // include, *same-origin, omit
+        //               headers: {
+        //                 "Content-Type": "application/json",
+        //                 // 'Content-Type': 'application/x-www-form-urlencoded',
+        //               },
+        //               redirect: "follow", // manual, *follow, error
+        //               referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //               body: JSON.stringify({
+        //                 userId: id,
+        //                 status: "SA",
+        //                 groupId: groupId,
+        //               }), // body data type must match "Content-Type" header
+        //             })
+        //               .then(
+        //                 fetch(process.env.API + "/admin/password", {
+        //                   method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+        //                   mode: "cors", // no-cors, *cors, same-origin
+        //                   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //                   credentials: "same-origin", // include, *same-origin, omit
+        //                   headers: {
+        //                     "Content-Type": "application/json",
+        //                     // 'Content-Type': 'application/x-www-form-urlencoded',
+        //                   },
+        //                   redirect: "follow", // manual, *follow, error
+        //                   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //                   body: JSON.stringify({ password: data.password }),
+        //                 }) // body data type must match "Content-Type" header
+        //               )
+        //               .then(reply(reply_token, "เอา admin ไป"));
+        //           }
+        //         });
+        //         // console.log("data ==> ",data);
+        //       });
+        //   })
+        //   .catch(function (newArr) {
+        //     console.log("arr ", newArr);
+
+        //     fetch(process.env.API + "/admin/password", {
+        //       method: "GET", // *GET, POST, PUT, DELETE, etc.
+        //     })
+        //       .then((response) => response.json())
+        //       .then((data) => {
+        //         data.map((data) => {
+        //           if (event.message.text.includes(data.password)) {
+        //             fetch(process.env.API + "/admin", {
+        //               method: "PUT", // *GET, POST, PUT, DELETE, etc.
+        //               mode: "cors", // no-cors, *cors, same-origin
+        //               cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //               credentials: "same-origin", // include, *same-origin, omit
+        //               headers: {
+        //                 "Content-Type": "application/json",
+        //                 // 'Content-Type': 'application/x-www-form-urlencoded',
+        //               },
+        //               redirect: "follow", // manual, *follow, error
+        //               referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //               body: JSON.stringify({
+        //                 userId: id,
+        //                 status: "SA",
+        //                 groupId: newArr,
+        //               }), // body data type must match "Content-Type" header
+        //             })
+        //               .then(
+        //                 fetch(process.env.API + "/admin/password", {
+        //                   method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+        //                   mode: "cors", // no-cors, *cors, same-origin
+        //                   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //                   credentials: "same-origin", // include, *same-origin, omit
+        //                   headers: {
+        //                     "Content-Type": "application/json",
+        //                     // 'Content-Type': 'application/x-www-form-urlencoded',
+        //                   },
+        //                   redirect: "follow", // manual, *follow, error
+        //                   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //                   body: JSON.stringify({ password: data.password }),
+        //                 }) // body data type must match "Content-Type" header
+        //               )
+        //               .then(reply(reply_token, "เอา admin ไป"));
+        //           }
+        //         });
+        //         // console.log("data ==> ",data);
+        //       });
+        //   });
       } else {
         reply(
           reply_token,
