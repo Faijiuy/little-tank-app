@@ -25,15 +25,13 @@ export default async (req, res) => {
 
     console.log("DATA inside used api ====> ", data)
 
-    let id = ObjectID(data._id);
-
     const { db } = await connectToDatabase();
     let doc = await db.collection("coupons").updateOne(
-      {  _id: id},
+      {  code: code},
       {
         $set: {
-          used: data.used,
-          usedDateTime: data.usedDateTime,
+          used: used,
+          usedDateTime: usedDateTime,
           recordedBy: { userID: data.recordedBy.userID, name: data.recordedBy.name },
         },
       },
