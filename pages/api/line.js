@@ -146,7 +146,6 @@ export default function test(req, res) {
             });
     
             stream.on("end", function () {
-              console.log("Read Pic");
               const imageFile = "./public/img/QR-Code.png";
               // var qr = new QrCode();
     
@@ -208,8 +207,7 @@ export default function test(req, res) {
                               name: couponInfo.recordedBy.name,
                             },
                           }) // body data type must match "Content-Type" header
-                        })
-                            
+                        })                            
                       
                     }else if(couponUsed['true'].some(coupon => coupon.code === value.result)){
                       let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
@@ -368,20 +366,13 @@ export default function test(req, res) {
     }
     
   }
+  res.status(200).json({});
 }
 
 function thousands_separators(num) {
   var num_parts = num.toString().split(".");
   num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return num_parts.join(".");
-}
-
-function printCouponReply(arr) {
-  var string = "";
-  arr.map((cr) => {
-    string = string + cr.reply + "\n";
-  });
-  return string;
 }
 
 function groupByKey(array, key) {
@@ -425,6 +416,12 @@ function reply(reply_token, msg) {
     );
   
   }else{
+
+    let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer {" + process.env.CHANNEL_ACCESS_TOKEN + "}",
+    };
+    
     let body = JSON.stringify({
       replyToken: reply_token,
       messages: [
