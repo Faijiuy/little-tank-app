@@ -61,8 +61,14 @@ export async function getServerSideProps() {
   
 function AdminMgt({admin : admins}) {
 
-    const [randomState, setRandomState] = useState(false)
-    const [password, setPassword] = useState()
+    const [randomStateSA, setRandomStateSA] = useState(false)
+    const [passwordSA, setPasswordSA] = useState()
+
+    const [randomStateSO, setRandomStateSO] = useState(false)
+    const [passwordSO, setPasswordSO] = useState()
+
+    const [randomStateEN, setRandomStateEN] = useState(false)
+    const [passwordEN, setPasswordEN] = useState()
 
     const pass = new Promise(function(resolve, reject){
         let str = randomString(10)
@@ -70,10 +76,10 @@ function AdminMgt({admin : admins}) {
     })
 
     const handleClick = () =>{
-        setRandomState(true)
+        setRandomStateSA(true)
 
         pass.then(function(done){
-            setPassword(done)
+            setPasswordSA(done)
 
             fetch("/api/admin/password", {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -86,16 +92,85 @@ function AdminMgt({admin : admins}) {
             },
             redirect: "follow", // manual, *follow, error
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(done), // body data type must match "Content-Type" header
+            body: JSON.stringify({password: done,
+                                  status: "SA"}), // body data type must match "Content-Type" header
           })
         })
 }
+
+    const passSO = new Promise(function(resolve, reject){
+      let str = randomString(11)
+      resolve(str) // ถ้าได้ค่า str resolve จะทำงาน
+    })
+
+    const handleClickSO = () =>{
+      setRandomStateSO(true)
+
+      passSO.then(function(done){
+          setPasswordSO(done)
+
+          fetch("/api/admin/password", {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify({password: done,
+                                status: "SO"}), // body data type must match "Content-Type" header
+        })
+      })
+    }
+
+    const passEN = new Promise(function(resolve, reject){
+      let str = randomString(12)
+      resolve(str) // ถ้าได้ค่า str resolve จะทำงาน
+  })
+
+  const handleClickEN = () =>{
+      setRandomStateEN(true)
+
+      passEN.then(function(done){
+          setPasswordEN(done)
+
+          fetch("/api/admin/password", {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify({password: done,
+                                status: "EN"}), // body data type must match "Content-Type" header
+        })
+      })
+}
+
   
 
   return (
     <div>
-      <button onClick={() => handleClick()}>รับ password</button>
-      {randomState ? password : null}
+      <button onClick={() => handleClick()}>รับ password SA</button>
+      {randomStateSA ? passwordSA : null}
+
+    <div>
+      <button onClick={() => handleClickSO()}>รับ password SO</button>
+      {randomStateSO ? passwordSO : null}
+    </div>
+
+    <div>
+      <button onClick={() => handleClickEN()}>รับ password EN</button>
+      {randomStateEN ? passwordEN : null}
+    </div>
+
 
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid

@@ -7,7 +7,8 @@ export default async (req, res) => {
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
-      password
+      password,
+      status
     } = data;
 
     console.log("DATA ====> ", data)
@@ -19,7 +20,8 @@ export default async (req, res) => {
       
       {
         
-        password: data
+        password: password,
+        status: status
         
       },
       // callback
