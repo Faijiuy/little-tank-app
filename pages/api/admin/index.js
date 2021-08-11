@@ -41,6 +41,8 @@ export default async (req, res) => {
         }
       }
     ); // if update non-existing record, insert instead.
+    res.status(200);
+
   } else if (req.method === "GET") {
     const { db } = await connectToDatabase();
     const admin = await db

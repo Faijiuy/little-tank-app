@@ -1,6 +1,8 @@
 // import { useEffect, useState } from "react";
 import fs, { read } from "fs";
 
+
+
 import axios from "axios";
 // import admin from "./admin";
 var QrCode = require("qrcode-reader");
@@ -10,6 +12,11 @@ const request = require("request");
 require("dotenv").config();
 
 const line = require("@line/bot-sdk");
+
+const path2 = require('path')
+const fs2 = require('fs')
+
+import { uploadFile } from "../../util/googledrive";
 
 
 export default function test(req, res) {
@@ -79,6 +86,7 @@ export default function test(req, res) {
   async function processMessage() {
     if (event.message.type !== "text") {
 
+      
       let adminList = await fetch(process.env.API + "/admin", {
                       method: "GET", // *GET, POST, PUT, DELETE, etc.
                       }).then((response) => response.json())
@@ -127,7 +135,6 @@ export default function test(req, res) {
 
          await client.getMessageContent(event.message.id).then((stream) => {
             stream.on("data", (chunk) => {
-              // console.log(chunk);
               newArr.push(chunk);
             });
     
@@ -142,12 +149,14 @@ export default function test(req, res) {
               fs.writeFileSync(path, buffer, function (err) {
                 if (err) throw err;
                 console.log("File saved.");
+
               });
             });
     
             stream.on("end", function () {
               const imageFile = "./public/img/QR-Code.png";
-              // var qr = new QrCode();
+
+
     
               var buffer = fs.readFileSync(imageFile);
               Jimp.read(buffer, function (err, image) {
@@ -164,9 +173,12 @@ export default function test(req, res) {
 
                     if(couponUsed['false'].some(coupon => coupon.code === value.result)){
 
+                      let splitT = value.result.split("-");
+
+                      uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], fs.createReadStream(path))
+
                       let checkValue = couponUsed['false'].filter(coupon => coupon.code !== value.result)
 
-                      let splitT = value.result.split("-");
                       let botReply =
                         "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
                         customer[0].company +
@@ -301,39 +313,21 @@ export default function test(req, res) {
         reply(reply_token, replyCommand);
       } else if (event.message.text.includes("ขอเป็น admin")) {
 
-          fetch(process.env.API + "/admin/password", {
-                method: "GET", // *GET, POST, PUT, DELETE, etc.
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  console.log("data ",data)
-                  data.map(data => {
-                    if(event.message.text.includes(data.password)){
-
-                      client
-                        .getProfile(id)
-                        .then((profile) => {
-                          fetch(process.env.API + "/admin", {
-                            method: "PUT", // *GET, POST, PUT, DELETE, etc.
-                            mode: "cors", // no-cors, *cors, same-origin
-                            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                            credentials: "same-origin", // include, *same-origin, omit
-                            headers: {
-                              "Content-Type": "application/json",
-                              // 'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            redirect: "follow", // manual, *follow, error
-                            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                            body: JSON.stringify({
-                              username: profile.displayName,
-                              userId: id,
-                              status: data.status,
-                              groupId: GID,
-                            }), // body data type must match "Content-Type" header
-                          }).then(reply(reply_token, "เอา admin ไป"))
-                          .then(
-                            fetch(process.env.API + "/admin/password", {
-                              method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+          if(GID === undefined){
+            fetch(process.env.API + "/admin/password", {
+                  method: "GET", // *GET, POST, PUT, DELETE, etc.
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    console.log("data ",data)
+                    data.map(data => {
+                      if(event.message.text.includes(data.password)){
+    
+                        client
+                          .getProfile(id)
+                          .then((profile) => {
+                            fetch(process.env.API + "/admin", {
+                              method: "PUT", // *GET, POST, PUT, DELETE, etc.
                               mode: "cors", // no-cors, *cors, same-origin
                               cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
                               credentials: "same-origin", // include, *same-origin, omit
@@ -343,20 +337,42 @@ export default function test(req, res) {
                               },
                               redirect: "follow", // manual, *follow, error
                               referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                              body: JSON.stringify({ password: data.password }),
-                            }) // body data type must match "Content-Type" header
-                          )
-                        })
-
-
-                    }
+                              body: JSON.stringify({
+                                username: profile.displayName,
+                                userId: id,
+                                status: data.status,
+                                groupId: data.groupId,
+                              }), // body data type must match "Content-Type" header
+                            }).then(reply(reply_token, "เอา admin ไป"))
+                            .then(
+                              fetch(process.env.API + "/admin/password", {
+                                method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+                                mode: "cors", // no-cors, *cors, same-origin
+                                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                                credentials: "same-origin", // include, *same-origin, omit
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  // 'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                redirect: "follow", // manual, *follow, error
+                                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                                body: JSON.stringify({ password: data.password }),
+                              }) // body data type must match "Content-Type" header
+                            )
+                          })
+    
+    
+                      }
+                    })
                   })
-                })
+        }
+
                 
 
 
         
       } else {
+        // console.log("this is GID  ", GID)
         reply(
           reply_token,
           "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
@@ -457,4 +473,30 @@ function check(Arr) {
   })
 
   return result
+}
+
+function uploadToOnedrive(){
+  request.post({
+    url: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+    form: {
+        redirect_uri: 'http://localhost/dashboard',
+        client_id: onedrive_client_id,
+        client_secret: onedrive_client_secret,
+        refresh_token: onedrive_refresh_token,
+        grant_type: 'refresh_token'
+    },
+}, function(error, response, body) {
+    fs.readFile(file, function read(e, f) {
+        request.put({
+            url: 'https://graph.microsoft.com/v1.0/drive/root:/' + onedrive_folder + '/' + onedrive_filename + ':/content',
+            headers: {
+                'Authorization': "Bearer " + JSON.parse(body).access_token,
+                'Content-Type': mime.lookup(file),
+            },
+            body: f,
+        }, function(er, re, bo) {
+            console.log(bo);
+        });
+    });
+});
 }
