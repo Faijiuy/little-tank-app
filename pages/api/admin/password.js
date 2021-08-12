@@ -7,7 +7,9 @@ export default async (req, res) => {
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
-      password
+      password,
+      groupId,
+      status
     } = data;
 
     console.log("DATA ====> ", data)
@@ -19,7 +21,9 @@ export default async (req, res) => {
       
       {
         
-        password: data
+        password: password,
+        groupId: groupId,
+        status: status
         
       },
       // callback
@@ -29,13 +33,13 @@ export default async (req, res) => {
           res.json(err);
         } else {
         //   console.log("Newly Updated");
-          res.json({
-            message: "Password Update",
-            data: data,
-          });
+          // res.status(200).json({});
         }
       }
+      
     ); // if update non-existing record, insert instead.
+    res.status(200).json({});
+
   }else if(req.method === 'GET'){
     const { db } = await connectToDatabase();
     const password = await db
@@ -54,4 +58,5 @@ export default async (req, res) => {
       .deleteOne({ password: password })
     res.json({ delete: true, message: 'Delete data', data: {} })
   }
+
 }

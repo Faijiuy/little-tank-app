@@ -510,6 +510,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 id="outlined-basic"
                 label="จำนวน"
                 variant="outlined"
+                required={true}
                 value={qty}
                 onChange={handleQty}
               />
