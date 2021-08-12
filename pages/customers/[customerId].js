@@ -246,7 +246,7 @@ function CreateCustomer({customer:customer}) {
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>ลงทะเบียน</h4>
+            {customer === null ? <h4 className={classes.cardTitleWhite}>ลงทะเบียน</h4> : <h4 className={classes.cardTitleWhite}>อัพเดทข้อมูล</h4>}
               <p className={classes.cardCategoryWhite}>กรุณากรอกข้อมูลด้านล่าง</p>
             </CardHeader>
             <CardBody>
