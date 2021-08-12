@@ -315,8 +315,9 @@ export default function test(req, res) {
               console.log("couponInfo_After ===>", couponInfo);
             };
             qr.decode(image.bitmap);
-
-            fetch(process.env.API+'/coupon/used', {
+            
+            if (couponInfo._id != "") {
+              fetch(process.env.API+'/coupon/used', {
                 method: 'PUT', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, *cors, same-origin
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -335,6 +336,11 @@ export default function test(req, res) {
                   // alert("Update:\nResponse from server " + data.message)
                   // alert("Update", data._id)
                 });
+            } else {
+              reply(reply_token, "รูปที่คุณถ่ายมาไม่ใช่คูปอง. \nขอคุณช่วยถ่ายรูปใหม่อีกที.")
+            }
+
+            
           });
         });
       });
@@ -386,9 +392,9 @@ export default function test(req, res) {
         console.log("Inquire for total of coupon.");
         // console.log("couponData ===> ", couponData);
         // console.log("adminData ===> ", adminData);
-        if (adminInfo.status == "SA") {
-          reply(reply_token, "คุณไม่มีสิทธิใช้คำสั่งนี้ค่ะ");
-        } else {
+        // if (adminInfo.status == "SA") {
+        //   reply(reply_token, "คุณไม่มีสิทธิใช้คำสั่งนี้ค่ะ");
+        // } else {
           customerData.map((cusD) => {
             if (GID == cusD.groupID) {
               let tempComRef = cusD._id;
@@ -461,7 +467,7 @@ export default function test(req, res) {
               reply(reply_token, replyLeftCoupon);
             }
           });
-        }
+        // }
       } else if (event.message.text == "คำสั่งบอท") {
         let replyCommand = "";
         if (adminInfo.status == "SO") {
