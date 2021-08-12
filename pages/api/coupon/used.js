@@ -8,7 +8,6 @@ export default async (req, res) => {
   console.log("item API method ++++++ " + req.method);
 
   if (req.method === "PUT") {
-    console.log("UPDATE", req.body);
     let data = req.body;
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
@@ -24,17 +23,15 @@ export default async (req, res) => {
       recordedBy: { userID, name },
     } = data;
 
-    console.log("DATA ====> ", data)
-
-    let id = ObjectID(data._id);
+    console.log("DATA inside used api ====> ", data)
 
     const { db } = await connectToDatabase();
     let doc = await db.collection("coupons").updateOne(
-      {  _id: id},
+      {  code: code},
       {
         $set: {
-          used: data.used,
-          usedDateTime: data.usedDateTime,
+          used: used,
+          usedDateTime: usedDateTime,
           recordedBy: { userID: data.recordedBy.userID, name: data.recordedBy.name },
         },
       },
@@ -52,6 +49,8 @@ export default async (req, res) => {
         }
       }
     ); // if update non-existing record, insert instead.
+    res.status(200).json({});
+
   } else if(req.method === 'GET'){
     const { db } = await connectToDatabase();
     const coupon = await db
