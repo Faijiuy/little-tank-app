@@ -123,7 +123,7 @@ export default function test(req, res) {
 
   setTimeout(() => {
     processMessage();
-  }, 2500);
+  }, 1000);
 
   function processMessage() {
     if (event.message.type !== "text") {
@@ -171,6 +171,9 @@ export default function test(req, res) {
             console.log("File saved.");
           });
         });
+
+        // If save picture to Google Drive, it happen here
+        // stream.on("end", function ())
 
         stream.on("end", function () {
           console.log("Read Pic");
@@ -340,6 +343,7 @@ export default function test(req, res) {
       // reply(reply_token, event.message.text);
     } else if (event.message.type == "text") {
       // console.log("customerData ===> ", customerData);
+      console.log("couponData ===> ", couponData);
       adminData.map((amD) => {
         if (id == amD.userId) {
           adminInfo._id = amD._id;
