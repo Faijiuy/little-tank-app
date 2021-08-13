@@ -37,6 +37,8 @@ export default async (req, res) => {
           console.log(err);
           res.json(err);
         } else {
+
+          // res.status(200).json({});
           res.json({
             message: "Customer added",
             _id: result.insertedId,
@@ -44,6 +46,7 @@ export default async (req, res) => {
         }
       }
     ); // if update non-existing record, insert instead.
+
   } else if(req.method === "PUT"){
     let data = req.body;
 
@@ -84,4 +87,6 @@ export default async (req, res) => {
       }
     );
   }
+  // res.status(200).json({});
+
 };

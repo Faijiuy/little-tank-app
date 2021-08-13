@@ -246,20 +246,33 @@ export default function test(req, res) {
       }
 
     } else if (event.message.type == "text") {
+
+      let adminList = await fetch(process.env.API + "/admin", {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        }).then((response) => response.json())
+
+      await adminList.map(admin => {
+        if(id === admin.userId && admin.groupId.includes(GID)){
+        // console.log("admin status ",admin.status)
+          adminInfo.status = admin.status
+          adminInfo.username = admin.username
+        }
+      })
       
       if (event.message.text == "สอบถาม GroupID") {
-        if (adminInfo.status == "SA" || adminInfo.status == "SO") {
-          console.log("admin status inside  ", adminInfo.status)
+        // if (adminInfo.status == "SA" || adminInfo.status == "SO") {
+          // console.log("admin status inside  ", adminInfo.status)
 
           let replyCheckGroupID = "GroupID คือ " + GID;
 
           reply(reply_token, replyCheckGroupID);
           
-        } else {
-          reply(reply_token, "คุณไม่มีสิทธิใช้คำสั่งนี้ค่ะ");
-        }
+        // } else {
+        //   reply(reply_token, "คุณไม่มีสิทธิใช้คำสั่งนี้ค่ะ");
+        // }
       } else if (event.message.text == "สอบถามยอด") {
         if (adminInfo.status == "SA" || adminInfo.status == "SO" || adminInfo.status == "EN") {
+          console.log("working =================================")
           let customers = await fetch(process.env.API + "/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                         })
