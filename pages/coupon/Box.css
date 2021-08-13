@@ -3,8 +3,12 @@
   padding: 8px 16px;
 }
 
-body {
-  overflow: hidden; /* Hide scrollbars */
+/* body {
+  overflow: hidden; /* Hide scrollbars 
+} */
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 .child + .child {

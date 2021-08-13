@@ -167,6 +167,8 @@ function CreateCustomer({customer:customer}) {
       setAddress(event.target.value)
     } else if (event.target.id === 'TIN') {
       setTIN(event.target.value)
+    } else if (event.target.id === 'groupID') {
+      setGroupID(event.target.value)
     }
   }
 
