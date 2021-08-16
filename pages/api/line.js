@@ -1,10 +1,5 @@
-// import { useEffect, useState } from "react";
 import fs, { read } from "fs";
 
-
-
-import axios from "axios";
-// import admin from "./admin";
 var QrCode = require("qrcode-reader");
 var Jimp = require("jimp");
 
@@ -17,34 +12,11 @@ import { uploadFile } from "../../util/googledrive";
 
 
 export default function test(req, res) {
-  const couponInfo = {
-    _id: "",
-    code: "",
-    companyRef: "",
-    generatedDate: "",
-    amount: 0,
-    runningNo: 0,
-    used: false,
-    usedDateTime: "",
-    recordedBy: {
-      userID: "",
-      name: "",
-    },
-  };
-
-  const adminInfo = {
-    _id: "",
-    username: "",
-    userId: "",
-    groupId: [],
-    status: "",
-  };
 
   // handle LINE BOT webhook verification
   // The verification message does not contain any event, so length is zero.
   if (req.body.events.length === 0) {
     res.status(200).json({});
-    // console.log("hello")
     reply("Hello"); // can reply anything
     return;
   }
@@ -52,10 +24,6 @@ export default function test(req, res) {
   let event = req.body.events[0];
 
   let reply_token = event.replyToken;
-
-  // useEffect(() => {
-  //   reply(reply_token, notification)
-  // }, [])
 
   let newArr = [];
   let path = "./public/img/QR-Code.png";
@@ -72,32 +40,16 @@ export default function test(req, res) {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   });
 
-  const message = {
-    type: "text",
-    text: "",
-  };
-
-
   processMessage();
 
   async function processMessage() {
     if (event.message.type !== "text") {
+      let admin = await fetch(process.env.API + "/admin", {
+                  method: "GET", // *GET, POST, PUT, DELETE, etc.
+                  }).then((response) => response.json())
+                  .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
 
-      
-      let adminList = await fetch(process.env.API + "/admin", {
-                      method: "GET", // *GET, POST, PUT, DELETE, etc.
-                      }).then((response) => response.json())
-
-      await adminList.map(admin => {
-        if(id === admin.userId && admin.groupId.includes(GID)){
-        // console.log("admin status ",admin.status)
-          adminInfo.status = admin.status
-          adminInfo.username = admin.username
-        }
-      })
-
-
-      if (adminInfo.status == "SA" || adminInfo.status == "SO") {
+      if (admin[0].status == "SA" || admin[0].status == "SO") {
         let customers = await fetch(process.env.API + "/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                         })
@@ -114,17 +66,12 @@ export default function test(req, res) {
 
         let couponUsed = await groupByKey(couponInCom, "used")
 
-
-        // console.log("couponUsed ",couponNotUsed)
+        let recordby = ""
 
           await client
             .getProfile(id)
             .then((profile) => {
-              // couponInfo.recordedBy.userID = profile.userId;
-              couponInfo.recordedBy.name = profile.displayName;
-              // console.log(profile.displayName);
-              // console.log(profile.userId);
-              // console.log("TimeStamp ==> ", timeSt);
+              recordby = profile.displayName;
             })
             .catch((err) => {
               console.error(err);
@@ -139,9 +86,7 @@ export default function test(req, res) {
               console.log("Error", err);
             });
     
-            stream.on("end", function () {
-              //fs.writeFile('logo.png', imagedata, 'binary', function(err){
-    
+            stream.on("end", function () {    
               var buffer = Buffer.concat(newArr);
               fs.writeFileSync(path, buffer, function (err) {
                 if (err) throw err;
@@ -190,7 +135,7 @@ export default function test(req, res) {
                         "\nวันและเวลาที่บันทึก: " +
                         timeSt +
                         "\nบันทึกโดย: " +
-                        couponInfo.recordedBy.name +
+                        recordby.recordedBy.name +
                         "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
                       
                       check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
@@ -213,7 +158,7 @@ export default function test(req, res) {
                             usedDateTime: timeSt.split(',')[0],
                             recordedBy: {
                               userID: id,
-                              name: couponInfo.recordedBy.name,
+                              name: recordby.recordedBy.name,
                             },
                           }) // body data type must match "Content-Type" header
                         })                            
@@ -247,32 +192,25 @@ export default function test(req, res) {
 
     } else if (event.message.type == "text") {
 
-      let adminList = await fetch(process.env.API + "/admin", {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        }).then((response) => response.json())
-
-      await adminList.map(admin => {
-        if(id === admin.userId && admin.groupId.includes(GID)){
-        // console.log("admin status ",admin.status)
-          adminInfo.status = admin.status
-          adminInfo.username = admin.username
-        }
-      })
-      
       if (event.message.text == "สอบถาม GroupID") {
-        // if (adminInfo.status == "SA" || adminInfo.status == "SO") {
-          // console.log("admin status inside  ", adminInfo.status)
+          let customer = await fetch(process.env.API + "/toDB", {
+                          method: "GET", // *GET, POST, PUT, DELETE, etc.
+                          }).then((response) => response.json())
+                          .then((data) => data.filter(customer => customer.groupID === GID))
 
-          let replyCheckGroupID = "GroupID คือ " + GID;
-
-          reply(reply_token, replyCheckGroupID);
-          
-        // } else {
-        //   reply(reply_token, "คุณไม่มีสิทธิใช้คำสั่งนี้ค่ะ");
-        // }
+          if(customer[0] === undefined){
+            let replyCheckGroupID = "GroupID คือ " + GID;
+            reply(reply_token, replyCheckGroupID);
+          }
       } else if (event.message.text == "สอบถามยอด") {
-        if (adminInfo.status == "SA" || adminInfo.status == "SO" || adminInfo.status == "EN") {
-          console.log("working =================================")
+
+        let admin = await fetch(process.env.API + "/admin", {
+                        method: "GET", // *GET, POST, PUT, DELETE, etc.
+                        }).then((response) => response.json())
+                        .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
+
+
+        if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
           let customers = await fetch(process.env.API + "/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                         })
@@ -299,7 +237,6 @@ export default function test(req, res) {
             result += Number(type) * group[type].length
             textpart += "คูปองมูลค่า " + thousands_separators(Number(type)) + " จำนวน " + group[type].length + " ใบ (" + 
                      thousands_separators(Number(type) * group[type].length) + ")\n"  
-            // console.log(result, type, group[type].length)
           })
 
           let text =  "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " + thousands_separators(result) + " บาท.\n\n" +
@@ -309,13 +246,18 @@ export default function test(req, res) {
           
         } 
       } else if (event.message.text == "คำสั่งบอท") {
+        let admin = await fetch(process.env.API + "/admin", {
+                    method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    }).then((response) => response.json())
+                    .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
+
         let replyCommand = "";
-        if (adminInfo.status == "SO") {
+        if (admin[0].status == "SO") {
           replyCommand =
-            "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้ \nขอเป็น admin 'xxxxxxxxxx' : พิมพ์คำสั่งแล้วใส่ password 10 หลัก เพื่อขอเป็น Admin ของ LINE Group นี้\n";
-        } else if (adminInfo.status == "SA") {
+            "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
+        } else if (admin[0].status == "SA") {
           replyCommand =
-            "สอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้ \nขอเป็น admin 'xxxxxxxxxx' : พิมพ์คำสั่งแล้วใส่ password 10 หลัก เพื่อขอเป็น Admin ของ LINE Group นี้\n";
+            "สอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้ ";
         } else {
           replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
         }
@@ -370,24 +312,15 @@ export default function test(req, res) {
                               }) // body data type must match "Content-Type" header
                             )
                           })
-    
-    
                       }
                     })
                   })
-        }
-
-                
-
-
-        
+        }   
       } else {
-        // console.log("this is GID  ", GID)
         reply(
           reply_token,
           "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
-        );
-        
+        );  
       }
     }
     
@@ -411,67 +344,30 @@ function groupByKey(array, key) {
 
 
 
-function reply(reply_token, msg) {
+async function reply(reply_token, msg) {
+  console.log("replying")
   
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer {" + process.env.CHANNEL_ACCESS_TOKEN + "}",
+  };
   
-  if(Array.isArray(msg)){
-    
-      let headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer {" + process.env.CHANNEL_ACCESS_TOKEN + "}",
-      };
+  let body = JSON.stringify({
+              replyToken: reply_token,
+              messages: Array.isArray(msg) ? msg.map(message => ({type: "text", text: message})) : 
+                                            [{type: "text", text: msg,},]
+             });
 
-      let body = JSON.stringify({
-      replyToken: reply_token,
-      messages: 
-        
-        msg.map(message => ({type: "text", text: message})),
-
-    });
-    
-    request.post(
-      {
-        url: "https://api.line.me/v2/bot/message/reply",
-        headers: headers,
-        body: body,
-      },
-      (err, res, body) => {
-        // console.log('status = ' + res.statusCode);
-        // console.log("body ====> ", res.body)
-      }
-    );
-  
-  }else{
-
-    let headers = {
-      "Content-Type": "application/json",
-      Authorization: "Bearer {" + process.env.CHANNEL_ACCESS_TOKEN + "}",
-    };
-    
-    let body = JSON.stringify({
-      replyToken: reply_token,
-      messages: [
-        {
-          type: "text",
-          text: msg,
-        },
-      ],
-    });
-  
-    request.post(
-      {
-        url: "https://api.line.me/v2/bot/message/reply",
-        headers: headers,
-        body: body,
-      },
-      (err, res, body) => {
-        // console.log('status = ' + res.statusCode);
-        // console.log("body ====> ", res.body)
-      }
-    );
-  }
-  // console.log('msg:', msg)
-  
+  request.post(
+    {
+      url: "https://api.line.me/v2/bot/message/reply",
+      headers: headers,
+      body: body,
+    },
+    (err, res, body) => {
+      console.log('status = ' + res.statusCode);
+    }
+  );
 }
 
 function check(Arr) {
