@@ -135,7 +135,7 @@ export default function test(req, res) {
                         "\nวันและเวลาที่บันทึก: " +
                         timeSt +
                         "\nบันทึกโดย: " +
-                        recordby.recordedBy.name +
+                        recordby +
                         "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
                       
                       check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
@@ -158,7 +158,7 @@ export default function test(req, res) {
                             usedDateTime: timeSt.split(',')[0],
                             recordedBy: {
                               userID: id,
-                              name: recordby.recordedBy.name,
+                              name: recordby,
                             },
                           }) // body data type must match "Content-Type" header
                         })                            
@@ -252,15 +252,10 @@ export default function test(req, res) {
                     .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
 
         let replyCommand = "";
-        if (admin[0].status == "SO") {
+        if (admin[0].status == "SO" || admin[0].status == "SA" || admin[0].status == "EN") {
           replyCommand =
-            "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
-        } else if (admin[0].status == "SA") {
-          replyCommand =
-            "สอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้ ";
-        } else {
-          replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
-        }
+            "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
+        }  
 
         reply(reply_token, replyCommand);
       } else if (event.message.text.includes("ขอเป็น admin")) {
