@@ -44,18 +44,18 @@ export default function test(req, res) {
 
   async function processMessage() {
     if (event.message.type !== "text") {
-      let admin = await fetch(process.env.API + "/admin", {
+      let admin = await fetch("/api/admin", {
                   method: "GET", // *GET, POST, PUT, DELETE, etc.
                   }).then((response) => response.json())
                   .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
 
       if (admin[0].status == "SA" || admin[0].status == "SO") {
-        let customers = await fetch(process.env.API + "/toDB", {
+        let customers = await fetch("/api/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                         })
                           .then((response) => response.json())
 
-        let coupons = await fetch(process.env.API + "/coupon/used", {
+        let coupons = await fetch("/api/coupon/used", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                         })
                           .then((response) => response.json())
@@ -141,7 +141,7 @@ export default function test(req, res) {
                       check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
                                                     reply(reply_token, [botReply, "ยอดคงเหลือของคุณ เหลือ\n" + thousands_separators(check(checkValue)) + " บาท กรุณาเติมเงิน"])
 
-                      fetch(process.env.API+'/coupon/used', {
+                      fetch('/api/coupon/used', {
                           method: 'PUT', // *GET, POST, PUT, DELETE, etc.
                           mode: 'cors', // no-cors, *cors, same-origin
                           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -193,7 +193,7 @@ export default function test(req, res) {
     } else if (event.message.type == "text") {
 
       if (event.message.text == "สอบถาม GroupID") {
-          let customer = await fetch(process.env.API + "/toDB", {
+          let customer = await fetch("/api/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                           }).then((response) => response.json())
                           .then((data) => data.filter(customer => customer.groupID === GID))
@@ -204,19 +204,19 @@ export default function test(req, res) {
           }
       } else if (event.message.text == "สอบถามยอด") {
 
-        let admin = await fetch(process.env.API + "/admin", {
+        let admin = await fetch("/api/admin", {
                         method: "GET", // *GET, POST, PUT, DELETE, etc.
                         }).then((response) => response.json())
                         .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
 
 
         if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
-          let customers = await fetch(process.env.API + "/toDB", {
+          let customers = await fetch("/api/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                         })
                           .then((response) => response.json())
 
-          let coupons = await fetch(process.env.API + "/coupon/used", {
+          let coupons = await fetch("/api/coupon/used", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                         })
                           .then((response) => response.json())
@@ -246,7 +246,7 @@ export default function test(req, res) {
           
         } 
       } else if (event.message.text == "คำสั่งบอท") {
-        let admin = await fetch(process.env.API + "/admin", {
+        let admin = await fetch("/api/admin", {
                     method: "GET", // *GET, POST, PUT, DELETE, etc.
                     }).then((response) => response.json())
                     .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
@@ -263,7 +263,7 @@ export default function test(req, res) {
       } else if (event.message.text.includes("ขอเป็น admin")) {
 
           if(GID === undefined){
-            fetch(process.env.API + "/admin/password", {
+            fetch("/api/admin/password", {
                   method: "GET", // *GET, POST, PUT, DELETE, etc.
                 })
                   .then((response) => response.json())
@@ -275,7 +275,7 @@ export default function test(req, res) {
                         client
                           .getProfile(id)
                           .then((profile) => {
-                            fetch(process.env.API + "/admin", {
+                            fetch("/api/admin", {
                               method: "PUT", // *GET, POST, PUT, DELETE, etc.
                               mode: "cors", // no-cors, *cors, same-origin
                               cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -294,7 +294,7 @@ export default function test(req, res) {
                               }), // body data type must match "Content-Type" header
                             }).then(reply(reply_token, "เอา admin ไป"))
                             .then(
-                              fetch(process.env.API + "/admin/password", {
+                              fetch("/api/admin/password", {
                                 method: "DELETE", // *GET, POST, PUT, DELETE, etc.
                                 mode: "cors", // no-cors, *cors, same-origin
                                 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
