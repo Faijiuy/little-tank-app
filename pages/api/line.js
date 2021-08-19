@@ -252,12 +252,9 @@ export default function test(req, res) {
                     .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
 
         let replyCommand = "";
-        if (admin[0].status == "SO") {
+        if (admin[0].status == "SO" || admin[0].status == "SA") {
           replyCommand =
             "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
-        } else if (admin[0].status == "SA") {
-          replyCommand =
-            "สอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้ ";
         } else {
           replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
         }
