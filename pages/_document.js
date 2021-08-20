@@ -1,6 +1,7 @@
 import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheets } from "@material-ui/styles";
+import Script from 'next/script'
 
 class MyDocument extends Document {
   render() {
@@ -20,7 +21,7 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"
           />
-          <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+          <Script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></Script>
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"

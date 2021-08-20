@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
+// /* eslint-disable @typescript-eslint/no-use-before-define */
 import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import Box from '@material-ui/core/Box';
@@ -40,19 +40,19 @@ function Customers({customer: customers}) {
 
   
 
-  const MatEdit = ({ index }) => {
+//   const MatEdit = ({ index }) => {
 
-    const handleEditClick = () => {
-        console.log(customers[index]._id)
-    }
+//     const handleEditClick = () => {
+//         console.log(customers[index]._id)
+//     }
 
-    return <FormControlLabel control={
-        <IconButton href={"/customers/"+customers[index]._id} color="secondary" aria-label="add an alarm" onClick={handleEditClick} >
-            <EditIcon />
-        </IconButton>
-    }
-/>
-};
+//     return <FormControlLabel control={
+//         <IconButton href={"/customers/"+customers[index]._id} color="secondary" aria-label="add an alarm" onClick={handleEditClick} >
+//             <EditIcon />
+//         </IconButton>
+//     }
+// />
+// };
 
 const columns = [
   { field: 'company', headerName: 'Company', width: 180, editable: true },
@@ -69,20 +69,23 @@ const columns = [
     width: 220,
     editable: true,
   },
+
   {
-    field: "actions",
-    headerName: "Actions",
+    field: "edit",
+    headerName: "Edit",
     sortable: false,
-    width: 140,
+    width: 130,
     disableClickEventBubbling: true,
-    renderCell: (params) => {
-        return (
-            <div className="d-flex justify-content-between align-items-center" style={{ cursor: "pointer" }}>
-                <MatEdit index={params.row.id} />
-             </div>
-        );
-     }
-  }
+    renderCell: function edit(params){
+      return (
+        <Button href={"/customers/"+customers[params.row.id]._id} variant="contained" color="primary" startIcon={<EditIcon />}>
+          แก้ไข
+        </Button>
+      );
+    }
+  },
+
+  
 ];
 
   return (
@@ -118,8 +121,7 @@ const rowCustomer = (props) => {
       company: customer.company,
       owner: customer.owner,
       owner_tel: customer.owner_tel,
-      owner_email: customer.owner_email
-
+      owner_email: customer.owner_email,
     })
   })
 

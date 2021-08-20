@@ -24,6 +24,10 @@ import Router from "next/router";
 import PageChange from "components/PageChange/PageChange.js";
 
 import "assets/css/nextjs-material-dashboard.css?v=1.1.0";
+import "assets/css/Box.css";
+import 'assets/css/Grid.css'
+
+
 
 Router.events.on("routeChangeStart", (url) => {
   console.log(`Loading: ${url}`);
@@ -63,15 +67,15 @@ export default class MyApp extends App {
 `);
     document.insertBefore(comment, document.documentElement);
   }
-  static async getInitialProps({ Component, router, ctx }) {
-    let pageProps = {};
+  // static async getInitialProps({ Component, router, ctx }) {
+  //   let pageProps = {};
 
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
-    }
+  //   if (Component.getInitialProps) {
+  //     pageProps = await Component.getInitialProps(ctx);
+  //   }
 
-    return { pageProps };
-  }
+  //   return { pageProps };
+  // }
   render() {
     const { Component, pageProps } = this.props;
 

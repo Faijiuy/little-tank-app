@@ -20,38 +20,39 @@ function Dashboard() {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
 
-  const sdk = new ChartsEmbedSDK({
-    baseUrl: 'https://charts.mongodb.com/charts-little-tank-jnblp',
-  });
-  const chart = sdk.createChart({
-    chartId: 'b91605a3-b18c-4782-a755-bb0d6ae0cc27',
-    width: 512,
-    height: 320,
-    theme: "dark",
-  });
-
-  const chart2 = sdk.createChart({
-    chartId: 'eea67d55-e0a7-4cc7-9eba-77cc25a48a7b',
-    width: 512,
-    height: 320,
-    theme: "dark",
-  });
-
-  const chart3 = sdk.createChart({
-    chartId: '4c2a3639-147b-4532-b6a0-321ab9eec6fb',
-    width: 512,
-    height: 320,
-    theme: "dark",
-  });
-
-  const chart4 = sdk.createChart({
-    chartId: '9188d9fb-81e8-49f2-b939-d724888136e7',
-    width: 512,
-    height: 320,
-    theme: "dark",
-  });
-
+  
   useEffect(() => {
+    const sdk = new ChartsEmbedSDK({
+      baseUrl: 'https://charts.mongodb.com/charts-little-tank-jnblp',
+    });
+    const chart = sdk.createChart({
+      chartId: 'b91605a3-b18c-4782-a755-bb0d6ae0cc27',
+      width: 512,
+      height: 320,
+      theme: "dark",
+    });
+  
+    const chart2 = sdk.createChart({
+      chartId: 'eea67d55-e0a7-4cc7-9eba-77cc25a48a7b',
+      width: 512,
+      height: 320,
+      theme: "dark",
+    });
+  
+    const chart3 = sdk.createChart({
+      chartId: '4c2a3639-147b-4532-b6a0-321ab9eec6fb',
+      width: 512,
+      height: 320,
+      theme: "dark",
+    });
+  
+    const chart4 = sdk.createChart({
+      chartId: '9188d9fb-81e8-49f2-b939-d724888136e7',
+      width: 512,
+      height: 320,
+      theme: "dark",
+    });
+
     chart
       .render(document.getElementById('chart'))
       .catch(() => window.alert('Chart failed to initialise'));
