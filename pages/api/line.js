@@ -73,7 +73,7 @@ export default function test(req, res) {
 
   setTimeout(() => {
     processMessage();
-  }, 10000);
+  }, 5000);
 
   function processMessage() {
     // const admins = await fetch(process.env.API + "/admin", {
