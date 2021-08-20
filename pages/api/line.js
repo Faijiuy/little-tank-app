@@ -423,13 +423,135 @@ export default async function test(req, res) {
     // console.log(admins)
 
     let event = req.body.events[0];
+
+    let id = event.source.userId;
+    let GID = event.source.groupId;
   
     let reply_token = event.replyToken;
 
     if(event.message.text.includes("ขอเป็น admin")) {
       reply(reply_token, [admins[0].status, customers[0].company, coupons[0].amount])
 
-    }  
+    }else if(event.message.text == "สอบถาม GroupID"){
+      let customer = customers.filter(customer => customer.groupID === GID)
+      
+      if(customer[0] === undefined){
+        let replyCheckGroupID = "GroupID คือ " + GID;
+        reply(reply_token, replyCheckGroupID);
+      }
+    }else if(event.message.text == "สอบถามยอด"){
+      let admin = await admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
+      // console.log(admin.groupId.includes(GID))
+      console.log("admins ",admins)
+      console.log("admin " ,admin)
+      console.log(GID)
+      
+      if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
+        
+
+        let customer = await customers.filter(customer => customer.groupID === GID)
+
+        let couponUsed = await coupons.filter(coupon => coupon.companyRef === customer[0]._id && 
+                                                        coupon.used === false)
+
+        let group = await groupByKey(couponUsed, "amount")
+      
+
+        let result = 0
+        let textpart = ""
+        Object.keys(group).map(type => {
+          result += Number(type) * group[type].length
+          textpart += "คูปองมูลค่า " + thousands_separators(Number(type)) + " จำนวน " + group[type].length + " ใบ (" + 
+                    thousands_separators(Number(type) * group[type].length) + ")\n"  
+        })
+
+        let text =  "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " + thousands_separators(result) + " บาท.\n\n" +
+                    textpart
+
+        reply(reply_token, text)
+        
+      } 
+    }else if(event.message.text == "คำสั่งบอท"){
+      let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
+      
+
+      let replyCommand = "";
+
+      if (admin[0].status == "SO" || admin[0].status == "SA") {
+        replyCommand =
+          "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
+      } else {
+        replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
+      }
+
+
+      reply(reply_token, replyCommand);
+    }
+
+    // else if (event.message.text.includes("ขอเป็น admin")) {
+      
+    //             if(GID === undefined){
+    //               fetch(process.env.API + "/admin/password", {
+    //                     method: "GET", // *GET, POST, PUT, DELETE, etc.
+    //                   })
+    //                     .then((response) => response.json())
+    //                     .then((data) => {
+    //                       console.log("data ",data)
+    //                       data.map(data => {
+    //                         if(event.message.text.includes(data.password)){
+          
+    //                           client
+    //                             .getProfile(id)
+    //                             .then((profile) => {
+    //                               fetch(process.env.API + "/admin", {
+    //                                 method: "PUT", // *GET, POST, PUT, DELETE, etc.
+    //                                 mode: "cors", // no-cors, *cors, same-origin
+    //                                 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    //                                 credentials: "same-origin", // include, *same-origin, omit
+    //                                 headers: {
+    //                                   "Content-Type": "application/json",
+    //                                   // 'Content-Type': 'application/x-www-form-urlencoded',
+    //                                 },
+    //                                 redirect: "follow", // manual, *follow, error
+    //                                 referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    //                                 body: JSON.stringify({
+    //                                   username: profile.displayName,
+    //                                   userId: id,
+    //                                   status: data.status,
+    //                                   groupId: data.groupId,
+    //                                 }), // body data type must match "Content-Type" header
+    //                               }).then(reply(reply_token, "เอา admin ไป"))
+    //                               .then(
+    //                                 fetch(process.env.API + "/admin/password", {
+    //                                   method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+    //                                   mode: "cors", // no-cors, *cors, same-origin
+    //                                   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    //                                   credentials: "same-origin", // include, *same-origin, omit
+    //                                   headers: {
+    //                                     "Content-Type": "application/json",
+    //                                     // 'Content-Type': 'application/x-www-form-urlencoded',
+    //                                   },
+    //                                   redirect: "follow", // manual, *follow, error
+    //                                   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    //                                   body: JSON.stringify({ password: data.password }),
+    //                                 }) // body data type must match "Content-Type" header
+    //                               )
+    //                             })
+    //                         }
+    //                       })
+    //                     })
+    //           }   
+    //         } 
+            
+            
+            else {
+              console.log("Trivial API", process.env.API)
+              reply(
+                reply_token,
+                "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
+              );  
+            }
+          
 }
 
 async function reply(reply_token, msg) {
@@ -457,3 +579,17 @@ async function reply(reply_token, msg) {
       }
     );
   }
+
+function groupByKey(array, key) {
+  return array
+    .reduce((hash, obj) => {
+      if(obj[key] === undefined) return hash; 
+      return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
+    }, {})
+}
+
+function thousands_separators(num) {
+  var num_parts = num.toString().split(".");
+  num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num_parts.join(".");
+}
