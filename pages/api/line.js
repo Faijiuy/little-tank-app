@@ -229,7 +229,7 @@ export default async function test(req, res) {
                         method: "GET", // *GET, POST, PUT, DELETE, etc.
                         }).then((response) => response.json())
 
-        setTimeout(() => {
+       
           let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
   
   
@@ -254,22 +254,25 @@ export default async function test(req, res) {
            
             console.log("group length ", Object.keys(group))
   
-            let result = 0
-            let textpart = ""
-            Object.keys(group).map(type => {
-              result += Number(type) * group[type].length
-              textpart += "คูปองมูลค่า " + thousands_separators(Number(type)) + " จำนวน " + group[type].length + " ใบ (" + 
-                       thousands_separators(Number(type) * group[type].length) + ")\n"  
-            })
-  
-            let text =  "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " + thousands_separators(result) + " บาท.\n\n" +
-                       textpart
-  
-            reply(reply_token, text)
+            setTimeout(() => {
+              let result = 0
+              let textpart = ""
+              Object.keys(group).map(type => {
+                result += Number(type) * group[type].length
+                textpart += "คูปองมูลค่า " + thousands_separators(Number(type)) + " จำนวน " + group[type].length + " ใบ (" + 
+                         thousands_separators(Number(type) * group[type].length) + ")\n"  
+              })
+    
+              let text =  "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " + thousands_separators(result) + " บาท.\n\n" +
+                         textpart
+    
+              reply(reply_token, text)
+              
+            }, 15000);
             
           } 
           
-        }, 5000);
+       
 
       } else if (event.message.text == "คำสั่งบอท") {
         console.log("Bot Command API", process.env.API + "/admin")
