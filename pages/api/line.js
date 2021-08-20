@@ -261,6 +261,8 @@ export default function test(req, res) {
 
         let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
 
+        console.log("admin ", admin)
+
 
         let replyCommand = "";
 
