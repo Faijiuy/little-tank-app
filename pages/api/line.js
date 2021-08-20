@@ -246,6 +246,7 @@ export default function test(req, res) {
           
         } 
       } else if (event.message.text == "คำสั่งบอท") {
+        console.log("API", process.env.API + "/admin")
         let admin = await fetch(process.env.API + "/admin", {
                     method: "GET", // *GET, POST, PUT, DELETE, etc.
                     }).then((response) => response.json())
