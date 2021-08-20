@@ -10,6 +10,10 @@ const line = require("@line/bot-sdk");
 
 import { uploadFile } from "../../util/googledrive";
 
+const admins = await fetch(process.env.API + "/admin", {
+  method: "GET", // *GET, POST, PUT, DELETE, etc.
+  }).then((response) => response.json())
+
 
 export default function test(req, res) {
 
@@ -255,9 +259,7 @@ export default function test(req, res) {
         } 
       } else if (event.message.text == "คำสั่งบอท") {
         console.log("Bot Command API", process.env.API + "/admin")
-        let admins = await fetch(process.env.API + "/admin", {
-                    method: "GET", // *GET, POST, PUT, DELETE, etc.
-                    }).then((response) => response.json())
+        
 
         let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
 
