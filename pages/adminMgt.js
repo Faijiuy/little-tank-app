@@ -245,7 +245,7 @@ function AdminMgt({admin : admins, customer: customers}) {
           >
             {customers.map((company) => {
               return (
-                <MenuItem value={company}>{company.company}</MenuItem>
+                <MenuItem key={company.company} value={company}>{company.company}</MenuItem>
               );
             })}
           </Select>

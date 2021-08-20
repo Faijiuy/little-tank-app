@@ -478,7 +478,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 >
                   {customers.map((company) => {
                     return (
-                      <MenuItem value={company}>{company.company}</MenuItem>
+                      <MenuItem key={company.company} value={company}>{company.company}</MenuItem>
                     );
                   })}
                 </Select>
@@ -551,7 +551,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 >
                   {customers.map((company) => {
                     return (
-                      <MenuItem value={company}>{company.company}</MenuItem>
+                      <MenuItem key={company.company} value={company}>{company.company}</MenuItem>
                     );
                   })}
                 </Select>
