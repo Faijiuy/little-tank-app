@@ -10,9 +10,7 @@ const line = require("@line/bot-sdk");
 
 import { uploadFile } from "../../util/googledrive";
 
-const admins = fetch(process.env.API + "/admin", {
-  method: "GET", // *GET, POST, PUT, DELETE, etc.
-  }).then((response) => response.json())
+
 
 
 export default function test(req, res) {
@@ -47,6 +45,10 @@ export default function test(req, res) {
   processMessage();
 
   async function processMessage() {
+    const admins = await fetch(process.env.API + "/admin", {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      }).then((response) => response.json())
+
     if (event.message.type !== "text") {
       let admins = await fetch(process.env.API + "/admin", {
                   method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -263,7 +265,7 @@ export default function test(req, res) {
 
         let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
 
-        console.log("admin ", admin)
+        console.log("admin ", admins)
 
 
         let replyCommand = "";
