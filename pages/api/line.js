@@ -42,10 +42,8 @@ export default async function test(req, res) {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   });
 
-  setTimeout(() => {
     processMessage();
     
-  }, 10000);
 
   async function processMessage() {
     
