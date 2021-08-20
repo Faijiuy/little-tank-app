@@ -42,10 +42,7 @@ export default async function test(req, res) {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   });
 
-  processMessage();
-    
-
-  async function processMessage() {
+  
     
 
 
@@ -208,18 +205,13 @@ export default async function test(req, res) {
           let customers = await fetch(process.env.API + "/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                           }).then((response) => response.json())
-                          .then((data) => console.log("data ==> ",data))
 
-          setTimeout(() => {
-            let customer = customers.filter(customer => customer.groupID === GID)
-  
-            if(customer[0] === undefined){
-              let replyCheckGroupID = "GroupID คือ " + GID;
-              reply(reply_token, replyCheckGroupID);
-            }
-            
-          }, 5000);
+          let customer = customers.filter(customer => customer.groupID === GID)
 
+          if(customer[0] === undefined){
+            let replyCheckGroupID = "GroupID คือ " + GID;
+            reply(reply_token, replyCheckGroupID);
+          }
       } else if (event.message.text == "สอบถามยอด") {
         console.log("Total API", process.env.API + "/admin")
 
@@ -227,80 +219,69 @@ export default async function test(req, res) {
         let admins = await fetch(process.env.API + "/admin", {
                         method: "GET", // *GET, POST, PUT, DELETE, etc.
                         }).then((response) => response.json())
-                        .then((data) => console.log("data ==> ",data))
 
-       
-          let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
-  
-  
-          if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
-            let customers = await fetch(process.env.API + "/toDB", {
-                            method: "GET", // *GET, POST, PUT, DELETE, etc.
-                          })
-                            .then((response) => response.json())
-  
-            let coupons = await fetch(process.env.API + "/coupon/used", {
-                            method: "GET", // *GET, POST, PUT, DELETE, etc.
-                          })
-                            .then((response) => response.json())
-  
-            let customer = await customers.filter(customer => customer.groupID === GID)
-  
-            let couponUsed = await coupons.filter(coupon => coupon.companyRef === customer[0]._id && 
-                                                            coupon.used === false)
-  
-  
-            let group = await groupByKey(couponUsed, "amount")
-           
-            console.log("group length ", Object.keys(group))
-  
-            setTimeout(() => {
-              let result = 0
-              let textpart = ""
-              Object.keys(group).map(type => {
-                result += Number(type) * group[type].length
-                textpart += "คูปองมูลค่า " + thousands_separators(Number(type)) + " จำนวน " + group[type].length + " ใบ (" + 
-                         thousands_separators(Number(type) * group[type].length) + ")\n"  
-              })
-    
-              let text =  "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " + thousands_separators(result) + " บาท.\n\n" +
-                         textpart
-    
-              reply(reply_token, text)
-              
-            }, 15000);
-            
-          } 
+        let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
+
+
+        if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
+          let customers = await fetch(process.env.API + "/toDB", {
+                          method: "GET", // *GET, POST, PUT, DELETE, etc.
+                        })
+                          .then((response) => response.json())
+
+          let coupons = await fetch(process.env.API + "/coupon/used", {
+                          method: "GET", // *GET, POST, PUT, DELETE, etc.
+                        })
+                          .then((response) => response.json())
+
+          let customer = await customers.filter(customer => customer.groupID === GID)
+
+          let couponUsed = await coupons.filter(coupon => coupon.companyRef === customer[0]._id && 
+                                                          coupon.used === false)
+
+
+          let group = await groupByKey(couponUsed, "amount")
+         
+          console.log("group length ", Object.keys(group))
+
+          let result = 0
+          let textpart = ""
+          Object.keys(group).map(type => {
+            result += Number(type) * group[type].length
+            textpart += "คูปองมูลค่า " + thousands_separators(Number(type)) + " จำนวน " + group[type].length + " ใบ (" + 
+                     thousands_separators(Number(type) * group[type].length) + ")\n"  
+          })
+
+          let text =  "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " + thousands_separators(result) + " บาท.\n\n" +
+                     textpart
+
+          reply(reply_token, text)
           
-       
-
+        } 
       } else if (event.message.text == "คำสั่งบอท") {
         console.log("Bot Command API", process.env.API + "/admin")
         let admins = await fetch(process.env.API + "/admin", {
-                      method: "GET", // *GET, POST, PUT, DELETE, etc.
-                      }).then((response) => response.json())
-                     
-        console.log("data ==> ",admins)
+          method: "GET", // *GET, POST, PUT, DELETE, etc.
+          }).then((response) => response.json())
 
-        setTimeout(() => {
-          let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
-  
-          console.log("admin ", admins)
-  
-  
-          let replyCommand = "";
-  
-          if (admin[0].status == "SO" || admin[0].status == "SA") {
-            replyCommand =
-              "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
-          } else {
-            replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
-          }
-          reply(reply_token, replyCommand);
-          
-        }, 5000);
+        
+
+        let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
+
+        console.log("admin ", admins)
 
 
+        let replyCommand = "";
+
+        if (admin[0].status == "SO" || admin[0].status == "SA") {
+          replyCommand =
+            "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
+        } else {
+          replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
+        }
+
+
+        reply(reply_token, replyCommand);
       } else if (event.message.text.includes("ขอเป็น admin")) {
 
           if(GID === undefined){
@@ -333,7 +314,7 @@ export default async function test(req, res) {
                                 status: data.status,
                                 groupId: data.groupId,
                               }), // body data type must match "Content-Type" header
-                            })
+                            }).then(reply(reply_token, "เอา admin ไป"))
                             .then(
                               fetch(process.env.API + "/admin/password", {
                                 method: "DELETE", // *GET, POST, PUT, DELETE, etc.
@@ -350,10 +331,6 @@ export default async function test(req, res) {
                               }) // body data type must match "Content-Type" header
                             )
                           })
-                          setTimeout(() => {
-                            reply(reply_token, "เอา admin ไป")
-                            
-                          }, 5000);
                       }
                     })
                   })
@@ -367,7 +344,7 @@ export default async function test(req, res) {
       }
     }
     
-  }
+  
   res.status(200).json({});
 }
 
@@ -423,8 +400,6 @@ function check(Arr) {
 
   return result
 }
-
-
 
 // const request = require("request");
 
