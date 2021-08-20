@@ -246,7 +246,7 @@ export default function test(req, res) {
           
         } 
       } else if (event.message.text == "คำสั่งบอท") {
-        let admin = await fetch("/api/admin", {
+        let admin = await fetch("/admin", {
                     method: "GET", // *GET, POST, PUT, DELETE, etc.
                     }).then((response) => response.json())
                     .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
