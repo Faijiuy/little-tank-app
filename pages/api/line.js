@@ -10,7 +10,7 @@ const line = require("@line/bot-sdk");
 
 import { uploadFile } from "../../util/googledrive";
 
-const admins = await fetch(process.env.API + "/admin", {
+const admins = fetch(process.env.API + "/admin", {
   method: "GET", // *GET, POST, PUT, DELETE, etc.
   }).then((response) => response.json())
 
