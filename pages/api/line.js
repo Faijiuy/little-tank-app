@@ -42,7 +42,7 @@ export default async function test(req, res) {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   });
 
-    processMessage();
+  processMessage();
     
 
   async function processMessage() {
@@ -208,6 +208,7 @@ export default async function test(req, res) {
           let customers = await fetch(process.env.API + "/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                           }).then((response) => response.json())
+                          .then((data) => console.log("data ==> ",data))
 
           setTimeout(() => {
             let customer = customers.filter(customer => customer.groupID === GID)
@@ -226,6 +227,7 @@ export default async function test(req, res) {
         let admins = await fetch(process.env.API + "/admin", {
                         method: "GET", // *GET, POST, PUT, DELETE, etc.
                         }).then((response) => response.json())
+                        .then((data) => console.log("data ==> ",data))
 
        
           let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
@@ -275,8 +277,9 @@ export default async function test(req, res) {
       } else if (event.message.text == "คำสั่งบอท") {
         console.log("Bot Command API", process.env.API + "/admin")
         let admins = await fetch(process.env.API + "/admin", {
-          method: "GET", // *GET, POST, PUT, DELETE, etc.
-          }).then((response) => response.json())
+                      method: "GET", // *GET, POST, PUT, DELETE, etc.
+                      }).then((response) => response.json())
+                      .then((data) => console.log("data ==> ",data))
 
         setTimeout(() => {
           let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
