@@ -405,14 +405,14 @@
 
 const request = require("request");
 
-export default function test(req, res) {
+export default async function test(req, res) {
     if (req.body.events.length === 0) {
         res.status(200).json({});
         reply("Hello"); // can reply anything
         return;
       }
 
-    let admins =  fetch(process.env.API + "/admin", {
+    let admins =  await fetch(process.env.API + "/admin", {
                   method: "GET", // *GET, POST, PUT, DELETE, etc.
                   }).then((response) => response.json())
 
