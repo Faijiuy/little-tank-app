@@ -48,6 +48,7 @@ export default function test(req, res) {
     const admins = await fetch(process.env.API + "/admin", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       }).then((response) => response.json())
+      
 
     if (event.message.type !== "text") {
       let admins = await fetch(process.env.API + "/admin", {
