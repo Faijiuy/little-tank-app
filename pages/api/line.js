@@ -279,7 +279,8 @@ export default async function test(req, res) {
         let admins = await fetch(process.env.API + "/admin", {
                       method: "GET", // *GET, POST, PUT, DELETE, etc.
                       }).then((response) => response.json())
-                      .then((data) => console.log("data ==> ",data))
+                     
+        console.log("data ==> ",admins)
 
         setTimeout(() => {
           let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
