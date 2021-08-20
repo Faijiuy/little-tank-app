@@ -417,13 +417,15 @@ export default async function test(req, res) {
                   }).then((response) => response.json())
 
     console.log(admins)
-  
+
     let event = req.body.events[0];
   
     let reply_token = event.replyToken;
 
-    reply(reply_token, admins[0].status)
-  
+    if(event.message.text.includes("ขอเป็น admin")) {
+      reply(reply_token, admins[0].status)
+
+    }  
 }
 
 async function reply(reply_token, msg) {
