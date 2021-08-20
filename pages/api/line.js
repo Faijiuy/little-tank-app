@@ -415,14 +415,14 @@ export default function test(req, res) {
     let admins =  fetch(process.env.API + "/admin", {
                   method: "GET", // *GET, POST, PUT, DELETE, etc.
                   }).then((response) => response.json())
-                  
+
     console.log(admins)
   
     let event = req.body.events[0];
   
     let reply_token = event.replyToken;
 
-    reply(reply_token, event.message.type)
+    reply(reply_token, admins[0].status)
   
 }
 
