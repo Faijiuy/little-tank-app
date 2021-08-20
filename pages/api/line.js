@@ -252,10 +252,14 @@ export default function test(req, res) {
                     .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
 
         let replyCommand = "";
-        if (admin[0].status == "SO" || admin[0].status == "SA" || admin[0].status == "EN") {
+
+        if (admin[0].status == "SO" || admin[0].status == "SA") {
           replyCommand =
-            "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
-        }  
+            "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
+        } else {
+          replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
+        }
+
 
         reply(reply_token, replyCommand);
       } else if (event.message.text.includes("ขอเป็น admin")) {
