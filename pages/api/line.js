@@ -376,7 +376,7 @@ async function reply(reply_token, msg) {
       body: body,
     },
     (err, res, body) => {
-      console.log('status = ' + res.statusCode);
+      // console.log('status = ' + res.statusCode);
     }
   );
 }
