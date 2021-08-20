@@ -44,10 +44,12 @@ export default function test(req, res) {
 
   async function processMessage() {
     if (event.message.type !== "text") {
-      let admin = await fetch(process.env.API + "/admin", {
+      let admins = await fetch(process.env.API + "/admin", {
                   method: "GET", // *GET, POST, PUT, DELETE, etc.
                   }).then((response) => response.json())
-                  .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
+
+      let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
+
 
       if (admin[0].status == "SA" || admin[0].status == "SO") {
         let customers = await fetch(process.env.API + "/toDB", {
@@ -196,10 +198,11 @@ export default function test(req, res) {
 
       if (event.message.text == "สอบถาม GroupID") {
         console.log("GroupID API", process.env.API + "/toDB")
-          let customer = await fetch(process.env.API + "/toDB", {
+          let customers = await fetch(process.env.API + "/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                           }).then((response) => response.json())
-                          .then((data) => data.filter(customer => customer.groupID === GID))
+
+          let customer = customers.filter(customer => customer.groupID === GID)
 
           if(customer[0] === undefined){
             let replyCheckGroupID = "GroupID คือ " + GID;
@@ -208,10 +211,11 @@ export default function test(req, res) {
       } else if (event.message.text == "สอบถามยอด") {
         console.log("Total API", process.env.API + "/admin")
 
-        let admin = await fetch(process.env.API + "/admin", {
+        let admins = await fetch(process.env.API + "/admin", {
                         method: "GET", // *GET, POST, PUT, DELETE, etc.
                         }).then((response) => response.json())
-                        .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
+
+        let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
 
 
         if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
@@ -251,10 +255,12 @@ export default function test(req, res) {
         } 
       } else if (event.message.text == "คำสั่งบอท") {
         console.log("Bot Command API", process.env.API + "/admin")
-        let admin = await fetch(process.env.API + "/admin", {
+        let admins = await fetch(process.env.API + "/admin", {
                     method: "GET", // *GET, POST, PUT, DELETE, etc.
                     }).then((response) => response.json())
-                    .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
+
+        let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
+
 
         let replyCommand = "";
 
