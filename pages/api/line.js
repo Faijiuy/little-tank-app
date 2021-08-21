@@ -192,7 +192,7 @@ export default function test(req, res) {
 
     } else if (event.message.type == "text") {
 
-      if (event.message.text == "สอบถาม GroupID") {
+      if (event.message.text == "สอบถาม groupid") {
           let customer = await fetch(process.env.API + "/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                           }).then((response) => response.json())
