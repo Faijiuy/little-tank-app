@@ -555,8 +555,8 @@ export default async function test(req, res) {
 
 
   
-            var buffer = fs.readFileSync(imageFile);
-            buffer2 = fs.readFileSync(imageFile)
+            // var buffer = fs.readFileSync(imageFile);
+            // buffer2 = fs.readFileSync(imageFile)
 
             // buffer1 == buffer2 ? console.log("buffer eq") : console.log("nahhhhh")
 
