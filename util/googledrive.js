@@ -13,6 +13,8 @@ const drive = google.drive({
     auth: oauth2Client
 })
 
+// console.log({CLIENT_ID, CLIENT_SECRET, REDIRECT_URL, REFRESH_TOKEN})
+
 export async function uploadFile(uploadName, fsReadStreamOfFilePath){
     try{
 
@@ -31,6 +33,6 @@ export async function uploadFile(uploadName, fsReadStreamOfFilePath){
         console.log(response.data)
 
     }catch(err){
-        console.log(err.message)
+        console.log("this is error", err.message)
     }
 }

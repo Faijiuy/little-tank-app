@@ -7,6 +7,7 @@ const request = require("request");
 require("dotenv").config();
 
 const line = require("@line/bot-sdk");
+const { Readable } = require('stream');
 
 import { uploadFile } from "../../util/googledrive";
 
@@ -49,7 +50,8 @@ export default function test(req, res) {
                   }).then((response) => response.json())
                   .then((data) => data.filter(admin => admin.userId === id && admin.groupId.includes(GID)))
 
-      if (admin[0].status == "SA" || admin[0].status == "SO") {
+          console.log(admin[0].status)
+      if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
         let customers = await fetch(process.env.API + "/toDB", {
                           method: "GET", // *GET, POST, PUT, DELETE, etc.
                         })
@@ -85,9 +87,11 @@ export default function test(req, res) {
             stream.on("error", (err) => {
               console.log("Error", err);
             });
-    
+            
+            let buffer1 = ""
             stream.on("end", function () {    
               var buffer = Buffer.concat(newArr);
+              buffer1 = Buffer.concat(newArr)
               fs.writeFileSync(path, buffer, function (err) {
                 if (err) throw err;
                 console.log("File saved.");
@@ -99,9 +103,13 @@ export default function test(req, res) {
               const imageFile = "./public/img/QR-Code.png";
 
 
-    
+
+
+              let stream = Readable.from(buffer1);
+
+              
               var buffer = fs.readFileSync(imageFile);
-              Jimp.read(buffer, function (err, image) {
+              Jimp.read(buffer1, function (err, image) {
                 if (err) {
                   console.error(err);
                   // TODO handle error
@@ -113,11 +121,11 @@ export default function test(req, res) {
                     // temp = value.result;
                     
 
-                    if(couponUsed['false'].some(coupon => coupon.code === value.result)){
+                    if(couponUsed['false'] && couponUsed['false'].some(coupon => coupon.code === value.result)){
 
                       let splitT = value.result.split("-");
 
-                      uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], fs.createReadStream(path))
+                      uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], stream)
 
                       let checkValue = couponUsed['false'].filter(coupon => coupon.code !== value.result)
 
@@ -141,33 +149,36 @@ export default function test(req, res) {
                       check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
                                                     reply(reply_token, [botReply, "ยอดคงเหลือของคุณ เหลือ\n" + thousands_separators(check(checkValue)) + " บาท กรุณาเติมเงิน"])
 
-                      fetch(process.env.API+'/coupon/used', {
-                          method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-                          mode: 'cors', // no-cors, *cors, same-origin
-                          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                          credentials: 'same-origin', // include, *same-origin, omit
-                          headers: {
-                            'Content-Type': 'application/json'
-                            // 'Content-Type': 'application/x-www-form-urlencoded',
-                          },
-                          redirect: 'follow', // manual, *follow, error
-                          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                          body: JSON.stringify({
-                            code: value.result,
-                            used: true,
-                            usedDateTime: timeSt.split(',')[0],
-                            recordedBy: {
-                              userID: id,
-                              name: recordby,
-                            },
-                          }) // body data type must match "Content-Type" header
-                        })                            
+                      // fetch(process.env.API+'/coupon/used', {
+                      //     method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+                      //     mode: 'cors', // no-cors, *cors, same-origin
+                      //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                      //     credentials: 'same-origin', // include, *same-origin, omit
+                      //     headers: {
+                      //       'Content-Type': 'application/json'
+                      //       // 'Content-Type': 'application/x-www-form-urlencoded',
+                      //     },
+                      //     redirect: 'follow', // manual, *follow, error
+                      //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                      //     body: JSON.stringify({
+                      //       code: value.result,
+                      //       used: true,
+                      //       usedDateTime: timeSt.split(',')[0],
+                      //       recordedBy: {
+                      //         userID: id,
+                      //         name: recordby,
+                      //       },
+                      //     }) // body data type must match "Content-Type" header
+                      //   })                            
                       
-                    }else if(couponUsed['true'].some(coupon => coupon.code === value.result)){
+                    }else if(couponUsed['true'] && couponUsed['true'].some(coupon => coupon.code === value.result)){
                       let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
                       reply(reply_token, botReply);
-                    }else if(couponUsed['missing'].some(coupon => coupon.code === value.result)){
+                    }else if(couponUsed['missing'] && couponUsed['missing'].some(coupon => coupon.code === value.result)){
                       let botReply = "คูปองนี้ได้ถูกบันทึกว่า สูญหาย.";
+                      reply(reply_token, botReply);
+                    }else{
+                      let botReply = "คูปองนี้ไม่สามารถใช้ได้ในกลุ่มนี้";
                       reply(reply_token, botReply);
                     }
 
@@ -315,7 +326,25 @@ export default function test(req, res) {
                     })
                   })
         }   
-      } else {
+      } else if(event.message.text == "น้องรถถัง"){
+
+        let username = ""
+
+        await client
+        .getProfile(id)
+        .then((profile) => {
+          username = profile.displayName;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+          reply(
+            reply_token,
+            "สวัสดีค่ะ คุณ " + username + "\n" + id
+          ); 
+      }
+      else {
         reply(
           reply_token,
           "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
