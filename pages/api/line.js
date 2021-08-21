@@ -461,9 +461,16 @@ export default async function test(req, res) {
     let timeSt = date.toLocaleString();
 
     if(event.message.text && event.message.text.includes("ขอเป็น admin")) {
+      let parts = event.message.text.split(" ")
+      console.log(passwords)
+
+      if(passwords.some(password => password.password === parts[2])){
+        reply(reply_token, "เอา admin ไป")
+      }
 
       
-      reply(reply_token, [admins[0].status, customers[0].company, coupons[0].amount])
+      // reply(reply_token, [admins[0].status, customers[0].company, coupons[0].amount])
+      // reply(reply_token, [parts[0], parts[1], parts[2]])
 
     }
     else if(event.message.text == "สอบถาม GroupID"){
@@ -612,27 +619,27 @@ export default async function test(req, res) {
                     check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
                                                   reply(reply_token, [botReply, "ยอดคงเหลือของคุณ เหลือ\n" + thousands_separators(check(checkValue)) + " บาท กรุณาเติมเงิน"])
                                                   
-                    // fetch(process.env.API + '/coupon/used', {
-                    //     method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-                    //     mode: 'cors', // no-cors, *cors, same-origin
-                    //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                    //     credentials: 'same-origin', // include, *same-origin, omit
-                    //     headers: {
-                    //       'Content-Type': 'application/json'
-                    //       // 'Content-Type': 'application/x-www-form-urlencoded',
-                    //     },
-                    //     redirect: 'follow', // manual, *follow, error
-                    //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                    //     body: JSON.stringify({
-                    //       code: value.result,
-                    //       used: true,
-                    //       usedDateTime: timeSt.split(',')[0],
-                    //       recordedBy: {
-                    //         userID: id,
-                    //         name: recordby,
-                    //       },
-                    //     }) // body data type must match "Content-Type" header
-                    //   })                            
+                    fetch(process.env.API + '/coupon/used', {
+                        method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+                        mode: 'cors', // no-cors, *cors, same-origin
+                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: 'same-origin', // include, *same-origin, omit
+                        headers: {
+                          'Content-Type': 'application/json'
+                          // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: 'follow', // manual, *follow, error
+                        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                        body: JSON.stringify({
+                          code: value.result,
+                          used: true,
+                          usedDateTime: timeSt.split(',')[0],
+                          recordedBy: {
+                            userID: id,
+                            name: recordby,
+                          },
+                        }) // body data type must match "Content-Type" header
+                      })                            
                     
                   }else if(couponUsed['true'] && couponUsed['true'].some(coupon => coupon.code === value.result)){
                     let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
