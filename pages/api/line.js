@@ -411,6 +411,8 @@ import { uploadFile } from "../../util/googledrive";
 
 const request = require("request");
 
+const { Readable } = require('stream');
+
 
 
 export default async function test(req, res) {
@@ -566,7 +568,8 @@ export default async function test(req, res) {
             // buffer2 = fs.readFileSync(imageFile)
 
             // buffer1 == buffer2 ? console.log("buffer eq") : console.log("nahhhhh")
-
+            // console.log("path ==> ", fs.createReadStream(path))
+            let stream = Readable.from(buffer1.toString());
 
             Jimp.read(buffer1, function (err, image) {
               if (err) {
@@ -584,7 +587,7 @@ export default async function test(req, res) {
 
                     let splitT = value.result.split("-");
 
-                    uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], fs.createReadStream(path))
+                    // uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], fs.createReadStream(path))
 
                     let checkValue = couponUsed['false'].filter(coupon => coupon.code !== value.result)
 
@@ -610,27 +613,27 @@ export default async function test(req, res) {
                     check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
                                                   reply(reply_token, [botReply, "ยอดคงเหลือของคุณ เหลือ\n" + thousands_separators(check(checkValue)) + " บาท กรุณาเติมเงิน"])
                                                   
-                    fetch(process.env.API + '/coupon/used', {
-                        method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-                        mode: 'cors', // no-cors, *cors, same-origin
-                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                        credentials: 'same-origin', // include, *same-origin, omit
-                        headers: {
-                          'Content-Type': 'application/json'
-                          // 'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        redirect: 'follow', // manual, *follow, error
-                        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                        body: JSON.stringify({
-                          code: value.result,
-                          used: true,
-                          usedDateTime: timeSt.split(',')[0],
-                          recordedBy: {
-                            userID: id,
-                            name: recordby,
-                          },
-                        }) // body data type must match "Content-Type" header
-                      })                            
+                    // fetch(process.env.API + '/coupon/used', {
+                    //     method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+                    //     mode: 'cors', // no-cors, *cors, same-origin
+                    //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                    //     credentials: 'same-origin', // include, *same-origin, omit
+                    //     headers: {
+                    //       'Content-Type': 'application/json'
+                    //       // 'Content-Type': 'application/x-www-form-urlencoded',
+                    //     },
+                    //     redirect: 'follow', // manual, *follow, error
+                    //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                    //     body: JSON.stringify({
+                    //       code: value.result,
+                    //       used: true,
+                    //       usedDateTime: timeSt.split(',')[0],
+                    //       recordedBy: {
+                    //         userID: id,
+                    //         name: recordby,
+                    //       },
+                    //     }) // body data type must match "Content-Type" header
+                    //   })                            
                     
                   }else if(couponUsed['true'].some(coupon => coupon.code === value.result)){
                     let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
