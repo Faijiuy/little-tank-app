@@ -397,7 +397,21 @@
 //   return result
 // }
 
+import fs from "fs";
+
+var QrCode = require("qrcode-reader");
+var Jimp = require("jimp");
+
+
+require("dotenv").config();
+
+const line = require("@line/bot-sdk");
+
+import { uploadFile } from "../../util/googledrive";
+
 const request = require("request");
+
+
 
 export default async function test(req, res) {
     if (req.body.events.length === 0) {
@@ -421,6 +435,9 @@ export default async function test(req, res) {
                     .then((response) => response.json())
 
     // console.log(admins)
+    const client = new line.Client({
+      channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+    });
 
     let event = req.body.events[0];
 
@@ -429,10 +446,18 @@ export default async function test(req, res) {
   
     let reply_token = event.replyToken;
 
-    if(event.message.text.includes("ขอเป็น admin")) {
+    let newArr = [];
+    let path = "./public/img/QR-Code.png";
+
+    let getTimeSt = event.timestamp;
+    var date = new Date(getTimeSt);
+    let timeSt = date.toLocaleString();
+
+    if(event.message.text && event.message.text.includes("ขอเป็น admin")) {
       reply(reply_token, [admins[0].status, customers[0].company, coupons[0].amount])
 
-    }else if(event.message.text == "สอบถาม GroupID"){
+    }
+    else if(event.message.text == "สอบถาม GroupID"){
       let customer = customers.filter(customer => customer.groupID === GID)
       
       if(customer[0] === undefined){
@@ -472,21 +497,152 @@ export default async function test(req, res) {
         
       } 
     }else if(event.message.text == "คำสั่งบอท"){
-      let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
-      
+        let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
+        
 
-      let replyCommand = "";
+        let replyCommand = "";
 
-      if (admin[0].status == "SO" || admin[0].status == "SA") {
-        replyCommand =
-          "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
-      } else {
-        replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
-      }
+        if (admin[0].status == "SO" || admin[0].status == "SA") {
+          replyCommand =
+            "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
+        } else {
+          replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
+        }
+        reply(reply_token, replyCommand);
+
+    }else if (event.message.type == "image") {
+      let customer = await customers.filter(customer => customer.groupID === GID)
+
+      let couponInCom = await coupons.filter(coupon => coupon.companyRef === customer[0]._id)
+
+      let couponUsed = await groupByKey(couponInCom, "used")
+
+      let recordby = ""
+
+        await client
+          .getProfile(id)
+          .then((profile) => {
+            recordby = profile.displayName;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+
+        await client.getMessageContent(event.message.id).then((stream) => {
+          stream.on("data", (chunk) => {
+            newArr.push(chunk);
+          });
+  
+          stream.on("error", (err) => {
+            console.log("Error", err);
+          });
+  
+          stream.on("end", function () {    
+            var buffer = Buffer.concat(newArr);
+            fs.writeFileSync(path, buffer, function (err) {
+              if (err) throw err;
+              console.log("File saved.");
+
+            });
+          });
+  
+          stream.on("end", function () {
+            const imageFile = "./public/img/QR-Code.png";
 
 
-      reply(reply_token, replyCommand);
+  
+            var buffer = fs.readFileSync(imageFile);
+            Jimp.read(buffer, function (err, image) {
+              if (err) {
+                console.error(err);
+                // TODO handle error
+              }
+  
+              var qr = new QrCode();
+              qr.callback = function (err, value) {
+                if (value) {
+                  // temp = value.result;
+                  
+
+                  if(couponUsed['false'].some(coupon => coupon.code === value.result)){
+
+                    let splitT = value.result.split("-");
+
+                    uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], fs.createReadStream(path))
+
+                    let checkValue = couponUsed['false'].filter(coupon => coupon.code !== value.result)
+
+                    let botReply =
+                      "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
+                      customer[0].company +
+                      "\nQR-Code: " +
+                      value.result +
+                      "\nวันที่ถูกพิมพ์: " +
+                      splitT[1] +
+                      "\nคูปองราคา: " +
+                      splitT[2] +
+                      "\nเลขคูปองที่: " +
+                      splitT[3] +
+                      "\nวันและเวลาที่บันทึก: " +
+                      timeSt +
+                      "\nบันทึกโดย: " +
+                      recordby +
+                      "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
+                    
+                      console.log("Picture API", process.env.API + "/coupon/used")
+                    
+                    check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
+                                                  reply(reply_token, [botReply, "ยอดคงเหลือของคุณ เหลือ\n" + thousands_separators(check(checkValue)) + " บาท กรุณาเติมเงิน"])
+                                                  
+                    fetch(process.env.API + '/coupon/used', {
+                        method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+                        mode: 'cors', // no-cors, *cors, same-origin
+                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: 'same-origin', // include, *same-origin, omit
+                        headers: {
+                          'Content-Type': 'application/json'
+                          // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: 'follow', // manual, *follow, error
+                        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                        body: JSON.stringify({
+                          code: value.result,
+                          used: true,
+                          usedDateTime: timeSt.split(',')[0],
+                          recordedBy: {
+                            userID: id,
+                            name: recordby,
+                          },
+                        }) // body data type must match "Content-Type" header
+                      })                            
+                    
+                  }else if(couponUsed['true'].some(coupon => coupon.code === value.result)){
+                    let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
+                    reply(reply_token, botReply);
+                  }else{
+                    let botReply = "คูปองนี้ไม่มีในระบบ";
+                    reply(reply_token, botReply);
+                  }
+
+                } else if (err) {
+                  console.error(err);
+
+                  reply(reply_token, "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. ขอคุณช่วยถ่ายรูปใหม่อีกที.")
+                  // TODO handle error
+                }
+
+                
+              };
+              qr.decode(image.bitmap);
+  
+        
+            });
+          });
+        });
     }
+          
+          
+      
 
     // else if (event.message.text.includes("ขอเป็น admin")) {
       
