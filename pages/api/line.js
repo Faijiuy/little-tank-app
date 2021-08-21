@@ -386,16 +386,16 @@
 //   );
 // }
 
-// function check(Arr) {
-//   let group = groupByKey(Arr, "amount")
+function check(Arr) {
+  let group = groupByKey(Arr, "amount")
          
-//   let result = 0
-//   Object.keys(group).map(type => {
-//     result += Number(type) * group[type].length
-//   })
+  let result = 0
+  Object.keys(group).map(type => {
+    result += Number(type) * group[type].length
+  })
 
-//   return result
-// }
+  return result
+}
 
 import fs from "fs";
 
@@ -529,6 +529,9 @@ export default async function test(req, res) {
           });
 
         await client.getMessageContent(event.message.id).then((stream) => {
+
+          let buffer1 = ""
+          let buffer2 = ""
           stream.on("data", (chunk) => {
             newArr.push(chunk);
           });
@@ -539,20 +542,26 @@ export default async function test(req, res) {
   
           stream.on("end", function () {    
             var buffer = Buffer.concat(newArr);
-            fs.writeFileSync(path, buffer, function (err) {
-              if (err) throw err;
-              console.log("File saved.");
+            buffer1 = Buffer.concat(newArr)
+            // fs.writeFileSync(path, buffer, function (err) {
+            //   if (err) throw err;
+            //   console.log("File saved.");
 
-            });
+            // });
           });
   
           stream.on("end", function () {
-            const imageFile = "./public/img/QR-Code.png";
+            // const imageFile = "./public/img/QR-Code.png";
 
 
   
             var buffer = fs.readFileSync(imageFile);
-            Jimp.read(buffer, function (err, image) {
+            buffer2 = fs.readFileSync(imageFile)
+
+            // buffer1 == buffer2 ? console.log("buffer eq") : console.log("nahhhhh")
+
+
+            Jimp.read(buffer1, function (err, image) {
               if (err) {
                 console.error(err);
                 // TODO handle error
