@@ -13,8 +13,11 @@ const drive = google.drive({
     auth: oauth2Client
 })
 
+console.log({CLIENT_ID, CLIENT_SECRET, REDIRECT_URL, REFRESH_TOKEN})
+
 export async function uploadFile(uploadName, fsReadStreamOfFilePath){
     try{
+        console.log("uploading")
 
         const response = await drive.files.create({
             requestBody: {
