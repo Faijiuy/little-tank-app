@@ -540,7 +540,6 @@ export default async function test(req, res) {
         await client.getMessageContent(event.message.id).then((stream) => {
 
           let buffer1 = ""
-          let buffer2 = ""
           stream.on("data", (chunk) => {
             newArr.push(chunk);
           });
@@ -569,7 +568,7 @@ export default async function test(req, res) {
 
             // buffer1 == buffer2 ? console.log("buffer eq") : console.log("nahhhhh")
             // console.log("path ==> ", fs.createReadStream(path))
-            let stream = Readable.from(buffer1.toString());
+            let stream = Readable.from(buffer1);
 
             Jimp.read(buffer1, function (err, image) {
               if (err) {
@@ -583,11 +582,11 @@ export default async function test(req, res) {
                   // temp = value.result;
                   
 
-                  if(couponUsed['false'].some(coupon => coupon.code === value.result)){
+                  if(couponUsed['false'] && couponUsed['false'].some(coupon => coupon.code === value.result)){
 
                     let splitT = value.result.split("-");
 
-                    // uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], fs.createReadStream(path))
+                    uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], stream)
 
                     let checkValue = couponUsed['false'].filter(coupon => coupon.code !== value.result)
 
@@ -635,11 +634,14 @@ export default async function test(req, res) {
                     //     }) // body data type must match "Content-Type" header
                     //   })                            
                     
-                  }else if(couponUsed['true'].some(coupon => coupon.code === value.result)){
+                  }else if(couponUsed['true'] && couponUsed['true'].some(coupon => coupon.code === value.result)){
                     let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
                     reply(reply_token, botReply);
+                  }else if(couponUsed['missing'] && couponUsed['missing'].some(coupon => coupon.code === value.result)){
+                    let botReply = "คูปองนี้ถูกบันทึกว่าสูญหาย.";
+                    reply(reply_token, botReply);
                   }else{
-                    let botReply = "คูปองนี้ไม่มีในระบบ";
+                    let botReply = "คูปองนี้ไม่สามารถใช้ในกลุ่มนี้ได้";
                     reply(reply_token, botReply);
                   }
 
