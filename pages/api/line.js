@@ -434,6 +434,11 @@ export default async function test(req, res) {
                   })
                     .then((response) => response.json())
 
+    let passwords = await fetch(process.env.API + "/admin/password", {
+                      method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    })
+                      .then((response) => response.json())
+
     // console.log(admins)
     const client = new line.Client({
       channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -454,6 +459,8 @@ export default async function test(req, res) {
     let timeSt = date.toLocaleString();
 
     if(event.message.text && event.message.text.includes("ขอเป็น admin")) {
+
+      
       reply(reply_token, [admins[0].status, customers[0].company, coupons[0].amount])
 
     }
