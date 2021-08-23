@@ -11,8 +11,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
-
+import { DataGrid } from '@material-ui/data-grid';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -155,6 +154,67 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   );
 
   const [ordered_company, setOrdered_company] = useState([]);
+  const [tableState, setTableState] = useState(false)
+
+  const [row, setRow] = useState([]);
+  const [totalCoupon, setTotalCoupon] = useState(0);
+
+  const handleBlur = (params) => {
+    let newRow = row
+    newRow[params.id].type = params.row.type
+    newRow[params.id].qty = params.row.qty
+    newRow[params.id].total = params.row.type * params.row.qty
+
+    let total = 0
+    newRow.forEach(row => total += Number(row.qty) * Number(row.type)) 
+
+    setRow(newRow)
+    setTotalCoupon(total)
+  }
+
+  const handleAddRow = () => {
+
+    let newArr = []
+    row.map((value, index) =>{
+      newArr.push({
+        id: index,
+        type: value.type,
+        qty: value.qty,
+        total: value.total
+  
+      })
+    })
+    newArr.push({
+      id: row.length,
+      type: 0,
+      qty: 0,
+      total: 0
+    })
+    setRow(newArr)
+  }
+
+  const columns = [
+    {
+      field: 'type',
+      headerName: 'ราคา',
+      width: 120,
+      editable: true
+    },
+    {
+      field: 'qty',
+      headerName: 'จำนวน',
+      width: 120,
+      editable: true
+    },
+    {
+      field: 'total',
+      headerName: 'รวม',
+      width: 120,
+      renderCell: function total(params){
+        return params.row.type * params.row.qty
+      }
+    }
+  ]
 
   function compare(a, b) {
     if (a.runningNo < b.runningNo) {
@@ -178,6 +238,14 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       newArray.push(lookupObject[i]);
     }
     return newArray;
+  }
+
+  function groupByKey(array, key) {
+    return array
+      .reduce((hash, obj) => {
+        if(obj[key] === undefined) return hash; 
+        return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
+      }, {})
   }
 
  
@@ -217,7 +285,23 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setOrdered_company(uniq);
   }, [company, selectedDate, type]);
 
+  useEffect(() => {
+    let date = new Date();
+    let timeSt = date.toLocaleString().split(",")[0];
+
+    let filterCoupon = coupons.filter(coupon => coupon.companyRef === company._id && coupon.generatedDate === "8/13/2021")
+
+    let groupArray = groupByKey(filterCoupon, "amount")
+
+    setOrdered_company(groupArray)
+
+    console.log("groupArr", groupArray)
+
+
+  }, [company])
+
   const handleChangeCompany = (event) => {
+    setTableState(true)
     setCompany(event.target.value);
   };
 
@@ -343,50 +427,133 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   const onSubmit = () => {
     let date = new Date();
-    let timeSt = date.toLocaleString().split(",")[0];
+    let timeSt = date.toLocaleString().split(" ")[0];
+    // let runNo = 0
 
-    ordered_company.map((coupon) => {
-      if (info.amount === coupon.amount) {
-        info.runningNo = coupon.runningNo;
+    row.map(row => {
+      if(Object.keys(ordered_company).includes(row.type.toString())){
+        let runNo = ordered_company[row.type.toString()].length
+        // console.log(ordered_company[row.type.toString()].length)
+        for (let i = 1; i <= Number(row.qty); i++) {
+          fetch("/api/coupon", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+              code: company._id + "-" + timeSt + "-" + row.type + "-" + (runNo + i),
+              companyRef: company._id,
+              generatedDate: timeSt,
+              amount: row.type,
+              runningNo: runNo + i,
+              used: false,
+              usedDateTime: "",
+              recordedBy: "",
+              printed: false,
+            }), // body data type must match "Content-Type" header
+          })
+            
+        }
+
+      }else{
+        console.log("type ======================================================================", row.type)
+        for (let i = 1; i <= Number(row.qty); i++) {
+          fetch("/api/coupon", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+              code: company._id + "-" + timeSt + "-" + row.type + "-" + i,
+              companyRef: company._id,
+              generatedDate: timeSt,
+              amount: row.type,
+              runningNo: i,
+              used: false,
+              usedDateTime: "",
+              recordedBy: "",
+              printed: false,
+            }), // body data type must match "Content-Type" header
+          }).then(alert(row))
+            
+        }
       }
-    });
+      //   console.log("")
+    })
 
-    for (let i = 1; i <= qty; i++) {
-      info["generatedDate"] = timeSt.split(",")[0];
-      info["runningNo"] += 1;
-      info["code"] =
-        company._id +
-        "-" +
-        timeSt.split(",")[0] +
-        "-" +
-        type +
-        "-" +
-        info["runningNo"];
+    // console.log(Object.keys(ordered_company))
+    // console.log(row)
 
-      fetch("/api/coupon", {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(info), // body data type must match "Content-Type" header
-      })
-        .then((response) => response.json())
+    // ordered_company.map((coupon) => {
+    //   console.log(coupon)
+    // });
+
+    // row.map(row => {
+    //   for (let i = 1; i <= Number(row.qty); i++) {
+    //     row["generatedDate"] = timeSt.split(",")[0];
+    //     row["runningNo"] += 1;
+    //     row["code"] =
+    //       company._id +
+    //       "-" +
+    //       timeSt.split(",")[0] +
+    //       "-" +
+    //       type +
+    //       "-" +
+    //       info["runningNo"];
+
+    //   }
+    // })
+
+
+
+    // for (let i = 1; i <= qty; i++) {
+    //   info["generatedDate"] = timeSt.split(",")[0];
+    //   info["runningNo"] += 1;
+    //   info["code"] =
+    //     company._id +
+    //     "-" +
+    //     timeSt.split(",")[0] +
+    //     "-" +
+    //     type +
+    //     "-" +
+    //     info["runningNo"];
+
+      // fetch("/api/coupon", {
+      //   method: "POST", // *GET, POST, PUT, DELETE, etc.
+      //   mode: "cors", // no-cors, *cors, same-origin
+      //   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      //   credentials: "same-origin", // include, *same-origin, omit
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     // 'Content-Type': 'application/x-www-form-urlencoded',
+      //   },
+      //   redirect: "follow", // manual, *follow, error
+      //   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      //   body: JSON.stringify(info), // body data type must match "Content-Type" header
+      // })
+      //   .then((response) => response.json())
         // .then((data) => {
           
         //   alert("Add Item:\nResponse from server " + data._id);
         // });
             
-    }
+    // }
 
     setCompany("")
-    setType("")
-    setQty("")
+    // setType("")
+    // setQty("")
 
     // console.log(company, type, qty)
 
@@ -446,9 +613,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
       }
     });
-
-
   };
+
 
 
   return (
@@ -484,7 +650,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 </Select>
               </FormControl>
             </div>
-            <span className={styles}>
+            {/* <span className={styles}>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label2">
                   Type
@@ -515,7 +681,22 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 value={qty}
                 onChange={handleQty}
               />
-            </form>
+            </form> */}
+            
+            <div style={{ height: 300, width: '100%' }}>
+            {tableState ? 
+                <DataGrid
+                  rows={row}
+                  columns={columns}
+                  onCellBlur={handleBlur}
+                  
+                /> : null }
+
+            </div>
+            <div>
+            <button onClick={() => handleAddRow()}>เพิ่มคูปอง</button>
+              คูปองรวม {totalCoupon}
+            </div>
 
             <Button onClick={() => onSubmit()} color="primary">
               พิมพ์

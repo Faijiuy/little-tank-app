@@ -454,7 +454,6 @@ export default async function test(req, res) {
     let reply_token = event.replyToken;
 
     let newArr = [];
-    let path = "./public/img/QR-Code.png";
 
     let getTimeSt = event.timestamp;
     var date = new Date(getTimeSt);
@@ -465,6 +464,36 @@ export default async function test(req, res) {
       console.log(passwords)
 
       if(passwords.some(password => password.password === parts[2])){
+        // if(part[3]){
+
+
+        //   await client
+        //     .getProfile(part[3])
+        //     .then((profile) => {
+              
+        //       fetch(process.env.API + "/admin", {
+        //         method: "PUT", // *GET, POST, PUT, DELETE, etc.
+        //         mode: "cors", // no-cors, *cors, same-origin
+        //         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //         credentials: "same-origin", // include, *same-origin, omit
+        //         headers: {
+        //           "Content-Type": "application/json",
+        //           // 'Content-Type': 'application/x-www-form-urlencoded',
+        //         },
+        //         redirect: "follow", // manual, *follow, error
+        //         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //         body: JSON.stringify({
+        //           username: profile.displayName,
+        //           userId: part[3],
+        //           status: passwords.status,
+        //           groupId: data.groupId,
+        //         }), // body data type must match "Content-Type" header
+        //       }).then(reply(reply_token, "เอา admin ไป"))
+
+        //     })
+
+
+        // }
         reply(reply_token, "เอา admin ไป")
       }
 

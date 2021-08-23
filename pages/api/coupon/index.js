@@ -17,35 +17,37 @@ export default async (req, res) => {
         printed,
     } = data;
 
-    const { db } = await connectToDatabase();
-    await db.collection("coupons").insertOne(
-      {
-        
-        code: code,
-        companyRef: companyRef,
-        generatedDate: generatedDate,
-        amount: amount,
-        runningNo: runningNo,
-        used: used,
-        usedDateTime: usedDateTime,
-        recordedBy: recordedBy,
-        printed: printed
-      },
-      // callback
-      (err, result) => {
-        if (err) {
-          console.log(err);
-          res.json(err);
-        } else {
+    console.log(data)
 
-          // res.status(200).json({});
-          res.json({
-            message: "Customer added",
-            _id: result.insertedId,
-          });
-        }
-      }
-    ); // if update non-existing record, insert instead.
+    // const { db } = await connectToDatabase();
+    // await db.collection("coupons").insertOne(
+    //   {
+        
+    //     code: code,
+    //     companyRef: companyRef,
+    //     generatedDate: generatedDate,
+    //     amount: amount,
+    //     runningNo: runningNo,
+    //     used: used,
+    //     usedDateTime: usedDateTime,
+    //     recordedBy: recordedBy,
+    //     printed: printed
+    //   },
+    //   // callback
+    //   (err, result) => {
+    //     if (err) {
+    //       console.log(err);
+    //       res.json(err);
+    //     } else {
+
+    //       // res.status(200).json({});
+    //       res.json({
+    //         message: "Customer added",
+    //         _id: result.insertedId,
+    //       });
+    //     }
+    //   }
+    // ); // if update non-existing record, insert instead.
 
   } else if(req.method === "PUT"){
     let data = req.body;
