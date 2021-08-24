@@ -8,6 +8,7 @@
 yarn.lock
 cypress
 cypress.json
+hello.js
 
 
 # testing

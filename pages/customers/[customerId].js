@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import { DataGrid } from '@material-ui/data-grid';
 import InputLabel from "@material-ui/core/InputLabel";
 // layout for this page
 import Admin from "layouts/Admin.js";
@@ -95,10 +96,10 @@ function CreateCustomer({customer:customer}) {
   const [companyError, setCompanyError] = useState(false)
   const [ownerError, setOwnerError] = useState(false)
   const [owner_telError, setOwner_telError] = useState(false)
-  const [owner_emailError, setOwner_emailError] = useState(false)
-  const [contact_nameError, setContact_nameError] = useState(false)
-  const [contact_telError, setContact_telError] = useState(false)
-  const [contact_emailError, setContact_emailError] = useState(false)
+
+  const [licensePlate, setLicensePlate] = useState([]);
+  const [row, setRow] = useState([]);
+
 
   const [address, setAddress] = useState()
   const [TIN, setTIN] = useState()
@@ -118,10 +119,12 @@ function CreateCustomer({customer:customer}) {
       contact_email: "customer1@gmail.com",
       address: "address1, address2, Bangkok",
       TIN: "1234567890123",
-      groupID: "C2345467ref24325346213"
+      groupID: "C2345467ref24325346213",
+      licensePlate: []
     }
 
     if (customer !== null) {
+
       setCompany(customer.company)
       setOwner(customer.owner)
       setOwner_tel(customer.owner_tel)
@@ -132,6 +135,26 @@ function CreateCustomer({customer:customer}) {
       setAddress(customer.address)
       setTIN(customer.TIN)
       setGroupID(customer.groupID)
+
+      let array = []
+      if(customer.licensePlate){
+        customer.licensePlate.map((licensePlate, index) =>{
+          array.push({
+            id: index,
+            licensePlate: licensePlate
+          })
+        })
+        setLicensePlate(array)
+
+      }else{
+        setLicensePlate(array)
+      }
+
+
+
+      // setRow(customer.row)
+
+
     }else{
       setCompany(customer1.company)
       setOwner(customer1.owner)
@@ -143,6 +166,15 @@ function CreateCustomer({customer:customer}) {
       setAddress(customer1.address)
       setTIN(customer1.TIN)
       setGroupID(customer1.groupID)
+
+      let array = []
+      
+      array.push({
+        id: index,
+        licensePlate: customer1.licensePlate
+      })
+      
+      setLicensePlate(array)
 
       
     }
@@ -175,6 +207,21 @@ function CreateCustomer({customer:customer}) {
     }
   }
 
+  const handleBlur = (params) => {
+    console.log("params", params)
+    // let newRow = row
+    let newRow = licensePlate
+    newRow[params.id].licensePlate = params.row.licensePlate
+  
+
+
+    
+    setLicensePlate(newRow)
+    
+    
+  }
+
+
   const info = {
     company: company,
     owner: owner,
@@ -188,10 +235,43 @@ function CreateCustomer({customer:customer}) {
     groupID: groupID
   }
 
+  const columns = [
+    {
+      field: 'licensePlate',
+      headerName: 'ป้ายทะเบียนรถ',
+      width: 200,
+      editable: true
+    },
+    
+  ]
+
+  const handleAddRow = () => {
+
+    let newArr = []
+    licensePlate.map((value, index) =>{
+      newArr.push({
+        id: index,
+        licensePlate: value.licensePlate
+      })
+    })
+    newArr.push({
+      id: licensePlate.length,
+      licensePlate: ""
+    })
+    setLicensePlate(newArr)
+  }
+
   const onSubmit = (e) => {
     // console.log('onSubmit', info);
 
     const submitterId = e.target.id;
+
+    let licenArr = []
+    licensePlate.map(obj => {
+      licenArr.push(obj.licensePlate)
+    })
+
+    info["licensePlate"] = licenArr
 
     // console.log(submitterId)
 
@@ -219,6 +299,7 @@ function CreateCustomer({customer:customer}) {
       }else if(submitterId === 'update'){
         // console.log(customer._id)
         // let id = ObjectId(customer._id)
+        
         info["_id"] = customer._id
 
         // console.log(id)
@@ -244,7 +325,7 @@ function CreateCustomer({customer:customer}) {
   const classes = useStyles();
   return (
     // <form onSubmit={handleSubmit(onSubmit)}>
-    <form>
+    <div>
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
@@ -417,6 +498,20 @@ function CreateCustomer({customer:customer}) {
                   />
                 </GridItem>
               </GridContainer>
+
+              <GridContainer>
+                <div style={{ height: 400, width: '100%' }}>
+                  <DataGrid
+                    rows={licensePlate}
+                    columns={columns}
+                    onCellBlur={handleBlur}
+                    // checkboxSelection={handleSelectRow}
+                    // icons={EditIcon}
+                    
+                  />
+                </div>
+                <button onClick={() => handleAddRow()}>เพิ่มคูปอง</button>
+              </GridContainer>
               
 
               
@@ -429,7 +524,7 @@ function CreateCustomer({customer:customer}) {
         </GridItem>
         
       </GridContainer>
-      </form>
+      </div>
   );
 }
 

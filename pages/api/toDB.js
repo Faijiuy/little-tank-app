@@ -23,6 +23,7 @@ export default async (req, res) => {
       address,
       TIN,
       groupID,
+      licensePlate
     } = data;
 
     const { db } = await connectToDatabase();
@@ -39,7 +40,8 @@ export default async (req, res) => {
         contact_email: contact_email,
         address: address,
         TIN: TIN,
-        groupID: groupID
+        groupID: groupID,
+        licensePlate: licensePlate
       },
       // callback
       (err, result) => {
@@ -70,7 +72,8 @@ export default async (req, res) => {
       contact_email,
       address,
       TIN,
-      groupID
+      groupID,
+      licensePlate
     } = data;
 
     // let _id = ObjectId(data._id)
@@ -96,7 +99,8 @@ export default async (req, res) => {
           contact_email: contact_email,
           address: address,
           TIN: TIN,
-          groupID: groupID
+          groupID: groupID,
+          licensePlate: licensePlate
         }
       },
       // callback

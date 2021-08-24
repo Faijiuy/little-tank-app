@@ -286,7 +286,7 @@ function AdminMgt({admin : admins, customer: customers}) {
       }
 }
 
-    const handleEdit = () => {
+    const handleAddRow = () => {
 
       let newArr = []
       row.map((admin, index) =>{
@@ -452,7 +452,7 @@ function AdminMgt({admin : admins, customer: customers}) {
           
         />
       </div>
-      <button onClick={() => handleEdit()}>เพิ่ม admin</button>
+      <button onClick={() => handleAddRow()}>เพิ่ม admin</button>
       
     </div>
   );
