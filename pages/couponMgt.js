@@ -150,7 +150,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
   const [selectedDate, setSelectedDate] = React.useState(
-    new Date().toLocaleString().split(",")[0]
+    new Date()
   );
 
   const [ordered_company, setOrdered_company] = useState([]);
@@ -249,6 +249,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   }
 
  
+  useEffect(() => {
+    console.log("Date == ", selectedDate)
+  }, [])
 
   useEffect(() => {
     let list = [];
@@ -276,13 +279,13 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setCouponList(list);
     setRight(miss)
 
-    let date = new Date();
-    let timeSt = date.toLocaleString().split(",")[0];
+    // let date = new Date();
+    // let timeSt = date.toLocaleString().split(",")[0];
 
-    let runNo = list.filter((a) => a.generatedDate === timeSt).sort(compare);
+    // let runNo = list.filter((a) => a.generatedDate === timeSt).sort(compare);
 
-    let uniq = removeDuplicates(runNo, "amount");
-    setOrdered_company(uniq);
+    // let uniq = removeDuplicates(runNo, "amount");
+    // setOrdered_company(uniq);
   }, [company, selectedDate, type]);
 
   useEffect(() => {
@@ -409,8 +412,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   );
 
   const handleDateChange = (date) => {
-    let timeSt = date.toLocaleString().split(",")[0];
-    setSelectedDate(timeSt);
+    // let timeSt = date.toLocaleString().split(" ")[0];
+    setSelectedDate(date);
   };
 
   const info = {
@@ -458,7 +461,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
               printed: false,
             }), // body data type must match "Content-Type" header
           })
-            
+          if(i == Number(row.qty)){
+            alert("finish " + row.type)
+          }
         }
 
       }else{
@@ -486,77 +491,17 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
               recordedBy: "",
               printed: false,
             }), // body data type must match "Content-Type" header
-          }).then(alert(row))
-            
+          })
+          if(i == Number(row.qty)){
+            alert("finish " + row.type)
+          }
         }
       }
-      //   console.log("")
     })
 
-    // console.log(Object.keys(ordered_company))
-    // console.log(row)
-
-    // ordered_company.map((coupon) => {
-    //   console.log(coupon)
-    // });
-
-    // row.map(row => {
-    //   for (let i = 1; i <= Number(row.qty); i++) {
-    //     row["generatedDate"] = timeSt.split(",")[0];
-    //     row["runningNo"] += 1;
-    //     row["code"] =
-    //       company._id +
-    //       "-" +
-    //       timeSt.split(",")[0] +
-    //       "-" +
-    //       type +
-    //       "-" +
-    //       info["runningNo"];
-
-    //   }
-    // })
-
-
-
-    // for (let i = 1; i <= qty; i++) {
-    //   info["generatedDate"] = timeSt.split(",")[0];
-    //   info["runningNo"] += 1;
-    //   info["code"] =
-    //     company._id +
-    //     "-" +
-    //     timeSt.split(",")[0] +
-    //     "-" +
-    //     type +
-    //     "-" +
-    //     info["runningNo"];
-
-      // fetch("/api/coupon", {
-      //   method: "POST", // *GET, POST, PUT, DELETE, etc.
-      //   mode: "cors", // no-cors, *cors, same-origin
-      //   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      //   credentials: "same-origin", // include, *same-origin, omit
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     // 'Content-Type': 'application/x-www-form-urlencoded',
-      //   },
-      //   redirect: "follow", // manual, *follow, error
-      //   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      //   body: JSON.stringify(info), // body data type must match "Content-Type" header
-      // })
-      //   .then((response) => response.json())
-        // .then((data) => {
-          
-        //   alert("Add Item:\nResponse from server " + data._id);
-        // });
-            
-    // }
-
+ 
+    setRow([])
     setCompany("")
-    // setType("")
-    // setQty("")
-
-    // console.log(company, type, qty)
-
   };
 
   const onSubmit_missing_coupon = (e) => {
@@ -650,38 +595,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 </Select>
               </FormControl>
             </div>
-            {/* <span className={styles}>
-              <FormControl variant="outlined" className={classes2.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label2">
-                  Type
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label2"
-                  id="demo-simple-select-outlined"
-                  value={type ? type : ""}
-                  defaultValue=""
-                  onChange={handleChangeType}
-                  label="type"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={500}>500</MenuItem>
-                  <MenuItem value={1000}>1,000</MenuItem>
-                </Select>
-              </FormControl>
-            </span>
-
-            <form className={classes.root} noValidate autoComplete="off">
-              <TextField
-                id="outlined-basic"
-                label="จำนวน"
-                variant="outlined"
-                required={true}
-                value={qty}
-                onChange={handleQty}
-              />
-            </form> */}
+            
             
             <div style={{ height: 300, width: '100%' }}>
             {tableState ? 
@@ -762,7 +676,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   <KeyboardDatePicker
                     disableToolbar
                     variant="inline"
-                    format="MM/dd/yyyy"
+                    format="dd/MM/yyyy"
                     margin="normal"
                     id="date-picker-inline"
                     label="Date picker inline"

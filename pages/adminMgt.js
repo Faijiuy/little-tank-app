@@ -72,10 +72,6 @@ function AdminMgt({admin : admins, customer: customers}) {
     const [company, setCompany] = useState("");
     const [companyError, setCompanyError] = useState(false);
 
-
-
-    const [editState, setEditState] = useState(false);
-
     const [row, setRow] = useState([]);
 
     useEffect(() => {
