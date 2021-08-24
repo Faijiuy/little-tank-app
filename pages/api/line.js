@@ -485,7 +485,7 @@ export default async function test(req, res) {
                   username: profile.displayName,
                   userId: id,
                   status: password.status,
-                  groupId: GID,
+                  groupId: password.groupId,
                 }), // body data type must match "Content-Type" header
               }).then(reply(reply_token, "เอา admin ไป"))
             }).then(
