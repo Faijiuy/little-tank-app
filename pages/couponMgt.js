@@ -467,7 +467,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             <div>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label1">
-                  Company
+                  ชื่อลูกค้า
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label1"
@@ -487,7 +487,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             <span className={styles}>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label2">
-                  Type
+                  ราคาคูปอง
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label2"
@@ -540,7 +540,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             <GridContainer>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
-                  Company
+                  ชื่อลูกค้า
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -559,7 +559,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
-                  Type
+                  ราคาคูปอง
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -601,7 +601,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 alignItems="center"
                 className={classes.root}
               >
-                <Grid item>{customList("Choices", couponList)}</Grid>
+                <Grid item>{customList("คูปองคงเหลือ", couponList)}</Grid>
                 <Grid item>
                   <Grid container direction="column" alignItems="center">
                     <Button
@@ -626,7 +626,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid item>{customList("Missing", right)}</Grid>
+                <Grid item>{customList("คูปองสูญหาย", right)}</Grid>
               </Grid>
 
               <Button onClick={() => onSubmit_missing_coupon()} color="primary">

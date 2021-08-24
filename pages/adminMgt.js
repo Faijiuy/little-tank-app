@@ -234,7 +234,7 @@ function AdminMgt({admin : admins, customer: customers}) {
       <div>
         <FormControl variant="outlined" className={classes2.formControl} error={companyError} >
           <InputLabel id="demo-simple-select-outlined-label1">
-            Company
+            ชื่อลูกค้า
           </InputLabel>
           <Select
             labelId="demo-simple-select-outlined-label1"
@@ -252,17 +252,16 @@ function AdminMgt({admin : admins, customer: customers}) {
         </FormControl>
       </div>
 
-
-      <button onClick={() => handleClick("SA")}>รับ password SA</button>
+      <button onClick={() => handleClick("SA")}>รับ password ให้แคชเชียร์</button>
       {randomStateSA ? password : null}
 
     <div>
-      <button onClick={() => handleClick("SO")}>รับ password SO</button>
+      <button onClick={() => handleClick("SO")}>รับ password ให้เจ้าของ หรือ ผู้ช่วย</button>
       {randomStateSO ? passwordSO : null}
     </div>
 
     <div>
-      <button onClick={() => handleClick("EN")}>รับ password EN</button>
+      <button onClick={() => handleClick("EN")}>รับ password ให้ลูกค้า</button>
       {randomStateEN ? passwordEN : null}
     </div>
 

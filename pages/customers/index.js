@@ -55,24 +55,24 @@ function Customers({customer: customers}) {
 // };
 
 const columns = [
-  { field: 'company', headerName: 'Company', width: 180, editable: true },
-  { field: 'owner', headerName: 'Owner', width: 180, editable: true },
+  { field: 'company', headerName: 'ชื่อลูกค้า', width: 180, editable: true },
+  { field: 'owner', headerName: 'ชื่อเจ้าของบริษัท', width: 180, editable: true },
   {
     field: 'owner_tel',
-    headerName: 'Phone number',
+    headerName: 'เบอร์โทรศัพท์',
     width: 180,
     editable: true,
   },
   {
     field: 'owner_email',
-    headerName: 'E-mail',
+    headerName: 'อีเมล์ติดต่อ',
     width: 220,
     editable: true,
   },
 
   {
     field: "edit",
-    headerName: "Edit",
+    headerName: "แก้ไขข้อมูล",
     sortable: false,
     width: 130,
     disableClickEventBubbling: true,
@@ -95,7 +95,7 @@ const columns = [
          เพิ่มบริษัท
          </Button>
       </Box>
-      <div style={{ height: 400, width: '100%' }}>
+      <div style={{ height: 800, width: '99%' }}>
         <DataGrid
           rows={rowCustomer(customers)}
           columns={columns}
