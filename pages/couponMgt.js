@@ -172,6 +172,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setTotalCoupon(total)
   }
 
+  
+
   const handleAddRow = () => {
 
     let newArr = []
@@ -250,6 +252,14 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
  
   useEffect(() => {
+    
+    let tDate = new Date();
+    let todayDate = "";
+    todayDate += tDate.getDate() + "/";
+    todayDate += tDate.getMonth() + 1 + "/";
+    todayDate += tDate.getFullYear();
+    
+    setSelectedDate(todayDate)
     console.log("Date == ", selectedDate)
   }, [])
 

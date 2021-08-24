@@ -462,39 +462,56 @@ export default async function test(req, res) {
     if(event.message.text && event.message.text.includes("ขอเป็น admin")) {
       let parts = event.message.text.split(" ")
       console.log(passwords)
+      console.log("part == ", parts)
 
-      if(passwords.some(password => password.password === parts[2])){
+      if(passwords.some(password => {
+        if(password.password === parts[2]){
+          client
+            .getProfile(id)
+            .then((profile) => {
+              
+              fetch(process.env.API + "/admin", {
+                method: "PUT", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                  "Content-Type": "application/json",
+                  // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({
+                  username: profile.displayName,
+                  userId: id,
+                  status: password.status,
+                  groupId: GID,
+                }), // body data type must match "Content-Type" header
+              }).then(reply(reply_token, "เอา admin ไป"))
+            }).then(
+                    fetch(process.env.API + "/admin/password", {
+                      method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+                      mode: "cors", // no-cors, *cors, same-origin
+                      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                      credentials: "same-origin", // include, *same-origin, omit
+                      headers: {
+                        "Content-Type": "application/json",
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                      },
+                      redirect: "follow", // manual, *follow, error
+                      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                      body: JSON.stringify({ password: password.password }),
+                    }) // body data type must match "Content-Type" header
+                  )
+        }
+      })){
         // if(part[3]){
 
 
-        //   await client
-        //     .getProfile(part[3])
-        //     .then((profile) => {
-              
-        //       fetch(process.env.API + "/admin", {
-        //         method: "PUT", // *GET, POST, PUT, DELETE, etc.
-        //         mode: "cors", // no-cors, *cors, same-origin
-        //         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        //         credentials: "same-origin", // include, *same-origin, omit
-        //         headers: {
-        //           "Content-Type": "application/json",
-        //           // 'Content-Type': 'application/x-www-form-urlencoded',
-        //         },
-        //         redirect: "follow", // manual, *follow, error
-        //         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //         body: JSON.stringify({
-        //           username: profile.displayName,
-        //           userId: part[3],
-        //           status: passwords.status,
-        //           groupId: data.groupId,
-        //         }), // body data type must match "Content-Type" header
-        //       }).then(reply(reply_token, "เอา admin ไป"))
-
-        //     })
 
 
         // }
-        reply(reply_token, "เอา admin ไป")
+        // reply(reply_token, "เอา admin ไป")
       }
 
       
@@ -515,6 +532,12 @@ export default async function test(req, res) {
       console.log("admins ",admins)
       console.log("admin " ,admin)
       console.log(GID)
+
+      let tDate = new Date();
+      let todayDate = "";
+      todayDate += tDate.getDate() + "/";
+      todayDate += tDate.getMonth() + 1 + "/";
+      todayDate += tDate.getFullYear();
       
       if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
         
@@ -525,6 +548,12 @@ export default async function test(req, res) {
                                                         coupon.used === false)
 
         let group = await groupByKey(couponUsed, "amount")
+
+        let couponToday = await coupons.filter(coupon => coupon.companyRef === customer[0]._id && 
+                                                         coupon.used === true && coupon.usedDateTime === todayDate )
+
+        let group2 = groupByKey(couponToday, "amount");
+
       
 
         let result = 0
@@ -535,8 +564,29 @@ export default async function test(req, res) {
                     thousands_separators(Number(type) * group[type].length) + ")\n"  
         })
 
-        let text =  "ยอดมูลค่าคูปอง คงเหลือทั้งหมด " + thousands_separators(result) + " บาท.\n\n" +
-                    textpart
+        let resultUsedCoupon = 0;
+        let textpartUsedCoupon = "";
+        Object.keys(group2).map((type) => {
+          resultUsedCoupon += Number(type) * group2[type].length;
+          textpartUsedCoupon +=
+            "คูปองมูลค่า " +
+            thousands_separators(Number(type)) +
+            " จำนวน " +
+            group2[type].length +
+            " ใบ (" +
+            thousands_separators(Number(type) * group2[type].length) +
+            ")\n";
+        });
+
+        let text =  
+        "ยอดมูลค่าคูปองใช้ไปในวันนี้ ทั้งหมด " +
+        thousands_separators(resultUsedCoupon) +
+        " บาท.\n\n" +
+        textpartUsedCoupon +
+        "---------------------------------------------------\nยอดมูลค่าคูปอง คงเหลือทั้งหมด " +
+        thousands_separators(result) +
+        " บาท.\n\n" +
+        textpart;
 
         reply(reply_token, text)
         
