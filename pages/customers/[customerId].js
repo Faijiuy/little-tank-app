@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -102,6 +103,8 @@ function CreateCustomer({customer:customer}) {
   const [address, setAddress] = useState()
   const [TIN, setTIN] = useState()
   const [groupID, setGroupID] = useState()
+  const router = useRouter()
+
 
 
   useEffect(() => {
@@ -193,6 +196,7 @@ function CreateCustomer({customer:customer}) {
     // console.log(submitterId)
 
     if(submitterId === 'add'){
+
       fetch('/api/toDB', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -209,9 +213,9 @@ function CreateCustomer({customer:customer}) {
         .then(response => response.json())
         .then(data => {
           console.log(data);
-          alert("Add Item:\nResponse from server " + data.message)
-          alert("Newly added _id", data._id)
-        });
+          alert("ลงทะเบียนสำเร็จ")
+        })
+        .then(router.push('/customers'))
       }else if(submitterId === 'update'){
         // console.log(customer._id)
         // let id = ObjectId(customer._id)
@@ -232,11 +236,8 @@ function CreateCustomer({customer:customer}) {
           body: JSON.stringify(info) // body data type must match "Content-Type" header
         })
           .then(response => response.json())
-          .then(data => {
-            // console.log(data);
-            alert("Add Item:\nResponse from server " + data.message)
-            alert("Newly added _id", data._id)
-          });
+          .then(alert("ลงทะเบียนสำเร็จ"))
+          .then(router.push('/customers'))
       }
   }
 

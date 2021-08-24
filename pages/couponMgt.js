@@ -1,5 +1,7 @@
 import Admin from "layouts/Admin.js";
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
+
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
@@ -159,6 +161,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const [row, setRow] = useState([]);
   const [totalCoupon, setTotalCoupon] = useState(0);
 
+  const router = useRouter()
+
   const handleBlur = (params) => {
     let newRow = row
     newRow[params.id].type = params.row.type
@@ -217,30 +221,6 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       }
     }
   ]
-
-  function compare(a, b) {
-    if (a.runningNo < b.runningNo) {
-      return -1;
-    }
-    if (a.runningNo > b.runningNo) {
-      return 1;
-    }
-    return 0;
-  }
-
-  function removeDuplicates(originalArray, prop) {
-    var newArray = [];
-    var lookupObject = {};
-
-    for (var i in originalArray) {
-      lookupObject[originalArray[i][prop]] = originalArray[i];
-    }
-
-    for (i in lookupObject) {
-      newArray.push(lookupObject[i]);
-    }
-    return newArray;
-  }
 
   function groupByKey(array, key) {
     return array
@@ -472,7 +452,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             }), // body data type must match "Content-Type" header
           })
           if(i == Number(row.qty)){
-            alert("finish " + row.type)
+            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ")
           }
         }
 
@@ -503,15 +483,15 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             }), // body data type must match "Content-Type" header
           })
           if(i == Number(row.qty)){
-            alert("finish " + row.type)
+            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ")
           }
         }
       }
     })
 
- 
-    setRow([])
-    setCompany("")
+    router.reload()
+    // setRow([])
+    // setCompany("")
   };
 
   const onSubmit_missing_coupon = (e) => {

@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from "react";
+import { useRouter } from 'next/router';
+
 import randomString from '@smakss/random-string';
 import { connectToDatabase } from "../util/mongodb";
 import { DataGrid } from '@material-ui/data-grid';
@@ -51,6 +53,14 @@ const useStyles2 = makeStyles((theme) => ({
     },
   }));  
 
+function groupByKey(array, key) {
+  return array
+    .reduce((hash, obj) => {
+      if(obj[key] === undefined) return hash; 
+      return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
+    }, {})
+}
+
 function AdminMgt({admin : admins, customer: customers}) {
   
 
@@ -74,6 +84,10 @@ function AdminMgt({admin : admins, customer: customers}) {
 
     const [row, setRow] = useState([]);
 
+    const group = groupByKey(customers, "groupID")
+
+    const router = useRouter()
+
     useEffect(() => {
       let array = []
       admins.map((admin, index) =>{
@@ -82,9 +96,10 @@ function AdminMgt({admin : admins, customer: customers}) {
           username: admin.username,
           status: admin.status,
           userId: admin.userId,
-          groupId: admin.groupId,
+          groupId: admin.groupId.map(groupid => Object.keys(group).includes(groupid) ? 
+                                                group[groupid.toString()][0].company : null),
           edit: false,
-    
+
         })
       })
       setRow(array)
@@ -123,7 +138,8 @@ function AdminMgt({admin : admins, customer: customers}) {
                               userId: params.row.userId,
                               status: status,
                               groupId : company.groupID}), // body data type must match "Content-Type" header
-      }).then(alert(data._id))
+      }).then(alert("ลงทะเบียนสำเร็จ"))
+      .then(router.reload())
     }
 
     const columns = [
@@ -165,7 +181,7 @@ function AdminMgt({admin : admins, customer: customers}) {
       },
       {
         field: 'groupId',
-        headerName: 'groupID',
+        headerName: 'group',
         width: 220,
         disableClickEventBubbling: true,
         renderCell: function choose(params){
@@ -206,7 +222,7 @@ function AdminMgt({admin : admins, customer: customers}) {
           if(params.row.edit == true){
             return (
               <Button onClick={() => log(params)} variant="contained" color="primary">
-                แก้ไข
+                ยืนยัน
               </Button>
             );
   
@@ -286,9 +302,9 @@ function AdminMgt({admin : admins, customer: customers}) {
       })
       newArr.push({
         id: "index",
-        username: "admin.username",
+        username: "",
         status: "admin.status",
-        userId: "admin.userId",
+        userId: "",
         groupId: "admin.groupId",
         edit: true,
         // edit: function edit(){
