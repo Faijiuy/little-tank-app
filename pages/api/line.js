@@ -626,157 +626,166 @@ export default async function test(req, res) {
         reply(reply_token, replyCommand);
 
     }else if (event.message.type == "image") {
+      let admins =  await fetch(process.env.API + "/admin", {
+                    method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    }).then((response) => response.json())
 
-      let customers = await fetch(process.env.API + "/toDB", {
-                      method: "GET", // *GET, POST, PUT, DELETE, etc.
-                    })
-                      .then((response) => response.json())
+      let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
 
-      let coupons = await fetch(process.env.API + "/coupon/used", {
-                      method: "GET", // *GET, POST, PUT, DELETE, etc.
-                    })
-                      .then((response) => response.json())
-
-      let customer = await customers.filter(customer => customer.groupID === GID)
-
-      let couponInCom = await coupons.filter(coupon => coupon.companyRef === customer[0]._id)
-
-      let couponUsed = await groupByKey(couponInCom, "used")
-
-      let recordby = ""
-
-        await client
-          .getProfile(id)
-          .then((profile) => {
-            recordby = profile.displayName;
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-
-        await client.getMessageContent(event.message.id).then((stream) => {
-
-          let buffer1 = ""
-          stream.on("data", (chunk) => {
-            newArr.push(chunk);
-          });
+      if (admin[0].status == "SA" || admin[0].status == "SO") {
+        let customers = await fetch(process.env.API + "/toDB", {
+                        method: "GET", // *GET, POST, PUT, DELETE, etc.
+                      })
+                        .then((response) => response.json())
   
-          stream.on("error", (err) => {
-            console.log("Error", err);
-          });
+        let coupons = await fetch(process.env.API + "/coupon/used", {
+                        method: "GET", // *GET, POST, PUT, DELETE, etc.
+                      })
+                        .then((response) => response.json())
   
-          stream.on("end", function () {    
-            var buffer = Buffer.concat(newArr);
-            buffer1 = Buffer.concat(newArr)
-            // fs.writeFileSync(path, buffer, function (err) {
-            //   if (err) throw err;
-            //   console.log("File saved.");
-
-            // });
-          });
+        let customer = await customers.filter(customer => customer.groupID === GID)
   
-          stream.on("end", function () {
-            // const imageFile = "./public/img/QR-Code.png";
-
-
+        let couponInCom = await coupons.filter(coupon => coupon.companyRef === customer[0]._id)
   
-            // var buffer = fs.readFileSync(imageFile);
-            // buffer2 = fs.readFileSync(imageFile)
-
-            // buffer1 == buffer2 ? console.log("buffer eq") : console.log("nahhhhh")
-            // console.log("path ==> ", fs.createReadStream(path))
-            let stream = Readable.from(buffer1);
-
-            Jimp.read(buffer1, function (err, image) {
-              if (err) {
-                console.error(err);
-                // TODO handle error
-              }
+        let couponUsed = await groupByKey(couponInCom, "used")
   
-              var qr = new QrCode();
-              qr.callback = function (err, value) {
-                if (value) {
-                  // temp = value.result;
-                  
-
-                  if(couponUsed['false'] && couponUsed['false'].some(coupon => coupon.code === value.result)){
-
-                    let splitT = value.result.split("-");
-
-                    uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], stream)
-
-                    let checkValue = couponUsed['false'].filter(coupon => coupon.code !== value.result)
-
-                    let botReply =
-                      "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
-                      customer[0].company +
-                      "\nQR-Code: " +
-                      value.result +
-                      "\nวันที่ถูกพิมพ์: " +
-                      splitT[1] +
-                      "\nคูปองราคา: " +
-                      splitT[2] +
-                      "\nเลขคูปองที่: " +
-                      splitT[3] +
-                      "\nวันและเวลาที่บันทึก: " +
-                      timeSt +
-                      "\nบันทึกโดย: " +
-                      recordby +
-                      "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
-                    
-                      console.log("Picture API", process.env.API + "/coupon/used")
-                    
-                    check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
-                                                  reply(reply_token, [botReply, "ยอดคงเหลือของคุณ เหลือ\n" + thousands_separators(check(checkValue)) + " บาท กรุณาเติมเงิน"])
-                                                  
-                    fetch(process.env.API + '/coupon/used', {
-                        method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-                        mode: 'cors', // no-cors, *cors, same-origin
-                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                        credentials: 'same-origin', // include, *same-origin, omit
-                        headers: {
-                          'Content-Type': 'application/json'
-                          // 'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        redirect: 'follow', // manual, *follow, error
-                        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                        body: JSON.stringify({
-                          code: value.result,
-                          used: true,
-                          usedDateTime: timeSt.split(',')[0],
-                          recordedBy: {
-                            userID: id,
-                            name: recordby,
-                          },
-                        }) // body data type must match "Content-Type" header
-                      })                            
-                    
-                  }else if(couponUsed['true'] && couponUsed['true'].some(coupon => coupon.code === value.result)){
-                    let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
-                    reply(reply_token, botReply);
-                  }else if(couponUsed['missing'] && couponUsed['missing'].some(coupon => coupon.code === value.result)){
-                    let botReply = "คูปองนี้ถูกบันทึกว่าสูญหาย.";
-                    reply(reply_token, botReply);
-                  }else{
-                    let botReply = "คูปองนี้ไม่สามารถใช้ในกลุ่มนี้ได้";
-                    reply(reply_token, botReply);
-                  }
-
-                } else if (err) {
+        let recordby = ""
+  
+          await client
+            .getProfile(id)
+            .then((profile) => {
+              recordby = profile.displayName;
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+  
+          await client.getMessageContent(event.message.id).then((stream) => {
+  
+            let buffer1 = ""
+            stream.on("data", (chunk) => {
+              newArr.push(chunk);
+            });
+    
+            stream.on("error", (err) => {
+              console.log("Error", err);
+            });
+    
+            stream.on("end", function () {    
+              var buffer = Buffer.concat(newArr);
+              buffer1 = Buffer.concat(newArr)
+              // fs.writeFileSync(path, buffer, function (err) {
+              //   if (err) throw err;
+              //   console.log("File saved.");
+  
+              // });
+            });
+    
+            stream.on("end", function () {
+              // const imageFile = "./public/img/QR-Code.png";
+  
+  
+    
+              // var buffer = fs.readFileSync(imageFile);
+              // buffer2 = fs.readFileSync(imageFile)
+  
+              // buffer1 == buffer2 ? console.log("buffer eq") : console.log("nahhhhh")
+              // console.log("path ==> ", fs.createReadStream(path))
+              let stream = Readable.from(buffer1);
+  
+              Jimp.read(buffer1, function (err, image) {
+                if (err) {
                   console.error(err);
-
-                  reply(reply_token, "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. ขอคุณช่วยถ่ายรูปใหม่อีกที.")
                   // TODO handle error
                 }
-
-                
-              };
-              qr.decode(image.bitmap);
+    
+                var qr = new QrCode();
+                qr.callback = function (err, value) {
+                  if (value) {
+                    // temp = value.result;
+                    
   
-        
+                    if(couponUsed['false'] && couponUsed['false'].some(coupon => coupon.code === value.result)){
+  
+                      let splitT = value.result.split("-");
+  
+                      uploadFile(customer[0].company+"-"+splitT[3]+"-"+splitT[2]+"-"+timeSt.split(',')[0], stream)
+  
+                      let checkValue = couponUsed['false'].filter(coupon => coupon.code !== value.result)
+  
+                      let botReply =
+                        "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
+                        customer[0].company +
+                        "\nQR-Code: " +
+                        value.result +
+                        "\nวันที่ถูกพิมพ์: " +
+                        splitT[1] +
+                        "\nคูปองราคา: " +
+                        splitT[2] +
+                        "\nเลขคูปองที่: " +
+                        splitT[3] +
+                        "\nวันและเวลาที่บันทึก: " +
+                        timeSt +
+                        "\nบันทึกโดย: " +
+                        recordby +
+                        "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
+                      
+                        console.log("Picture API", process.env.API + "/coupon/used")
+                      
+                      check(checkValue) >= 3000 ? reply(reply_token, botReply) : 
+                                                    reply(reply_token, [botReply, "ยอดคงเหลือของคุณ เหลือ\n" + thousands_separators(check(checkValue)) + " บาท กรุณาเติมเงิน"])
+                                                    
+                      fetch(process.env.API + '/coupon/used', {
+                          method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+                          mode: 'cors', // no-cors, *cors, same-origin
+                          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                          credentials: 'same-origin', // include, *same-origin, omit
+                          headers: {
+                            'Content-Type': 'application/json'
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                          },
+                          redirect: 'follow', // manual, *follow, error
+                          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                          body: JSON.stringify({
+                            code: value.result,
+                            used: true,
+                            usedDateTime: timeSt.split(',')[0],
+                            recordedBy: {
+                              userID: id,
+                              name: recordby,
+                            },
+                          }) // body data type must match "Content-Type" header
+                        })                            
+                      
+                    }else if(couponUsed['true'] && couponUsed['true'].some(coupon => coupon.code === value.result)){
+                      let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
+                      reply(reply_token, botReply);
+                    }else if(couponUsed['missing'] && couponUsed['missing'].some(coupon => coupon.code === value.result)){
+                      let botReply = "คูปองนี้ถูกบันทึกว่าสูญหาย.";
+                      reply(reply_token, botReply);
+                    }else{
+                      let botReply = "คูปองนี้ไม่สามารถใช้ในกลุ่มนี้ได้";
+                      reply(reply_token, botReply);
+                    }
+  
+                  } else if (err) {
+                    console.error(err);
+  
+                    reply(reply_token, "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. ขอคุณช่วยถ่ายรูปใหม่อีกที.")
+                    // TODO handle error
+                  }
+  
+                  
+                };
+                qr.decode(image.bitmap);
+    
+          
+              });
             });
           });
-        });
+
+      }
+
     }
           
           
