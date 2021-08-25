@@ -431,10 +431,10 @@ export default async function test(req, res) {
     //               })
     //                 .then((response) => response.json())
 
-    let coupons = await fetch(process.env.API + "/coupon/used", {
-                    method: "GET", // *GET, POST, PUT, DELETE, etc.
-                  })
-                    .then((response) => response.json())
+    // let coupons = await fetch(process.env.API + "/coupon/used", {
+    //                 method: "GET", // *GET, POST, PUT, DELETE, etc.
+    //               })
+    //                 .then((response) => response.json())
 
     
 
@@ -608,6 +608,10 @@ export default async function test(req, res) {
         
       } 
     }else if(event.message.text == "คำสั่งบอท"){
+      let admins =  await fetch(process.env.API + "/admin", {
+                    method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    }).then((response) => response.json())
+
         let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
         
 
@@ -622,6 +626,17 @@ export default async function test(req, res) {
         reply(reply_token, replyCommand);
 
     }else if (event.message.type == "image") {
+
+      let customers = await fetch(process.env.API + "/toDB", {
+                      method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    })
+                      .then((response) => response.json())
+
+      let coupons = await fetch(process.env.API + "/coupon/used", {
+                      method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    })
+                      .then((response) => response.json())
+
       let customer = await customers.filter(customer => customer.groupID === GID)
 
       let couponInCom = await coupons.filter(coupon => coupon.companyRef === customer[0]._id)
