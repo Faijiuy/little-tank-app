@@ -436,10 +436,7 @@ export default async function test(req, res) {
                   })
                     .then((response) => response.json())
 
-    let passwords = await fetch(process.env.API + "/admin/password", {
-                      method: "GET", // *GET, POST, PUT, DELETE, etc.
-                    })
-                      .then((response) => response.json())
+    
 
     // console.log(admins)
     const client = new line.Client({
@@ -461,10 +458,15 @@ export default async function test(req, res) {
 
     if(event.message.text && event.message.text.includes("ขอเป็น admin")) {
       let parts = event.message.text.split(" ")
-      console.log(passwords)
-      console.log("part == ", parts)
+      // console.log(passwords)
+      // console.log("part == ", parts)
 
-      if(passwords.some(password => {
+      let passwords = await fetch(process.env.API + "/admin/password", {
+                      method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    })
+                      .then((response) => response.json())
+
+      if(await passwords.some(password => {
         if(password.password === parts[2]){
           client
             .getProfile(id)

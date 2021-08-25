@@ -500,17 +500,22 @@ function CreateCustomer({customer:customer}) {
               </GridContainer>
 
               <GridContainer>
-                <div style={{ height: 400, width: '100%' }}>
+                <div style={{ height: 300, width: '25%' }}>
                   <DataGrid
                     rows={licensePlate}
                     columns={columns}
                     onCellBlur={handleBlur}
+                    hideFooterPagination={true}
                     // checkboxSelection={handleSelectRow}
                     // icons={EditIcon}
                     
                   />
                 </div>
-                <button onClick={() => handleAddRow()}>เพิ่มคูปอง</button>
+              </GridContainer>
+
+              <GridContainer>
+                <button onClick={() => handleAddRow()}>เพิ่มทะเบียนรถ</button>
+
               </GridContainer>
               
 
