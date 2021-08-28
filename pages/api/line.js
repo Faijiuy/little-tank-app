@@ -126,7 +126,7 @@ export default async function test(req, res) {
       let replyCheckGroupID = "GroupID คือ " + GID;
       reply(reply_token, replyCheckGroupID);
     } else {
-      let replyCheckGroupID = "ไลน์กรุ๊ปนี้มีในระบบแล้ว และจะไม่สามารถใช้คำสั่งนี้ได้อีก";
+      let replyCheckGroupID = "ไลน์กลุ่มนี้มีในระบบแล้ว และจะไม่สามารถใช้คำสั่งนี้ได้อีก";
       reply(reply_token, replyCheckGroupID);
     }
   } else if (event.message.text == "สอบถามยอด") {
@@ -400,7 +400,7 @@ export default async function test(req, res) {
                   let botReply = "คูปองนี้ได้ถูกใช้แล้ว.";
                   reply(reply_token, botReply);
                 } else if (codeDetect[0] !== customer[0]._id) {
-                  let botReply = "คูปองนี้ไม่ใช่ของลูกค้าของกลุ่มนี้.";
+                  let botReply = "คูปองนี้ไม่ใช่ของลูกค้าไลน์กลุ่มนี้.";
                   reply(reply_token, botReply);
                 } else if (
                   couponUsed["missing"] &&
