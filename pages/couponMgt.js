@@ -1,5 +1,7 @@
 import Admin from "layouts/Admin.js";
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
+
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
@@ -11,8 +13,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
-
+import { DataGrid } from '@material-ui/data-grid';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -151,35 +152,97 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
   const [selectedDate, setSelectedDate] = React.useState(
-    new Date().toLocaleString().split(",")[0]
+    new Date()
   );
+  const [date, setDate] = useState()
 
   const [ordered_company, setOrdered_company] = useState([]);
+  const [tableState, setTableState] = useState(false)
 
-  function compare(a, b) {
-    if (a.runningNo < b.runningNo) {
-      return -1;
-    }
-    if (a.runningNo > b.runningNo) {
-      return 1;
-    }
-    return 0;
+  const [row, setRow] = useState([]);
+  const [totalCoupon, setTotalCoupon] = useState(0);
+
+  const router = useRouter()
+
+  const handleBlur = (params) => {
+    let newRow = row
+    newRow[params.id].type = params.row.type
+    newRow[params.id].qty = params.row.qty
+    newRow[params.id].total = params.row.type * params.row.qty
+
+    let total = 0
+    newRow.forEach(row => total += Number(row.qty) * Number(row.type)) 
+
+    setRow(newRow)
+    setTotalCoupon(total)
   }
 
-  function removeDuplicates(originalArray, prop) {
-    var newArray = [];
-    var lookupObject = {};
+  
 
-    for (var i in originalArray) {
-      lookupObject[originalArray[i][prop]] = originalArray[i];
-    }
+  const handleAddRow = () => {
 
-    for (i in lookupObject) {
-      newArray.push(lookupObject[i]);
-    }
-    return newArray;
+    let newArr = []
+    row.map((value, index) =>{
+      newArr.push({
+        id: index,
+        type: value.type,
+        qty: value.qty,
+        total: value.total
+  
+      })
+    })
+    newArr.push({
+      id: row.length,
+      type: 0,
+      qty: 0,
+      total: 0
+    })
+    setRow(newArr)
   }
 
+  const columns = [
+    {
+      field: 'type',
+      headerName: 'ราคา',
+      width: 120,
+      editable: true
+    },
+    {
+      field: 'qty',
+      headerName: 'จำนวน',
+      width: 120,
+      editable: true
+    },
+    {
+      field: 'total',
+      headerName: 'รวม',
+      width: 120,
+      renderCell: function total(params){
+        return params.row.type * params.row.qty
+      }
+    }
+  ]
+
+  function groupByKey(array, key) {
+    return array
+      .reduce((hash, obj) => {
+        if(obj[key] === undefined) return hash; 
+        return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
+      }, {})
+  }
+
+  useEffect(() => {
+    let tDate = new Date();
+    let todayDate = "";
+    todayDate += tDate.getDate() + "/";
+    todayDate += tDate.getMonth() + 1 + "/";
+    todayDate += tDate.getFullYear();
+
+    console.log("tday todayDate = ", todayDate)
+    
+    setDate(todayDate)
+  }, [])
+ 
  
 
   useEffect(() => {
@@ -190,16 +253,15 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       if (
         coupon.companyRef === company._id &&
         !coupon.used &&
-        coupon.generatedDate === selectedDate &&
-        coupon.amount === type
+        coupon.generatedDate === date 
       ) {
+        console.log(coupon)
 
         list.push(coupon);
       }else if(
         coupon.companyRef === company._id &&
         coupon.used === 'missing' &&
-        coupon.generatedDate === selectedDate &&
-        coupon.amount === type
+        coupon.generatedDate === date 
       ){
         miss.push(coupon)
       }
@@ -208,16 +270,34 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setCouponList(list);
     setRight(miss)
 
-    let date = new Date();
-    let timeSt = date.toLocaleString().split(",")[0];
+    // let date = new Date();
+    // let timeSt = date.toLocaleString().split(",")[0];
 
-    let runNo = list.filter((a) => a.generatedDate === timeSt).sort(compare);
+    // let runNo = list.filter((a) => a.generatedDate === timeSt).sort(compare);
 
-    let uniq = removeDuplicates(runNo, "amount");
-    setOrdered_company(uniq);
-  }, [company, selectedDate, type]);
+    // let uniq = removeDuplicates(runNo, "amount");
+    // setOrdered_company(uniq);
+  }, [company, date, type]);
+
+  // useEffect(() => {
+  //   // let date = new Date();
+  //   // let timeSt = date.toLocaleString().split(" ")[0];
+
+  //   // console.log("timest",timeSt)
+
+  //   let filterCoupon = coupons.filter(coupon => coupon.companyRef === company._id && coupon.generatedDate === date)
+
+  //   let groupArray = groupByKey(filterCoupon, "amount")
+
+  //   setOrdered_company(groupArray)
+
+  //   console.log("groupArr", groupArray)
+
+
+  // }, [company])
 
   const handleChangeCompany = (event) => {
+    setTableState(true)
     setCompany(event.target.value);
   };
 
@@ -225,9 +305,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setType(event.target.value);
   };
 
-  const handleQty = (event) => {
-    setQty(Number(event.target.value));
-  };
+  
 
   const useStyles = makeStyles(styles);
   const classes = useStyles();
@@ -325,8 +403,17 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   );
 
   const handleDateChange = (date) => {
-    let timeSt = date.toLocaleString().split(",")[0];
-    setSelectedDate(timeSt);
+    // let timeSt = date.toLocaleString().split(" ")[0];
+    setSelectedDate(date);
+
+    let todayDate = "";
+    todayDate += date.getDate() + "/";
+    todayDate += date.getMonth() + 1 + "/";
+    todayDate += date.getFullYear();
+
+    console.log("date = ", todayDate)
+    
+    setDate(todayDate)
   };
 
   const info = {
@@ -343,53 +430,78 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   const onSubmit = () => {
     let date = new Date();
-    let timeSt = date.toLocaleString().split(",")[0];
+    let timeSt = date.toLocaleString().split(" ")[0];
+    // let runNo = 0
 
-    ordered_company.map((coupon) => {
-      if (info.amount === coupon.amount) {
-        info.runningNo = coupon.runningNo;
+    row.map(row => {
+      if(Object.keys(ordered_company).includes(row.type.toString())){
+        let runNo = ordered_company[row.type.toString()].length
+        // console.log(ordered_company[row.type.toString()].length)
+        for (let i = 1; i <= Number(row.qty); i++) {
+          fetch("/api/coupon", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+              code: company._id + "-" + timeSt + "-" + row.type + "-" + (runNo + i),
+              companyRef: company._id,
+              generatedDate: timeSt,
+              amount: row.type,
+              runningNo: runNo + i,
+              used: false,
+              usedDateTime: "",
+              recordedBy: "",
+              printed: false,
+            }), // body data type must match "Content-Type" header
+          })
+          if(i == Number(row.qty)){
+            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ")
+          }
+        }
+
+      }else{
+        console.log("type ======================================================================", row.type)
+        for (let i = 1; i <= Number(row.qty); i++) {
+          fetch("/api/coupon", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+              code: company._id + "-" + timeSt + "-" + row.type + "-" + i,
+              companyRef: company._id,
+              generatedDate: timeSt,
+              amount: row.type,
+              runningNo: i,
+              used: false,
+              usedDateTime: "",
+              recordedBy: "",
+              printed: false,
+            }), // body data type must match "Content-Type" header
+          })
+          if(i == Number(row.qty)){
+            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ")
+          }
+        }
       }
-    });
+    })
 
-    for (let i = 1; i <= qty; i++) {
-      info["generatedDate"] = timeSt.split(",")[0];
-      info["runningNo"] += 1;
-      info["code"] =
-        company._id +
-        "-" +
-        timeSt.split(",")[0] +
-        "-" +
-        type +
-        "-" +
-        info["runningNo"];
-
-      fetch("/api/coupon", {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(info), // body data type must match "Content-Type" header
-      })
-        .then((response) => response.json())
-        // .then((data) => {
-          
-        //   alert("Add Item:\nResponse from server " + data._id);
-        // });
-            
-    }
-
-    setCompany("")
-    setType("")
-    setQty("")
-
-    // console.log(company, type, qty)
-
+    router.reload()
+    // setRow([])
+    // setCompany("")
   };
 
   const onSubmit_missing_coupon = (e) => {
@@ -446,9 +558,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
       }
     });
-
-
   };
+
 
 
   return (
@@ -467,7 +578,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             <div>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label1">
-                  ชื่อลูกค้า
+                  Company
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label1"
@@ -484,38 +595,24 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 </Select>
               </FormControl>
             </div>
-            <span className={styles}>
-              <FormControl variant="outlined" className={classes2.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label2">
-                  ราคาคูปอง
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label2"
-                  id="demo-simple-select-outlined"
-                  value={type ? type : ""}
-                  defaultValue=""
-                  onChange={handleChangeType}
-                  label="type"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={500}>500</MenuItem>
-                  <MenuItem value={1000}>1,000</MenuItem>
-                </Select>
-              </FormControl>
-            </span>
+            
+            
+            <div style={{ height: 300, width: '200%' }}>
+            {tableState ? 
+                <DataGrid
+                  rows={row}
+                  columns={columns}
+                  onCellBlur={handleBlur}
+                  hideFooterPagination={true}
 
-            <form className={classes.root} noValidate autoComplete="off">
-              <TextField
-                id="outlined-basic"
-                label="จำนวน"
-                variant="outlined"
-                required={true}
-                value={qty}
-                onChange={handleQty}
-              />
-            </form>
+                  
+                /> : null }
+
+            </div>
+            <div>
+            <button onClick={() => handleAddRow()}>เพิ่มคูปอง</button>
+              คูปองรวม {totalCoupon}
+            </div>
 
             <Button onClick={() => onSubmit()} color="primary">
               พิมพ์
@@ -540,7 +637,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             <GridContainer>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
-                  ชื่อลูกค้า
+                  Company
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -556,10 +653,10 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   })}
                 </Select>
               </FormControl>
-
+{/* 
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
-                  ราคาคูปอง
+                  Type
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -574,14 +671,14 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   <MenuItem value={500}>500</MenuItem>
                   <MenuItem value={1000}>1,000</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
 
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <Grid container justifyContent="space-around">
                   <KeyboardDatePicker
                     disableToolbar
                     variant="inline"
-                    format="MM/dd/yyyy"
+                    format="dd/MM/yyyy"
                     margin="normal"
                     id="date-picker-inline"
                     label="Date picker inline"
@@ -601,7 +698,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 alignItems="center"
                 className={classes.root}
               >
-                <Grid item>{customList("คูปองคงเหลือ", couponList)}</Grid>
+                <Grid item>{customList("Choices", couponList)}</Grid>
                 <Grid item>
                   <Grid container direction="column" alignItems="center">
                     <Button
@@ -626,7 +723,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid item>{customList("คูปองสูญหาย", right)}</Grid>
+                <Grid item>{customList("Missing", right)}</Grid>
               </Grid>
 
               <Button onClick={() => onSubmit_missing_coupon()} color="primary">
