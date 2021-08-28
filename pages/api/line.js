@@ -115,7 +115,7 @@ export default async function test(req, res) {
 
     // reply(reply_token, [admins[0].status, customers[0].company, coupons[0].amount])
     // reply(reply_token, [parts[0], parts[1], parts[2]])
-  } else if (event.message.text == "สอบถาม GroupID") {
+  } else if (event.message.text == "สอบถาม groupid") {
     let customers = await fetch(process.env.API + "/toDB", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
@@ -126,7 +126,7 @@ export default async function test(req, res) {
       let replyCheckGroupID = "GroupID คือ " + GID;
       reply(reply_token, replyCheckGroupID);
     } else {
-      let replyCheckGroupID = "คำสั่งนี้สามารถใช้ได้ครั้งเดียว";
+      let replyCheckGroupID = "ไลน์กรุ๊ปนี้มีในระบบแล้ว และจะไม่สามารถใช้คำสั่งนี้ได้อีก";
       reply(reply_token, replyCheckGroupID);
     }
   } else if (event.message.text == "สอบถามยอด") {
