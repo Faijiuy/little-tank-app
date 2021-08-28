@@ -38,21 +38,21 @@ const dashboardRoutes = [
 
   {
     path: "/customers",
-    name: "Customers",
+    name: "การจัดการลูกค้า",
     icon: Person,
 
     // layout: "/admin",
   },
   {
     path: "/couponMgt",
-    name: "Coupon Management",
+    name: "การจัดการคูปอง",
     icon: Unarchive,
 
     // layout: "/admin",
   },
   {
     path: "/adminMgt",
-    name: "Admin Management",
+    name: "การจัดการแอดมิน",
     icon: Person,
 
     // layout: "/admin",

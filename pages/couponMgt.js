@@ -1,6 +1,6 @@
 import Admin from "layouts/Admin.js";
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,7 +13,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid } from "@material-ui/data-grid";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -32,7 +32,6 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-
 
 import { connectToDatabase } from "../util/mongodb";
 
@@ -134,8 +133,6 @@ function union(a, b) {
 }
 
 function CouponMgt({ customer: customers, coupon: coupons }) {
-
-
   const classes2 = useStyles2();
 
   const [expanded, setExpanded] = React.useState("panel1");
@@ -151,84 +148,79 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const [type, setType] = useState();
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date()
-  );
-  const [date, setDate] = useState()
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [date, setDate] = useState();
 
   const [ordered_company, setOrdered_company] = useState([]);
-  const [tableState, setTableState] = useState(false)
+  const [tableState, setTableState] = useState(false);
 
   const [row, setRow] = useState([]);
   const [totalCoupon, setTotalCoupon] = useState(0);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleBlur = (params) => {
-    let newRow = row
-    newRow[params.id].type = params.row.type
-    newRow[params.id].qty = params.row.qty
-    newRow[params.id].total = params.row.type * params.row.qty
+    let newRow = row;
+    newRow[params.id].type = params.row.type;
+    newRow[params.id].qty = params.row.qty;
+    newRow[params.id].total = params.row.type * params.row.qty;
 
-    let total = 0
-    newRow.forEach(row => total += Number(row.qty) * Number(row.type)) 
+    let total = 0;
+    newRow.forEach((row) => (total += Number(row.qty) * Number(row.type)));
 
-    setRow(newRow)
-    setTotalCoupon(total)
-  }
-
-  
+    setRow(newRow);
+    setTotalCoupon(total);
+  };
 
   const handleAddRow = () => {
-
-    let newArr = []
-    row.map((value, index) =>{
+    let newArr = [];
+    row.map((value, index) => {
       newArr.push({
         id: index,
         type: value.type,
         qty: value.qty,
-        total: value.total
-  
-      })
-    })
+        total: value.total,
+      });
+    });
     newArr.push({
       id: row.length,
       type: 0,
       qty: 0,
-      total: 0
-    })
-    setRow(newArr)
-  }
+      total: 0,
+    });
+    setRow(newArr);
+  };
 
   const columns = [
     {
-      field: 'type',
-      headerName: 'ราคา',
+      field: "type",
+      headerName: "ราคา",
       width: 120,
-      editable: true
+      editable: true,
     },
     {
-      field: 'qty',
-      headerName: 'จำนวน',
+      field: "qty",
+      headerName: "จำนวน",
       width: 120,
-      editable: true
+      editable: true,
     },
     {
-      field: 'total',
-      headerName: 'รวม',
+      field: "total",
+      headerName: "รวม",
       width: 120,
-      renderCell: function total(params){
-        return params.row.type * params.row.qty
-      }
-    }
-  ]
+      renderCell: function total(params) {
+        return params.row.type * params.row.qty;
+      },
+    },
+  ];
 
   function groupByKey(array, key) {
-    return array
-      .reduce((hash, obj) => {
-        if(obj[key] === undefined) return hash; 
-        return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
-      }, {})
+    return array.reduce((hash, obj) => {
+      if (obj[key] === undefined) return hash;
+      return Object.assign(hash, {
+        [obj[key]]: (hash[obj[key]] || []).concat(obj),
+      });
+    }, {});
   }
 
   useEffect(() => {
@@ -238,37 +230,35 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     todayDate += tDate.getMonth() + 1 + "/";
     todayDate += tDate.getFullYear();
 
-    console.log("tday todayDate = ", todayDate)
-    
-    setDate(todayDate)
-  }, [])
- 
- 
+    console.log("tday todayDate = ", todayDate);
+
+    setDate(todayDate);
+  }, []);
 
   useEffect(() => {
     let list = [];
-    let miss = []
+    let miss = [];
 
     coupons.map((coupon) => {
       if (
         coupon.companyRef === company._id &&
         !coupon.used &&
-        coupon.generatedDate === date 
+        coupon.generatedDate === date
       ) {
-        console.log(coupon)
+        console.log(coupon);
 
         list.push(coupon);
-      }else if(
+      } else if (
         coupon.companyRef === company._id &&
-        coupon.used === 'missing' &&
-        coupon.generatedDate === date 
-      ){
-        miss.push(coupon)
+        coupon.used === "missing" &&
+        coupon.generatedDate === date
+      ) {
+        miss.push(coupon);
       }
     });
 
     setCouponList(list);
-    setRight(miss)
+    setRight(miss);
 
     // let date = new Date();
     // let timeSt = date.toLocaleString().split(",")[0];
@@ -293,19 +283,16 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   //   console.log("groupArr", groupArray)
 
-
   // }, [company])
 
   const handleChangeCompany = (event) => {
-    setTableState(true)
+    setTableState(true);
     setCompany(event.target.value);
   };
 
   const handleChangeType = (event) => {
     setType(event.target.value);
   };
-
-  
 
   const useStyles = makeStyles(styles);
   const classes = useStyles();
@@ -314,7 +301,6 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   const leftChecked = intersection(checked, couponList);
   const rightChecked = intersection(checked, right);
-
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -350,7 +336,6 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
-
 
   const customList = (title, items) => (
     <Card>
@@ -393,7 +378,10 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   inputProps={{ "aria-labelledby": labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`${value.generatedDate}-${value.amount}-${value.runningNo}`} />
+              <ListItemText
+                id={labelId}
+                primary={`${value.generatedDate}-${value.amount}-${value.runningNo}`}
+              />
             </ListItem>
           );
         })}
@@ -411,9 +399,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     todayDate += date.getMonth() + 1 + "/";
     todayDate += date.getFullYear();
 
-    console.log("date = ", todayDate)
-    
-    setDate(todayDate)
+    console.log("date = ", todayDate);
+
+    setDate(todayDate);
   };
 
   const info = {
@@ -433,9 +421,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     let timeSt = date.toLocaleString().split(" ")[0];
     // let runNo = 0
 
-    row.map(row => {
-      if(Object.keys(ordered_company).includes(row.type.toString())){
-        let runNo = ordered_company[row.type.toString()].length
+    row.map((row) => {
+      if (Object.keys(ordered_company).includes(row.type.toString())) {
+        let runNo = ordered_company[row.type.toString()].length;
         // console.log(ordered_company[row.type.toString()].length)
         for (let i = 1; i <= Number(row.qty); i++) {
           fetch("/api/coupon", {
@@ -450,7 +438,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             redirect: "follow", // manual, *follow, error
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             body: JSON.stringify({
-              code: company._id + "-" + timeSt + "-" + row.type + "-" + (runNo + i),
+              code:
+                company._id + "-" + timeSt + "-" + row.type + "-" + (runNo + i),
               companyRef: company._id,
               generatedDate: timeSt,
               amount: row.type,
@@ -460,14 +449,16 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
               recordedBy: "",
               printed: false,
             }), // body data type must match "Content-Type" header
-          })
-          if(i == Number(row.qty)){
-            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ")
+          });
+          if (i == Number(row.qty)) {
+            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ");
           }
         }
-
-      }else{
-        console.log("type ======================================================================", row.type)
+      } else {
+        console.log(
+          "type ======================================================================",
+          row.type
+        );
         for (let i = 1; i <= Number(row.qty); i++) {
           fetch("/api/coupon", {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -491,15 +482,15 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
               recordedBy: "",
               printed: false,
             }), // body data type must match "Content-Type" header
-          })
-          if(i == Number(row.qty)){
-            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ")
+          });
+          if (i == Number(row.qty)) {
+            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ");
           }
         }
       }
-    })
+    });
 
-    router.reload()
+    router.reload();
     // setRow([])
     // setCompany("")
   };
@@ -508,9 +499,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     // console.log("right === ", right)
 
     right.map((coupon) => {
-      if(coupon["used"] == false){
+      if (coupon["used"] == false) {
         coupon["used"] = "missing";
-  
+
         fetch("/api/coupon", {
           method: "PUT", // *GET, POST, PUT, DELETE, etc.
           mode: "cors", // no-cors, *cors, same-origin
@@ -523,20 +514,18 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
           redirect: "follow", // manual, *follow, error
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(coupon), // body data type must match "Content-Type" header
-        })
-          .then((response) => response.json())
-          // .then((data) => {
-          //   alert("Add Item:\nResponse from server " + data.message);
-          //   alert("Newly added _id", data._id);
-          // });
-
+        }).then((response) => response.json());
+        // .then((data) => {
+        //   alert("Add Item:\nResponse from server " + data.message);
+        //   alert("Newly added _id", data._id);
+        // });
       }
     });
 
     couponList.map((coupon) => {
-      if(coupon["used"] == "missing"){
+      if (coupon["used"] == "missing") {
         coupon["used"] = false;
-  
+
         fetch("/api/coupon", {
           method: "PUT", // *GET, POST, PUT, DELETE, etc.
           mode: "cors", // no-cors, *cors, same-origin
@@ -549,18 +538,14 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
           redirect: "follow", // manual, *follow, error
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(coupon), // body data type must match "Content-Type" header
-        })
-          .then((response) => response.json())
-          // .then((data) => {
-          //   alert("Add Item:\nResponse from server " + data.message);
-          //   alert("Newly added _id", data._id);
-          // });
-
+        }).then((response) => response.json());
+        // .then((data) => {
+        //   alert("Add Item:\nResponse from server " + data.message);
+        //   alert("Newly added _id", data._id);
+        // });
       }
     });
   };
-
-
 
   return (
     <div>
@@ -578,7 +563,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             <div>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label1">
-                  Company
+                  ชื่อลูกค้า
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label1"
@@ -589,29 +574,28 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 >
                   {customers.map((company) => {
                     return (
-                      <MenuItem key={company.company} value={company}>{company.company}</MenuItem>
+                      <MenuItem key={company.company} value={company}>
+                        {company.company}
+                      </MenuItem>
                     );
                   })}
                 </Select>
               </FormControl>
             </div>
-            
-            
-            <div style={{ height: 300, width: '200%' }}>
-            {tableState ? 
+
+            <div style={{ height: 300, width: "200%" }}>
+              {tableState ? (
                 <DataGrid
                   rows={row}
                   columns={columns}
                   onCellBlur={handleBlur}
                   hideFooterPagination={true}
-
-                  
-                /> : null }
-
+                />
+              ) : null}
             </div>
             <div>
-            <button onClick={() => handleAddRow()}>เพิ่มคูปอง</button>
-              คูปองรวม {totalCoupon}
+              <button onClick={() => handleAddRow()}>เพิ่มคูปอง</button>
+              &emsp;คูปองรวม {totalCoupon}
             </div>
 
             <Button onClick={() => onSubmit()} color="primary">
@@ -648,12 +632,14 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 >
                   {customers.map((company) => {
                     return (
-                      <MenuItem key={company.company} value={company}>{company.company}</MenuItem>
+                      <MenuItem key={company.company} value={company}>
+                        {company.company}
+                      </MenuItem>
                     );
                   })}
                 </Select>
               </FormControl>
-{/* 
+              {/* 
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   Type
@@ -698,7 +684,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 alignItems="center"
                 className={classes.root}
               >
-                <Grid item>{customList("Choices", couponList)}</Grid>
+                <Grid item>{customList("คูปองคงเหลือ", couponList)}</Grid>
                 <Grid item>
                   <Grid container direction="column" alignItems="center">
                     <Button
@@ -723,7 +709,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid item>{customList("Missing", right)}</Grid>
+                <Grid item>{customList("คูปองสูญหาย", right)}</Grid>
               </Grid>
 
               <Button onClick={() => onSubmit_missing_coupon()} color="primary">
@@ -733,7 +719,6 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
           </Typography>
         </AccordionDetails>
       </Accordion>
-      
     </div>
   );
 }
