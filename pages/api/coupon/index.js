@@ -17,6 +17,7 @@ export default async (req, res) => {
         printed,
     } = data;
 
+
     const { db } = await connectToDatabase();
     await db.collection("coupons").insertOne(
       {
