@@ -422,19 +422,19 @@ export default async function test(req, res) {
         return;
       }
 
-    let admins =  await fetch(process.env.API + "/admin", {
-                  method: "GET", // *GET, POST, PUT, DELETE, etc.
-                  }).then((response) => response.json())
+    // let admins =  await fetch(process.env.API + "/admin", {
+    //               method: "GET", // *GET, POST, PUT, DELETE, etc.
+    //               }).then((response) => response.json())
 
-    let customers = await fetch(process.env.API + "/toDB", {
-                    method: "GET", // *GET, POST, PUT, DELETE, etc.
-                  })
-                    .then((response) => response.json())
+    // let customers = await fetch(process.env.API + "/toDB", {
+    //                 method: "GET", // *GET, POST, PUT, DELETE, etc.
+    //               })
+    //                 .then((response) => response.json())
 
-    let coupons = await fetch(process.env.API + "/coupon/used", {
-                    method: "GET", // *GET, POST, PUT, DELETE, etc.
-                  })
-                    .then((response) => response.json())
+    // let coupons = await fetch(process.env.API + "/coupon/used", {
+    //                 method: "GET", // *GET, POST, PUT, DELETE, etc.
+    //               })
+    //                 .then((response) => response.json())
 
     
 
@@ -522,26 +522,29 @@ export default async function test(req, res) {
 
     }
     else if(event.message.text == "สอบถาม GroupID"){
-      // let customers = await fetch(process.env.API + "/toDB", {
-      //                 method: "GET", // *GET, POST, PUT, DELETE, etc.
-      //               })
-      //                 .then((response) => response.json())
+      let customers = await fetch(process.env.API + "/toDB", {
+                      method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    })
+                      .then((response) => response.json())
 
       let customer = customers.filter(customer => customer.groupID === GID)
       
       if(customer[0] === undefined){
         let replyCheckGroupID = "GroupID คือ " + GID;
         reply(reply_token, replyCheckGroupID);
+      } else {
+        let replyCheckGroupID = "คำสั่งนี้สามารถใช้ได้";
+        reply(reply_token, replyCheckGroupID);
       }
     }else if(event.message.text == "สอบถามยอด"){
-      // let admins =  await fetch(process.env.API + "/admin", {
-      //               method: "GET", // *GET, POST, PUT, DELETE, etc.
-      //               }).then((response) => response.json())
+      let admins =  await fetch(process.env.API + "/admin", {
+                    method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    }).then((response) => response.json())
 
-      // let customers = await fetch(process.env.API + "/toDB", {
-      //                 method: "GET", // *GET, POST, PUT, DELETE, etc.
-      //               })
-      //                 .then((response) => response.json())
+      let customers = await fetch(process.env.API + "/toDB", {
+                      method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    })
+                      .then((response) => response.json())
                     
       let admin = await admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
       // console.log(admin.groupId.includes(GID))
@@ -557,6 +560,10 @@ export default async function test(req, res) {
       
       if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
         
+        let coupons = await fetch(process.env.API + "/coupon/used", {
+          method: "GET", // *GET, POST, PUT, DELETE, etc.
+        })
+          .then((response) => response.json())
 
         let customer = await customers.filter(customer => customer.groupID === GID)
 
@@ -608,9 +615,9 @@ export default async function test(req, res) {
         
       } 
     }else if(event.message.text == "คำสั่งบอท"){
-      // let admins =  await fetch(process.env.API + "/admin", {
-      //               method: "GET", // *GET, POST, PUT, DELETE, etc.
-      //               }).then((response) => response.json())
+      let admins =  await fetch(process.env.API + "/admin", {
+                    method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    }).then((response) => response.json())
 
         let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
         
@@ -626,9 +633,9 @@ export default async function test(req, res) {
         reply(reply_token, replyCommand);
 
     }else if (event.message.type == "image") {
-      // let admins =  await fetch(process.env.API + "/admin", {
-      //               method: "GET", // *GET, POST, PUT, DELETE, etc.
-      //               }).then((response) => response.json())
+      let admins =  await fetch(process.env.API + "/admin", {
+                    method: "GET", // *GET, POST, PUT, DELETE, etc.
+                    }).then((response) => response.json())
 
       let admin = admins.filter(admin => admin.userId === id && admin.groupId.includes(GID))
 
