@@ -18,7 +18,6 @@ import Button from '@material-ui/core/Button';
 
 // layout for this page
 import Admin from "layouts/Admin.js";
-import { FormatColorResetTwoTone } from "@material-ui/icons";
 
 
 export async function getServerSideProps() {
@@ -67,7 +66,6 @@ function AdminMgt({admin : admins, customer: customers}) {
     console.log(admins)
 
     const [randomStateSA, setRandomStateSA] = useState(false)
-    const [passwordSA, setPasswordSA] = useState()
 
     const [password, setPassword] = useState()
     const [status, setStatus] = useState()
@@ -143,8 +141,8 @@ function AdminMgt({admin : admins, customer: customers}) {
     }
 
     const columns = [
-      { field: 'username', headerName: 'ชื่อผู้ใช้', width: 180, editable: true },
-      { field: 'status', headerName: 'สถานะ', width: 180, 
+      { field: 'username', headerName: 'ชื่อผู้ใช้', width: 150, editable: true },
+      { field: 'status', headerName: 'สถานะ', width: 120, 
         disableClickEventBubbling: true,
         renderCell: function choose(params){
           // console.log(params)
@@ -307,101 +305,16 @@ function AdminMgt({admin : admins, customer: customers}) {
         userId: "",
         groupId: "admin.groupId",
         edit: true,
-        // edit: function edit(){
-        //     return (
-        //       <button>
-        //         แก้ไข
-        //       </button>
-        //     );
-        //   }
+        
       })
       setRow(newArr)
 
-      // console.log(row)
-      // let newArr = row
-
-      // newArr.push({
-      //   id: "index",
-      //   username: "admin.username",
-      //   status: "admin.status",
-      //   userId: "admin.userId",
-      //   groupId: "admin.groupId"
-      // })
-
-      // setRow(newArr)
-      // 
-      // console.log("working ", row)
-      // setEditState(true)
     }
 
-    const passSO = new Promise(function(resolve, reject){
-      let str = randomString(11)
-      resolve(str) // ถ้าได้ค่า str resolve จะทำงาน
-    })
 
-    const handleClickSO = () =>{
+    
+    
 
-      if(company == ""){
-        setCompanyError(true)
-      }else{
-        console.log(company)
-      // setRandomStateSO(true)
-
-      // passSO.then(function(done){
-      //     setPasswordSO(done)
-
-      //     fetch("/api/admin/password", {
-      //     method: "POST", // *GET, POST, PUT, DELETE, etc.
-      //     mode: "cors", // no-cors, *cors, same-origin
-      //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      //     credentials: "same-origin", // include, *same-origin, omit
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       // 'Content-Type': 'application/x-www-form-urlencoded',
-      //     },
-      //     redirect: "follow", // manual, *follow, error
-      //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      //     body: JSON.stringify({password: done,
-      //                           status: "SO"}), // body data type must match "Content-Type" header
-      //   })
-      // })
-
-      }
-    }
-
-    const passEN = new Promise(function(resolve, reject){
-      let str = randomString(12)
-      resolve(str) // ถ้าได้ค่า str resolve จะทำงาน
-  })
-
-  const handleClickEN = () =>{
-    if(company == ""){
-      setCompanyError(true)
-    }else{
-      console.log(company)
-      // setRandomStateEN(true)
-
-      // passEN.then(function(done){
-      //     setPasswordEN(done)
-
-      //     fetch("/api/admin/password", {
-      //     method: "POST", // *GET, POST, PUT, DELETE, etc.
-      //     mode: "cors", // no-cors, *cors, same-origin
-      //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      //     credentials: "same-origin", // include, *same-origin, omit
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       // 'Content-Type': 'application/x-www-form-urlencoded',
-      //     },
-      //     redirect: "follow", // manual, *follow, error
-      //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      //     body: JSON.stringify({password: done,
-      //                           status: "EN"}), // body data type must match "Content-Type" header
-      //   })
-      // })
-
-    }
-}
 
   
 
@@ -447,6 +360,8 @@ function AdminMgt({admin : admins, customer: customers}) {
         <DataGrid
           rows={row}
           columns={columns}
+          hideFooterPagination={true}
+
           // checkboxSelection={handleSelectRow}
           // icons={EditIcon}
           

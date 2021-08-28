@@ -154,6 +154,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const [selectedDate, setSelectedDate] = React.useState(
     new Date()
   );
+  const [date, setDate] = useState()
 
   const [ordered_company, setOrdered_company] = useState([]);
   const [tableState, setTableState] = useState(false)
@@ -230,18 +231,19 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       }, {})
   }
 
- 
   useEffect(() => {
-    
     let tDate = new Date();
     let todayDate = "";
     todayDate += tDate.getDate() + "/";
     todayDate += tDate.getMonth() + 1 + "/";
     todayDate += tDate.getFullYear();
+
+    console.log("tday todayDate = ", todayDate)
     
-    setSelectedDate(todayDate)
-    console.log("Date == ", selectedDate)
+    setDate(todayDate)
   }, [])
+ 
+ 
 
   useEffect(() => {
     let list = [];
@@ -251,16 +253,15 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       if (
         coupon.companyRef === company._id &&
         !coupon.used &&
-        coupon.generatedDate === selectedDate &&
-        coupon.amount === type
+        coupon.generatedDate === date 
       ) {
+        console.log(coupon)
 
         list.push(coupon);
       }else if(
         coupon.companyRef === company._id &&
         coupon.used === 'missing' &&
-        coupon.generatedDate === selectedDate &&
-        coupon.amount === type
+        coupon.generatedDate === date 
       ){
         miss.push(coupon)
       }
@@ -276,22 +277,24 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
     // let uniq = removeDuplicates(runNo, "amount");
     // setOrdered_company(uniq);
-  }, [company, selectedDate, type]);
+  }, [company, date, type]);
 
-  useEffect(() => {
-    let date = new Date();
-    let timeSt = date.toLocaleString().split(",")[0];
+  // useEffect(() => {
+  //   // let date = new Date();
+  //   // let timeSt = date.toLocaleString().split(" ")[0];
 
-    let filterCoupon = coupons.filter(coupon => coupon.companyRef === company._id && coupon.generatedDate === "8/13/2021")
+  //   // console.log("timest",timeSt)
 
-    let groupArray = groupByKey(filterCoupon, "amount")
+  //   let filterCoupon = coupons.filter(coupon => coupon.companyRef === company._id && coupon.generatedDate === date)
 
-    setOrdered_company(groupArray)
+  //   let groupArray = groupByKey(filterCoupon, "amount")
 
-    console.log("groupArr", groupArray)
+  //   setOrdered_company(groupArray)
+
+  //   console.log("groupArr", groupArray)
 
 
-  }, [company])
+  // }, [company])
 
   const handleChangeCompany = (event) => {
     setTableState(true)
@@ -302,9 +305,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setType(event.target.value);
   };
 
-  const handleQty = (event) => {
-    setQty(Number(event.target.value));
-  };
+  
 
   const useStyles = makeStyles(styles);
   const classes = useStyles();
@@ -404,6 +405,15 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const handleDateChange = (date) => {
     // let timeSt = date.toLocaleString().split(" ")[0];
     setSelectedDate(date);
+
+    let todayDate = "";
+    todayDate += date.getDate() + "/";
+    todayDate += date.getMonth() + 1 + "/";
+    todayDate += date.getFullYear();
+
+    console.log("date = ", todayDate)
+    
+    setDate(todayDate)
   };
 
   const info = {
@@ -587,12 +597,14 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             </div>
             
             
-            <div style={{ height: 300, width: '100%' }}>
+            <div style={{ height: 300, width: '200%' }}>
             {tableState ? 
                 <DataGrid
                   rows={row}
                   columns={columns}
                   onCellBlur={handleBlur}
+                  hideFooterPagination={true}
+
                   
                 /> : null }
 
@@ -641,7 +653,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   })}
                 </Select>
               </FormControl>
-
+{/* 
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   Type
@@ -659,7 +671,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   <MenuItem value={500}>500</MenuItem>
                   <MenuItem value={1000}>1,000</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
 
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <Grid container justifyContent="space-around">
