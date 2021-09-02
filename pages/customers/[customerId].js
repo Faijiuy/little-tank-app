@@ -170,7 +170,7 @@ function CreateCustomer({customer:customer}) {
       let array = []
       
       array.push({
-        id: index,
+        id: 0,
         licensePlate: customer1.licensePlate
       })
       
