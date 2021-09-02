@@ -342,16 +342,16 @@ function AdminMgt({ admin: admins, customer: customers }) {
         </FormControl>
       </div>
 
-      <button onClick={() => handleClick("SA")}>รับ password ให้แคชเชียร์</button>
+      <Button onClick={() => handleClick("SA")} variant="contained">รับ password ให้แคชเชียร์</Button>
       {randomStateSA ? password : null}
 
       <div>
-        <button onClick={() => handleClick("SO")}>รับ password ให้เจ้าของ หรือ ผู้ช่วย</button>
+        <Button onClick={() => handleClick("SO")} variant="contained">รับ password ให้เจ้าของ หรือ ผู้ช่วย</Button>
         {randomStateSO ? passwordSO : null}
       </div>
 
       <div>
-        <button onClick={() => handleClick("EN")}>รับ password ให้ลูกค้า</button>
+        <Button onClick={() => handleClick("EN")} variant="contained">รับ password ให้ลูกค้า</Button>
         {randomStateEN ? passwordEN : null}
       </div>
 
@@ -365,7 +365,7 @@ function AdminMgt({ admin: admins, customer: customers }) {
           // icons={EditIcon}
         />
       </div>
-      <button onClick={() => handleAddRow()}>เพิ่ม admin</button>
+      <Button onClick={() => handleAddRow()} color="primary" variant="contained">เพิ่ม admin</Button>
     </div>
   );
 }

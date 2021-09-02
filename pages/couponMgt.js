@@ -582,7 +582,6 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                 </Select>
               </FormControl>
             </div>
-
             <div style={{ height: 300, width: "200%" }}>
               {tableState ? (
                 <DataGrid
@@ -594,16 +593,16 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
               ) : null}
             </div>
             <div>
-              <button onClick={() => handleAddRow()}>เพิ่มคูปอง</button>
-              &emsp;คูปองรวม {totalCoupon}
+              <Button onClick={() => handleAddRow()}>เพิ่มคูปอง</Button>
+              &emsp;คูปองที่ต้องการพิมพ์ทั้งหมด มูลค่ารวม {totalCoupon}
             </div>
-
             <Button onClick={() => onSubmit()} color="primary">
-              พิมพ์
+              ยืนยัน
             </Button>
-
-            <Button href="/coupon/printPage">หน้าปริ้น</Button>
-
+            &emsp;
+            <Button href="/coupon/printPage" color="primary">
+              หน้าปริ้น
+            </Button>
             {/* </GridContainer> */}
           </Typography>
         </AccordionDetails>
@@ -621,7 +620,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             <GridContainer>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
-                  Company
+                  ชื่อลูกค้า
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -667,7 +666,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                     format="dd/MM/yyyy"
                     margin="normal"
                     id="date-picker-inline"
-                    label="Date picker inline"
+                    label="เลือกวันที่ที่ต้องการ"
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{
