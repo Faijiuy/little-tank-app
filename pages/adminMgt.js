@@ -161,14 +161,17 @@ function AdminMgt({ admin: admins, customer: customers }) {
                 onChange={handleChangeStatus}
                 label="Status"
               >
-                <MenuItem key="SA" value="SA">
-                  SA
+                <MenuItem key="แคชเชียร์" value="แคชเชียร์">
+                  แคชเชียร์
                 </MenuItem>
-                <MenuItem key="SO" value="SO">
-                  SO
+                <MenuItem
+                  key="เจ้าของ หรือ ผู้ช่วย"
+                  value="เจ้าของ หรือ ผู้ช่วย"
+                >
+                  เจ้าของ หรือ ผู้ช่วย
                 </MenuItem>
-                <MenuItem key="EN" value="EN">
-                  EN
+                <MenuItem key="ลูกค้า" value="ลูกค้า">
+                  ลูกค้า
                 </MenuItem>
               </Select>
             </FormControl>
@@ -246,9 +249,9 @@ function AdminMgt({ admin: admins, customer: customers }) {
   function getPassword(status, num) {
     let str = randomString(num);
 
-    if (status == "SA") {
+    if (status == "แคชเชียร์") {
       setPassword(str);
-    } else if (status == "SO") {
+    } else if (status == "เจ้าของ หรือ ผู้ช่วย") {
       setPasswordSO(str);
     } else {
       setPasswordEN(str);
@@ -279,13 +282,13 @@ function AdminMgt({ admin: admins, customer: customers }) {
     } else {
       // let pass = password
       if (value == "SA") {
-        getPassword("SA", 10);
+        getPassword("แคชเชียร์", 10);
         setRandomStateSA(true);
       } else if (value == "SO") {
-        getPassword("SO", 11);
+        getPassword("เจ้าของ หรือ ผู้ช่วย", 11);
         setRandomStateSO(true);
       } else {
-        getPassword("EN", 12);
+        getPassword("ลูกค้า", 12);
         setRandomStateEN(true);
       }
     }
@@ -343,16 +346,22 @@ function AdminMgt({ admin: admins, customer: customers }) {
         </FormControl>
       </div>
 
-      <Button onClick={() => handleClick("SA")} variant="contained">รับ password ให้แคชเชียร์</Button>
+      <Button onClick={() => handleClick("SA")} variant="contained">
+        รับ password ให้แคชเชียร์
+      </Button>
       {randomStateSA ? password : null}
 
       <div>
-        <Button onClick={() => handleClick("SO")} variant="contained">รับ password ให้เจ้าของ หรือ ผู้ช่วย</Button>
+        <Button onClick={() => handleClick("SO")} variant="contained">
+          รับ password ให้เจ้าของ หรือ ผู้ช่วย
+        </Button>
         {randomStateSO ? passwordSO : null}
       </div>
 
       <div>
-        <Button onClick={() => handleClick("EN")} variant="contained">รับ password ให้ลูกค้า</Button>
+        <Button onClick={() => handleClick("EN")} variant="contained">
+          รับ password ให้ลูกค้า
+        </Button>
         {randomStateEN ? passwordEN : null}
       </div>
 
@@ -366,7 +375,13 @@ function AdminMgt({ admin: admins, customer: customers }) {
           // icons={EditIcon}
         />
       </div>
-      <Button onClick={() => handleAddRow()} color="primary" variant="contained">เพิ่ม admin</Button>
+      <Button
+        onClick={() => handleAddRow()}
+        color="primary"
+        variant="contained"
+      >
+        เพิ่ม admin
+      </Button>
     </div>
   );
 }
