@@ -23,7 +23,7 @@ export async function uploadFile(uploadName, fsReadStreamOfFilePath){
             requestBody: {
                 name: uploadName, // name that we gonna save to Onedrive
                 mimeType: 'image/png',
-                parents: ["1ljulA5PkZVr-R2iL3Pq0dsw4q1HEsJQW"]
+                parents: ["1ZZJeQmjDOYkjHUbAqH6oE0GwnvqXhAU4"]
             },
             media: { // actual content of our file
                 mimeType: 'image/png',
