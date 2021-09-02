@@ -224,6 +224,7 @@ function AdminMgt({ admin: admins, customer: customers }) {
       headerName: "Edit",
       // sortable: false,
       width: 130,
+      hide: true,
       disableClickEventBubbling: true,
       renderCell: function edit(params) {
         // console.log(params)
