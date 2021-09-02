@@ -556,6 +556,11 @@ export default async function test(req, res) {
       todayDate += tDate.getFullYear();
       
       if (admin[0].status == "SA" || admin[0].status == "SO" || admin[0].status == "EN") {
+
+        let coupons = await fetch(process.env.API + "/coupon/used", {
+                          method: "GET", // *GET, POST, PUT, DELETE, etc.
+                        })
+                          .then((response) => response.json())
         
 
         let customer = await customers.filter(customer => customer.groupID === GID)
