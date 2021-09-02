@@ -161,14 +161,17 @@ function AdminMgt({ admin: admins, customer: customers }) {
                 onChange={handleChangeStatus}
                 label="Status"
               >
-                <MenuItem key="SA" value="SA">
-                  SA
+                <MenuItem key="แคชเชียร์" value="แคชเชียร์">
+                  แคชเชียร์
                 </MenuItem>
-                <MenuItem key="SO" value="SO">
-                  SO
+                <MenuItem
+                  key="เจ้าของ หรือ ผู้ช่วย"
+                  value="เจ้าของ หรือ ผู้ช่วย"
+                >
+                  เจ้าของ หรือ ผู้ช่วย
                 </MenuItem>
-                <MenuItem key="EN" value="EN">
-                  EN
+                <MenuItem key="ลูกค้า" value="ลูกค้า">
+                  ลูกค้า
                 </MenuItem>
               </Select>
             </FormControl>
@@ -224,6 +227,7 @@ function AdminMgt({ admin: admins, customer: customers }) {
       headerName: "Edit",
       // sortable: false,
       width: 130,
+      hide: true,
       disableClickEventBubbling: true,
       renderCell: function edit(params) {
         // console.log(params)
@@ -245,9 +249,9 @@ function AdminMgt({ admin: admins, customer: customers }) {
   function getPassword(status, num) {
     let str = randomString(num);
 
-    if (status == "SA") {
+    if (status == "แคชเชียร์") {
       setPassword(str);
-    } else if (status == "SO") {
+    } else if (status == "เจ้าของ หรือ ผู้ช่วย") {
       setPasswordSO(str);
     } else {
       setPasswordEN(str);
@@ -278,13 +282,13 @@ function AdminMgt({ admin: admins, customer: customers }) {
     } else {
       // let pass = password
       if (value == "SA") {
-        getPassword("SA", 10);
+        getPassword("แคชเชียร์", 10);
         setRandomStateSA(true);
       } else if (value == "SO") {
-        getPassword("SO", 11);
+        getPassword("เจ้าของ หรือ ผู้ช่วย", 11);
         setRandomStateSO(true);
       } else {
-        getPassword("EN", 12);
+        getPassword("ลูกค้า", 12);
         setRandomStateEN(true);
       }
     }
@@ -342,16 +346,22 @@ function AdminMgt({ admin: admins, customer: customers }) {
         </FormControl>
       </div>
 
-      <button onClick={() => handleClick("SA")}>รับ password ให้แคชเชียร์</button>
+      <Button onClick={() => handleClick("SA")} variant="contained">
+        รับ password ให้แคชเชียร์
+      </Button>
       {randomStateSA ? password : null}
 
       <div>
-        <button onClick={() => handleClick("SO")}>รับ password ให้เจ้าของ หรือ ผู้ช่วย</button>
+        <Button onClick={() => handleClick("SO")} variant="contained">
+          รับ password ให้เจ้าของ หรือ ผู้ช่วย
+        </Button>
         {randomStateSO ? passwordSO : null}
       </div>
 
       <div>
-        <button onClick={() => handleClick("EN")}>รับ password ให้ลูกค้า</button>
+        <Button onClick={() => handleClick("EN")} variant="contained">
+          รับ password ให้ลูกค้า
+        </Button>
         {randomStateEN ? passwordEN : null}
       </div>
 
@@ -365,7 +375,13 @@ function AdminMgt({ admin: admins, customer: customers }) {
           // icons={EditIcon}
         />
       </div>
-      <button onClick={() => handleAddRow()}>เพิ่ม admin</button>
+      <Button
+        onClick={() => handleAddRow()}
+        color="primary"
+        variant="contained"
+      >
+        เพิ่ม admin
+      </Button>
     </div>
   );
 }
