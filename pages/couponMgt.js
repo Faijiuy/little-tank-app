@@ -21,12 +21,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "components/CustomButtons/Button.js";
 
+
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Divider from "@material-ui/core/Divider";
 
-import "date-fns";
+import { format } from 'date-fns'
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -120,6 +121,18 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
+const useStyles3 = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 200,
+  },
+}));
+
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
@@ -134,6 +147,7 @@ function union(a, b) {
 
 function CouponMgt({ customer: customers, coupon: coupons }) {
   const classes2 = useStyles2();
+  const classes3 = useStyles3();
 
   const [expanded, setExpanded] = React.useState("panel1");
 
@@ -214,25 +228,16 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     },
   ];
 
-  function groupByKey(array, key) {
-    return array.reduce((hash, obj) => {
-      if (obj[key] === undefined) return hash;
-      return Object.assign(hash, {
-        [obj[key]]: (hash[obj[key]] || []).concat(obj),
-      });
-    }, {});
-  }
-
   useEffect(() => {
-    let tDate = new Date();
-    let todayDate = "";
-    todayDate += tDate.getDate() + "/";
-    todayDate += tDate.getMonth() + 1 + "/";
-    todayDate += tDate.getFullYear();
+    let todayDate = format(new Date(), "dd/MM/yyyy"); 
 
-    console.log("tday todayDate = ", todayDate);
-
-    setDate(todayDate);
+    if(new Date().getFullYear() >= 2564){
+      let thaiDate = format(new Date(), "dd/MM"); 
+      setDate(thaiDate + "/" + (new Date().getFullYear() - 543))
+    }else{
+      setDate(todayDate);
+    }
+    
   }, []);
 
   useEffect(() => {
@@ -260,30 +265,28 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setCouponList(list);
     setRight(miss);
 
-    // let date = new Date();
-    // let timeSt = date.toLocaleString().split(",")[0];
+  }, [company, date]);
 
-    // let runNo = list.filter((a) => a.generatedDate === timeSt).sort(compare);
+  function groupByKey(array, key) {
+    return array
+      .reduce((hash, obj) => {
+        if(obj[key] === undefined) return hash; 
+        return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
+      }, {})
+  }
 
-    // let uniq = removeDuplicates(runNo, "amount");
-    // setOrdered_company(uniq);
-  }, [company, date, type]);
+  useEffect(() => {
+  
+    let filterCoupon = coupons.filter(coupon => coupon.companyRef === company._id && coupon.generatedDate === date)
 
-  // useEffect(() => {
-  //   // let date = new Date();
-  //   // let timeSt = date.toLocaleString().split(" ")[0];
+    let groupArray = groupByKey(filterCoupon, "amount")
 
-  //   // console.log("timest",timeSt)
+    setOrdered_company(groupArray)
 
-  //   let filterCoupon = coupons.filter(coupon => coupon.companyRef === company._id && coupon.generatedDate === date)
+    console.log("groupArr", groupArray)
 
-  //   let groupArray = groupByKey(filterCoupon, "amount")
 
-  //   setOrdered_company(groupArray)
-
-  //   console.log("groupArr", groupArray)
-
-  // }, [company])
+  }, [company])
 
   const handleChangeCompany = (event) => {
     setTableState(true);
@@ -390,18 +393,22 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     </Card>
   );
 
-  const handleDateChange = (date) => {
-    // let timeSt = date.toLocaleString().split(" ")[0];
-    setSelectedDate(date);
+  const handleDateChange = (selectedDate) => {
+    let todayDate = format(selectedDate, "dd/MM/yyyy"); 
 
-    let todayDate = "";
-    todayDate += date.getDate() + "/";
-    todayDate += date.getMonth() + 1 + "/";
-    todayDate += date.getFullYear();
+    if(selectedDate.getFullYear() >= 2564){
+      let thaiDate = format(selectedDate, "dd/MM");
+      let mountDate = format(selectedDate, "MM/dd");
 
-    console.log("date = ", todayDate);
+      setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543))
+      setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543))
+    }else{
+      let mountDate = format(selectedDate, "MM/dd/yyyy");
 
-    setDate(todayDate);
+      setDate(todayDate);
+      setSelectedDate(mountDate)
+    }
+
   };
 
   const info = {
@@ -417,8 +424,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   };
 
   const onSubmit = () => {
-    let date = new Date();
-    let timeSt = date.toLocaleString().split(" ")[0];
+    // let date = new Date();
+    // let timeSt = date.toLocaleString().split(" ")[0];
     // let runNo = 0
 
     row.map((row) => {
@@ -439,10 +446,10 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             body: JSON.stringify({
               code:
-                company._id + "-" + timeSt + "-" + row.type + "-" + (runNo + i),
+                company._id + "-" + date + "-" + row.type + "-" + (runNo + i),
               companyRef: company._id,
-              generatedDate: timeSt,
-              amount: row.type,
+              generatedDate: date,
+              amount: Number(row.type),
               runningNo: runNo + i,
               used: false,
               usedDateTime: "",
@@ -472,10 +479,10 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
             redirect: "follow", // manual, *follow, error
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             body: JSON.stringify({
-              code: company._id + "-" + timeSt + "-" + row.type + "-" + i,
+              code: company._id + "-" + date + "-" + row.type + "-" + i,
               companyRef: company._id,
-              generatedDate: timeSt,
-              amount: row.type,
+              generatedDate: date,
+              amount: Number(row.type),
               runningNo: i,
               used: false,
               usedDateTime: "",
@@ -581,17 +588,23 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   })}
                 </Select>
               </FormControl>
+              
+              <Button href="/coupon/printPage" color="primary">
+                หน้าปริ้น
+              </Button>
+
             </div>
-            <div style={{ height: 300, width: "200%" }}>
               {tableState ? (
+                <div>
+                  
+                <div style={{ height: 300, width: "200%" }}>
                 <DataGrid
                   rows={row}
                   columns={columns}
                   onCellBlur={handleBlur}
                   hideFooterPagination={true}
-                />
-              ) : null}
-            </div>
+                  />
+                  </div>
             <div>
               <Button onClick={() => handleAddRow()}>เพิ่มคูปอง</Button>
               &emsp;คูปองที่ต้องการพิมพ์ทั้งหมด มูลค่ารวม {totalCoupon}
@@ -600,9 +613,10 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
               ยืนยัน
             </Button>
             &emsp;
-            <Button href="/coupon/printPage" color="primary">
-              หน้าปริ้น
-            </Button>
+            
+                </div>
+                  
+              ) : null}
             {/* </GridContainer> */}
           </Typography>
         </AccordionDetails>
@@ -638,28 +652,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   })}
                 </Select>
               </FormControl>
-              {/* 
-              <FormControl variant="outlined" className={classes2.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Type
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={type ? type : ""}
-                  onChange={handleChangeType}
-                  label="type"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={500}>500</MenuItem>
-                  <MenuItem value={1000}>1,000</MenuItem>
-                </Select>
-              </FormControl> */}
+              
 
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Grid container justifyContent="space-around">
                   <KeyboardDatePicker
                     disableToolbar
                     variant="inline"
@@ -667,14 +662,15 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                     margin="normal"
                     id="date-picker-inline"
                     label="เลือกวันที่ที่ต้องการ"
-                    value={selectedDate}
                     onChange={handleDateChange}
+                    // defaultValue={date}
+                    value={selectedDate}
                     KeyboardButtonProps={{
                       "aria-label": "change date",
                     }}
                   />
-                </Grid>
               </MuiPickersUtilsProvider>
+
 
               <Grid
                 container

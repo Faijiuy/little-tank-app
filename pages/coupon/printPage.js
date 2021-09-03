@@ -5,6 +5,8 @@ import QRCode from "react-qr-code";
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import { useRouter } from "next/router";
+
 
 import { connectToDatabase } from "../../util/mongodb";
 
@@ -47,10 +49,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function getModalStyle() {
+  const top = 50 ;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
 export default function PrintPage({ coupon: printList, customer: customers }) {
   // console.log(customers)
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [modalStyle] = React.useState(getModalStyle);
+  const router = useRouter();
+
 
   const handleOpen = () => {
     setOpen(true);
@@ -61,7 +77,7 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
   };
 
   const body = (
-    <div className={classes.paper}>
+    <div style={modalStyle} className={classes.paper}>
       {/* <h2 id="simple-modal-title"></h2> */}
       <p id="simple-modal-description">
         หากกดยืนยันแล้ว จะไม่สามารถกลับไปปริ้นได้อีก หากคุณยังไม่ได้ปริ้น ปิดแล้วกด Ctrl + P เพื่อปริ้น
@@ -75,9 +91,9 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
     </div>
   );
 
-  const handleClick = () => {
+  const handleClick = async () => {
 
-    printList.map((coupon) => {
+    await printList.map((coupon) => {
       coupon.printed = true;
       fetch("/api/coupon/print", {
         method: "PUT", // *GET, POST, PUT, DELETE, etc.
@@ -98,6 +114,10 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
         //   // alert("Add Item:\nResponse from server " + data._id);
         // });
     });
+
+    // router.reload();
+    router.push('/couponMgt')
+
   };
 
   return (

@@ -24,6 +24,9 @@ import { connectToDatabase } from "../../util/mongodb";
 import { ObjectId } from 'bson';
 
 
+// if(process.env.NODE_ENV == 'development'){
+
+// }
 const customer1 = {
   company: "company",
   owner: "owner",
