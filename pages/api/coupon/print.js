@@ -49,10 +49,12 @@ export default async (req, res) => {
         //   console.log("Newly Updated");
           res.json({
             message: "Coupon Update",
-            data: data,
+            // data: data,
           });
         }
       }
     ); // if update non-existing record, insert instead.
   }
+  // res.status(200).json({});
+
 }

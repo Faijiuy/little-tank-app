@@ -13,16 +13,17 @@ const drive = google.drive({
     auth: oauth2Client
 })
 
-// console.log({CLIENT_ID, CLIENT_SECRET, REDIRECT_URL, REFRESH_TOKEN})
+console.log({CLIENT_ID, CLIENT_SECRET, REDIRECT_URL, REFRESH_TOKEN})
 
 export async function uploadFile(uploadName, fsReadStreamOfFilePath){
     try{
+        console.log("uploading")
 
         const response = await drive.files.create({
             requestBody: {
                 name: uploadName, // name that we gonna save to Onedrive
                 mimeType: 'image/png',
-                parents: ["1ljulA5PkZVr-R2iL3Pq0dsw4q1HEsJQW"]
+                parents: ["1ZZJeQmjDOYkjHUbAqH6oE0GwnvqXhAU4"]
             },
             media: { // actual content of our file
                 mimeType: 'image/png',

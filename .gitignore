@@ -8,6 +8,7 @@
 yarn.lock
 cypress
 cypress.json
+hello.js
 
 
 # testing
@@ -37,4 +38,6 @@ yarn-error.log*
 .env.production.local
 
 # vercel
+.vercel
+
 .vercel
