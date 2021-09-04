@@ -60,7 +60,7 @@ function getModalStyle() {
   };
 }
 
-export default function PrintPage({ coupon: printList, customer: customers }) {
+function PrintPage({ coupon: printList, customer: customers }) {
   // console.log(customers)
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -175,3 +175,5 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
     </div>
   );
 }
+
+export default PrintPage;
