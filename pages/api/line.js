@@ -405,11 +405,11 @@ export default async function test(req, res) {
       });
     }
   } else {
-    console.log("Trivial API", process.env.API);
-    reply(
-      reply_token,
-      "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
-    );
+    // console.log("Trivial API", process.env.API);
+    // reply(
+    //   reply_token,
+    //   "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
+    // );
   }
 }
 

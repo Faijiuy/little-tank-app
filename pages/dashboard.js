@@ -41,8 +41,8 @@ function Dashboard() {
   
     const chart3 = sdk.createChart({
       chartId: '4c2a3639-147b-4532-b6a0-321ab9eec6fb',
-      width: 512,
-      height: 320,
+      width: 1024,
+      height: 640,
       theme: "dark",
     });
   
@@ -81,11 +81,11 @@ function Dashboard() {
   return (
     <div>
       <GridContainer>
+        <GridContainer id="chart3" />
         <GridContainer id="chart" />
-        <GridContainer id="chart2" />
       </GridContainer>
       <GridContainer>
-        <GridContainer id="chart3" />
+        <GridContainer id="chart2" />
         <GridContainer id="chart4" />
       </GridContainer>
       

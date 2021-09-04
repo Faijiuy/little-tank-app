@@ -35,6 +35,7 @@ import {
 } from "@material-ui/pickers";
 
 import { connectToDatabase } from "../util/mongodb";
+import { object } from "prop-types";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -50,6 +51,13 @@ export async function getServerSideProps() {
     },
   };
 }
+
+function checkIfDuplicateExists(arr){
+  console.log(Object.Keys(arr).some(type => type.length > 1))
+  // return arr.some(value => value.length > 1)
+}
+
+
 
 const Accordion = withStyles({
   root: {
@@ -113,11 +121,17 @@ const styles = {
 
 const useStyles2 = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
+    // margin: theme.spacing(1),
+    marginLeft: theme.spacing(2),
     minWidth: 120,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
+  },
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
   },
 }));
 
@@ -131,6 +145,7 @@ const useStyles3 = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     width: 200,
   },
+
 }));
 
 function not(a, b) {
@@ -144,6 +159,7 @@ function intersection(a, b) {
 function union(a, b) {
   return [...a, ...not(b, a)];
 }
+
 
 function CouponMgt({ customer: customers, coupon: coupons }) {
   const classes2 = useStyles2();
@@ -160,6 +176,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   const [company, setCompany] = useState("");
   const [type, setType] = useState();
+  const [typeList, setTypeList] = useState([]);
+
   const [qty, setQty] = useState();
   const [couponList, setCouponList] = useState([]);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
@@ -168,13 +186,13 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const [ordered_company, setOrdered_company] = useState([]);
   const [tableState, setTableState] = useState(false);
 
-  const [row, setRow] = useState([]);
+  const [rows, setRows] = useState([]);
   const [totalCoupon, setTotalCoupon] = useState(0);
 
   const router = useRouter();
 
   const handleBlur = (params) => {
-    let newRow = row;
+    let newRow = rows;
     newRow[params.id].type = params.row.type;
     newRow[params.id].qty = params.row.qty;
     newRow[params.id].total = params.row.type * params.row.qty;
@@ -182,13 +200,13 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     let total = 0;
     newRow.forEach((row) => (total += Number(row.qty) * Number(row.type)));
 
-    setRow(newRow);
+    setRows(newRow);
     setTotalCoupon(total);
   };
 
   const handleAddRow = () => {
     let newArr = [];
-    row.map((value, index) => {
+    rows.map((value, index) => {
       newArr.push({
         id: index,
         type: value.type,
@@ -197,24 +215,26 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       });
     });
     newArr.push({
-      id: row.length,
+      id: rows.length,
       type: 0,
       qty: 0,
       total: 0,
     });
-    setRow(newArr);
+    setRows(newArr);
   };
 
   const columns = [
     {
       field: "type",
       headerName: "ราคา",
+      type: "number",
       width: 120,
       editable: true,
     },
     {
       field: "qty",
       headerName: "จำนวน",
+      type: "number",
       width: 120,
       editable: true,
     },
@@ -241,31 +261,25 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   }, []);
 
   useEffect(() => {
-    let list = [];
-    let miss = [];
+    let couponsOfCompany = coupons.filter(coupon => coupon.companyRef === company._id)
+    let types = groupByKey(couponsOfCompany, "amount")
 
-    coupons.map((coupon) => {
-      if (
-        coupon.companyRef === company._id &&
-        !coupon.used &&
-        coupon.generatedDate === date
-      ) {
-        console.log(coupon);
+    setTypeList(Object.keys(types))
 
-        list.push(coupon);
-      } else if (
-        coupon.companyRef === company._id &&
-        coupon.used === "missing" &&
-        coupon.generatedDate === date
-      ) {
-        miss.push(coupon);
-      }
-    });
+  }, [company])
 
-    setCouponList(list);
-    setRight(miss);
+  useEffect(() => {
+    let activeList = coupons.filter(coupon => coupon.companyRef === company._id &&
+                                              !coupon.used &&
+                                              coupon.generatedDate === date && (type ? coupon.amount === Number(type) : true)) 
+    let missingList = coupons.filter(coupon => coupon.companyRef === company._id &&
+                                                coupon.used === "missing" &&
+                                                coupon.generatedDate === date && (type ? coupon.amount === Number(type) : true))  
 
-  }, [company, date]);
+    setCouponList(activeList);
+    setRight(missingList);
+
+  }, [company, date, type]);
 
   function groupByKey(array, key) {
     return array
@@ -411,27 +425,18 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   };
 
-  const info = {
-    code: "",
-    companyRef: company._id,
-    generatedDate: "",
-    amount: type,
-    runningNo: 0,
-    used: false, // missing, true, false
-    usedDateTime: "",
-    recordedBy: "",
-    printed: false,
-  };
-
   const onSubmit = () => {
-    // let date = new Date();
-    // let timeSt = date.toLocaleString().split(" ")[0];
-    // let runNo = 0
+    let test = groupByKey(rows, "type")
 
-    row.map((row) => {
+    Object.keys(test).some(type => test[type].length > 1) ? alert("กรุณาระบุราคาเดียวกันในช่องเดียวกัน") :
+    
+    rows.some(row => Number(row.type) < 500 || (Number(row.type) % 100 !== 0 && Number(row.type) % 100 !== 50)) ? 
+
+    alert("กรุณาระบุราคาคูปองไม่ต่ำกว่า 500 และไม่ควรมีเศษ") : 
+
+    rows.map((row) => {
       if (Object.keys(ordered_company).includes(row.type.toString())) {
         let runNo = ordered_company[row.type.toString()].length;
-        // console.log(ordered_company[row.type.toString()].length)
         for (let i = 1; i <= Number(row.qty); i++) {
           fetch("/api/coupon", {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -462,10 +467,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
           }
         }
       } else {
-        console.log(
-          "type ======================================================================",
-          row.type
-        );
+        
         for (let i = 1; i <= Number(row.qty); i++) {
           fetch("/api/coupon", {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -495,11 +497,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
           }
         }
       }
-    });
-
-    router.reload();
-    // setRow([])
-    // setCompany("")
+    }).then(router.reload())
+    
   };
 
   const onSubmit_missing_coupon = (e) => {
@@ -552,6 +551,8 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
         // });
       }
     });
+
+    alert("ย้ายสำเร็จ")
   };
 
   return (
@@ -566,8 +567,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            {/* <GridContainer> */}
-            <div>
+            <GridContainer className={classes2.formControl}>
               <FormControl variant="outlined" className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label1">
                   ชื่อลูกค้า
@@ -588,18 +588,24 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   })}
                 </Select>
               </FormControl>
-              
-              <Button href="/coupon/printPage" color="primary">
-                หน้าปริ้น
-              </Button>
 
-            </div>
+              <FormControl variant="outlined" className={classes2.formControl}>
+                <Button href="/coupon/printPage" color="primary">
+                  หน้าปริ้น
+                </Button>
+              </FormControl>
+              
+
+            </GridContainer>
+            
+
+            
               {tableState ? (
                 <div>
                   
                 <div style={{ height: 300, width: "200%" }}>
                 <DataGrid
-                  rows={row}
+                  rows={rows}
                   columns={columns}
                   onCellBlur={handleBlur}
                   hideFooterPagination={true}
@@ -632,7 +638,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
         <AccordionDetails>
           <Typography>
             <GridContainer>
-              <FormControl variant="outlined" className={classes2.formControl}>
+              <FormControl className={classes2.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   ชื่อลูกค้า
                 </InputLabel>
@@ -652,24 +658,49 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
                   })}
                 </Select>
               </FormControl>
-              
 
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="dd/MM/yyyy"
-                    margin="normal"
-                    id="date-picker-inline"
-                    label="เลือกวันที่ที่ต้องการ"
-                    onChange={handleDateChange}
-                    // defaultValue={date}
-                    value={selectedDate}
-                    KeyboardButtonProps={{
-                      "aria-label": "change date",
-                    }}
-                  />
-              </MuiPickersUtilsProvider>
+              <FormControl className={classes2.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label">
+                  ราคา
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={type ? type : ""}
+                  onChange={handleChangeType}
+                  label="Company"
+                >
+                  {typeList.map((type) => {
+                    return (
+                      <MenuItem key={type} value={type}>
+                        {type}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+
+              
+              <FormControl className={classes2.formControl}>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant="outlined"
+                      format="dd/MM/yyyy"
+                      margin="normal"
+                      id="date-picker-inline"
+                      label="เลือกวันที่ที่ต้องการ"
+                      onChange={handleDateChange}
+                      // defaultValue={date}
+                      value={selectedDate}
+                      KeyboardButtonProps={{
+                        "aria-label": "change date",
+                      }}
+                    />
+                </MuiPickersUtilsProvider>
+              </FormControl>
+
+
 
 
               <Grid

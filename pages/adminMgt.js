@@ -38,11 +38,11 @@ export async function getServerSideProps() {
 
 const useStyles2 = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    // margin: theme.spacing(1),
+    minWidth: 100,
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
+    // marginTop: theme.spacing(2),
   },
 }));
 
@@ -140,7 +140,7 @@ function AdminMgt({ admin: admins, customer: customers }) {
     {
       field: "status",
       headerName: "สถานะ",
-      width: 120,
+      width: 200,
       disableClickEventBubbling: true,
       renderCell: function choose(params) {
         // console.log(params)

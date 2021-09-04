@@ -348,7 +348,7 @@ function CreateCustomer({customer:customer}) {
                       error: companyError
                     }}
                     inputProps={{
-                      defaultValue: customer !== null ? customer.company : customer1.company,
+                      defaultValue: customer !== null ? customer.company : null,
                       // onChange: handleChange,
                       onBlur: handleSetState,      
                     }}
@@ -369,7 +369,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.owner : customer1.owner,
+                      defaultValue: customer !== null ? customer.owner : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -385,7 +385,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.owner_tel : customer1.owner_tel,
+                      defaultValue: customer !== null ? customer.owner_tel : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -399,7 +399,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.owner_email : customer1.owner_email,
+                      defaultValue: customer !== null ? customer.owner_email : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -416,7 +416,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.contact_name : customer1.contact_name,
+                      defaultValue: customer !== null ? customer.contact_name : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -431,7 +431,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.contact_tel : customer1.contact_tel,
+                      defaultValue: customer !== null ? customer.contact_tel : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -445,7 +445,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.contact_email : customer1.contact_email,
+                      defaultValue: customer !== null ? customer.contact_email : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -463,7 +463,7 @@ function CreateCustomer({customer:customer}) {
                   // fullWidth={true}
                   inputProps={{
                     // onChange: handleChange,
-                    defaultValue: customer !== null ? customer.address : customer1.address,
+                    defaultValue: customer !== null ? customer.address : null,
                     onBlur: handleSetState
                   }}
                 />
@@ -480,7 +480,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.TIN : customer1.TIN,
+                      defaultValue: customer !== null ? customer.TIN : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -495,7 +495,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.groupID : customer1.groupID,
+                      defaultValue: customer !== null ? customer.groupID : null,
                       onBlur: handleSetState
                     }}
                   />
