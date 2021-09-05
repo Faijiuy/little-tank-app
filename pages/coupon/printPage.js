@@ -263,7 +263,7 @@ import { useRouter } from "next/router";
 
 // require('dotenv').config({ path: 'C:\Users\tanap\codes\little-tank-app\.env'})
 
-
+const API = process.env.REACT_APP_API
 
 const divStyle = {
   fontSize: "15px",
@@ -313,14 +313,12 @@ function PrintPage() {
 
   useEffect(() => {
     async function fetchData(){
-      console.log(process.env.API)
-      console.log(process.env.API + "/coupon")
-      let response_printList = await fetch("https://little-tank-app-five.vercel.app/api/coupon")
+      let response_printList = await fetch("/api/coupon")
       let data_printList = await response_printList.json()
       console.log("data_printList == ", data_printList)
       setPrintList(data_printList)
 
-      let response_customers = await fetch("https://little-tank-app-five.vercel.app/api/customer")
+      let response_customers = await fetch("/api/customer")
       let data_customers = await response_customers.json()
 
       console.log("data_customers == ", data_customers)
