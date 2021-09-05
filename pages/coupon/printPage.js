@@ -313,8 +313,8 @@ function PrintPage() {
 
   useEffect(() => {
     async function fetchData(){
-      // console.log(process.env.API)
-      // console.log(process.env.API + "/coupon")
+      console.log(process.env.API)
+      console.log(process.env.API + "/coupon")
       let response_printList = await fetch("https://little-tank-app-five.vercel.app/api/coupon")
       let data_printList = await response_printList.json()
       console.log("data_printList == ", data_printList)
