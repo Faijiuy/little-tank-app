@@ -8,24 +8,24 @@
 // import { useRouter } from "next/router";
 
 
-// import { connectToDatabase } from "../../util/mongodb";
+import { connectToDatabase } from "../../util/mongodb";
 
-// export async function getServerSideProps() {
-//   const { db } = await connectToDatabase();
+export async function getServerSideProps() {
+  const { db } = await connectToDatabase();
 
-//   const coupons = await db.collection("coupons").find().sort({}).toArray();
-//   const customers = await db.collection("customer").find().sort({}).toArray();
+  const coupons = await db.collection("coupons").find().sort({}).toArray();
+  const customers = await db.collection("customer").find().sort({}).toArray();
 
 
-//   let printList = coupons.filter((coupon) => coupon.printed === false);
+  let printList = coupons.filter((coupon) => coupon.printed === false);
 
-//   return {
-//     props: {
-//       coupon: JSON.parse(JSON.stringify(printList)),
-//       customer: JSON.parse(JSON.stringify(customers)), 
-//     },
-//   };
-// }
+  return {
+    props: {
+      coupon: JSON.parse(JSON.stringify(printList)),
+      customer: JSON.parse(JSON.stringify(customers)), 
+    },
+  };
+}
 
 // const divStyle = {
 //   fontSize: "15px",
