@@ -261,6 +261,8 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from "next/router";
 
+// require('dotenv').config({ path: 'C:\Users\tanap\codes\little-tank-app\.env'})
+
 
 
 const divStyle = {
@@ -307,14 +309,17 @@ function PrintPage() {
   const [customers, setCustomers] = useState([])
   const [printList, setPrintList] = useState([])
 
+  // const result = dotenv.config()
+
   useEffect(() => {
     async function fetchData(){
-      let response_printList = await fetch("https://little-tank-app-five.vercel.app/api/coupon")
+      // console.log(process.env)
+      let response_printList = await fetch(process.env.API + "/coupon")
       let data_printList = await response_printList.json()
       console.log("data_printList == ", data_printList)
       setPrintList(data_printList)
 
-      let response_customers = await fetch("https://little-tank-app-five.vercel.app/api/customer")
+      let response_customers = await fetch(process.env.API + "/customer")
       let data_customers = await response_customers.json()
 
       console.log("data_customers == ", data_customers)

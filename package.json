@@ -28,7 +28,7 @@
     "chartist": "0.10.1",
     "classnames": "2.2.6",
     "date-fns": "^2.22.1",
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "eslint-config-next": "^11.1.0",
     "googleapis": "^84.0.0",
