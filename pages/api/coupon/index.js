@@ -89,16 +89,17 @@ export default async (req, res) => {
         }
       }
     );
-  }else if (req.method === "GET") {
-    const { db } = await connectToDatabase();
-    const coupons = await db
-      .collection("coupons")
-      .find({})
-      .sort({})
-      .limit(0)
-      .toArray();
-    res.json(coupons);
   }
+  // else if (req.method === "GET") {
+  //   const { db } = await connectToDatabase();
+  //   const coupons = await db
+  //     .collection("coupons")
+  //     .find({})
+  //     .sort({})
+  //     .limit(0)
+  //     .toArray();
+  //   res.json(coupons);
+  // }
   // res.status(200).json({});
 
 };
