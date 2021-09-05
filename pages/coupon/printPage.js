@@ -27,6 +27,9 @@ export async function getServerSideProps() {
   };
 }
 
+
+
+
 // const divStyle = {
 //   fontSize: "15px",
 // };
@@ -185,21 +188,8 @@ export async function getServerSideProps() {
 
 import Grid from "./Grid";
 import React from "react";
-// import Box from '@material-ui/core/Box';
 import QRCode from "react-qr-code";
-// import Modal from '@material-ui/core/Modal';
-// import Button from '@material-ui/core/Button';
-// import { makeStyles } from '@material-ui/core/styles';
-// import { useRouter } from "next/router";
 
-// import Grid from "./Grid";
-// import React from "react";
-// import Box from '@material-ui/core/Box';
-// import QRCode from "react-qr-code";
-// import Modal from '@material-ui/core/Modal';
-// import Button from '@material-ui/core/Button';
-// import { makeStyles } from '@material-ui/core/styles';
-// import { useRouter } from "next/router";
 
 
 
@@ -220,7 +210,7 @@ const pStyle = {
 function App() {
   return (
     <Grid>
-        {printList.map((coupon, index) => {
+        {/* {printList.map((coupon, index) => {
           return (
             <>
               <div className="box" style={divStyle}>
@@ -251,7 +241,8 @@ function App() {
               </div>
             </>
           );
-        })}
+        })} */}
+        Hello
       </Grid>
   );
 }
