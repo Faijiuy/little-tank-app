@@ -435,8 +435,11 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     alert("กรุณาระบุราคาคูปองไม่ต่ำกว่า 500 และไม่ควรมีเศษ") : 
 
     rows.map((row) => {
+
       if (Object.keys(ordered_company).includes(row.type.toString())) {
+
         let runNo = ordered_company[row.type.toString()].length;
+
         for (let i = 1; i <= Number(row.qty); i++) {
           fetch("/api/coupon", {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -497,8 +500,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
           }
         }
       }
-    }).then(router.reload())
+    })
     
+    router.reload()    
   };
 
   const onSubmit_missing_coupon = (e) => {
