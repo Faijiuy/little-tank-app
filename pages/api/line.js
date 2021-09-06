@@ -95,7 +95,10 @@ export default async function test(req, res) {
         })
     }
 
-  } else if (event.message.text == "สอบถาม groupid") {
+  } else if (event.message.text == "ไอดีของฉัน") {
+    reply(reply_token, "ID ของคุณคือ " + id)
+  }
+  else if (event.message.text == "สอบถาม groupid") {
     let customers = await fetch(process.env.API + "/toDB", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
