@@ -156,54 +156,60 @@ export default async function test(req, res) {
           coupon.companyRef === customer[0]._id && coupon.used === false
       );
 
-      let group = await groupByKey(couponUsed, "amount");
+      if(couponUsed[0] === undefined){
+        reply(reply_token, "ขออภัยค่ะ ขณะนี้ท่านไม่มีคูปองเหลืออยู่")
+      }else{
+        let group = await groupByKey(couponUsed, "amount");
+  
+        let couponToday = await coupons.filter((coupon) =>  coupon.companyRef === customer[0]._id &&
+                                                            coupon.used === true &&
+                                                            coupon.usedDateTime === todayDate
+                                                        );
+  
+        let group2 = groupByKey(couponToday, "amount");
+  
+        let result = 0;
+        let textpart = "";
+        Object.keys(group).map((type) => {
+          result += Number(type) * group[type].length;
+          textpart +=
+            "คูปองมูลค่า " +
+            thousands_separators(Number(type)) +
+            " จำนวน " +
+            group[type].length +
+            " ใบ (" +
+            thousands_separators(Number(type) * group[type].length) +
+            ")\n";
+        });
+  
+        let resultUsedCoupon = 0;
+        let textpartUsedCoupon = "";
+        Object.keys(group2).map((type) => {
+          resultUsedCoupon += Number(type) * group2[type].length;
+          textpartUsedCoupon +=
+            "คูปองมูลค่า " +
+            thousands_separators(Number(type)) +
+            " จำนวน " +
+            group2[type].length +
+            " ใบ (" +
+            thousands_separators(Number(type) * group2[type].length) +
+            ")\n";
+        });
+  
+        let text =
+          "ยอดมูลค่าคูปองใช้ไปในวันนี้ ทั้งหมด " +
+          thousands_separators(resultUsedCoupon) +
+          " บาท.\n\n" +
+          textpartUsedCoupon +
+          "---------------------------------------------------\nยอดมูลค่าคูปอง คงเหลือทั้งหมด " +
+          thousands_separators(result) +
+          " บาท.\n\n" +
+          textpart;
+  
+        reply(reply_token, text);
 
-      let couponToday = await coupons.filter((coupon) =>  coupon.companyRef === customer[0]._id &&
-                                                          coupon.used === true &&
-                                                          coupon.usedDateTime === todayDate
-                                                      );
+      }
 
-      let group2 = groupByKey(couponToday, "amount");
-
-      let result = 0;
-      let textpart = "";
-      Object.keys(group).map((type) => {
-        result += Number(type) * group[type].length;
-        textpart +=
-          "คูปองมูลค่า " +
-          thousands_separators(Number(type)) +
-          " จำนวน " +
-          group[type].length +
-          " ใบ (" +
-          thousands_separators(Number(type) * group[type].length) +
-          ")\n";
-      });
-
-      let resultUsedCoupon = 0;
-      let textpartUsedCoupon = "";
-      Object.keys(group2).map((type) => {
-        resultUsedCoupon += Number(type) * group2[type].length;
-        textpartUsedCoupon +=
-          "คูปองมูลค่า " +
-          thousands_separators(Number(type)) +
-          " จำนวน " +
-          group2[type].length +
-          " ใบ (" +
-          thousands_separators(Number(type) * group2[type].length) +
-          ")\n";
-      });
-
-      let text =
-        "ยอดมูลค่าคูปองใช้ไปในวันนี้ ทั้งหมด " +
-        thousands_separators(resultUsedCoupon) +
-        " บาท.\n\n" +
-        textpartUsedCoupon +
-        "---------------------------------------------------\nยอดมูลค่าคูปอง คงเหลือทั้งหมด " +
-        thousands_separators(result) +
-        " บาท.\n\n" +
-        textpart;
-
-      reply(reply_token, text);
     }
   } else if (event.message.text == "คำสั่งบอท") {
     let admins = await fetch(process.env.API + "/admin", {
