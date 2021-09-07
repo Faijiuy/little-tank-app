@@ -34,22 +34,22 @@ function Dashboard() {
   
     const chart2 = sdk.createChart({
       chartId: 'eea67d55-e0a7-4cc7-9eba-77cc25a48a7b',
-      width: 512,
-      height: 320,
-      theme: "dark",
+      width: 370,
+      height: 600,
+      // theme: "dark",
     });
   
     const chart3 = sdk.createChart({
       chartId: '4c2a3639-147b-4532-b6a0-321ab9eec6fb',
-      width: 1024,
+      width: 1280,
       height: 640,
       theme: "dark",
     });
   
     const chart4 = sdk.createChart({
       chartId: '9188d9fb-81e8-49f2-b939-d724888136e7',
-      width: 512,
-      height: 320,
+      width: 614,
+      height: 600,
       theme: "dark",
     });
 
@@ -82,11 +82,11 @@ function Dashboard() {
     <div>
       <GridContainer>
         <GridContainer id="chart3" />
-        <GridContainer id="chart" />
       </GridContainer>
       <GridContainer>
         <GridContainer id="chart2" />
         <GridContainer id="chart4" />
+        <GridContainer id="chart" />
       </GridContainer>
       
       

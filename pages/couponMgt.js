@@ -148,6 +148,14 @@ const useStyles3 = makeStyles((theme) => ({
 
 }));
 
+const useStyles4 = makeStyles({
+  root: {
+    '& .super-app-theme--header': {
+      backgroundColor: 'rgba(255, 7, 0, 0.55)',
+    },
+  },
+});
+
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
@@ -164,6 +172,7 @@ function union(a, b) {
 function CouponMgt({ customer: customers, coupon: coupons }) {
   const classes2 = useStyles2();
   const classes3 = useStyles3();
+  const classes4 = useStyles4();
 
   const [expanded, setExpanded] = React.useState("panel1");
 
@@ -192,10 +201,13 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const router = useRouter();
 
   const handleBlur = (params) => {
+    // console.log("params ", params)
     let newRow = rows;
     newRow[params.id].type = params.row.type;
     newRow[params.id].qty = params.row.qty;
     newRow[params.id].total = params.row.type * params.row.qty;
+    // newRow[params.id].action = params.row.action;
+
 
     let total = 0;
     newRow.forEach((row) => (total += Number(row.qty) * Number(row.type)));
@@ -212,6 +224,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
         type: value.type,
         qty: value.qty,
         total: value.total,
+        // action: value.action
       });
     });
     newArr.push({
@@ -219,14 +232,22 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       type: 0,
       qty: 0,
       total: 0,
+      // action: true
     });
     setRows(newArr);
   };
+
+  // const handleDelete = (params) => {
+  //   let newRows = rows.filter(row => row.id !== params.row.id)
+    
+  //   setRows(newRows)
+  // }
 
   const columns = [
     {
       field: "type",
       headerName: "ราคา",
+      headerClassName: 'super-app-theme--header',
       type: "number",
       width: 120,
       editable: true,
@@ -234,6 +255,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     {
       field: "qty",
       headerName: "จำนวน",
+      headerClassName: 'super-app-theme--header',
       type: "number",
       width: 120,
       editable: true,
@@ -241,11 +263,32 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     {
       field: "total",
       headerName: "รวม",
+      headerClassName: 'super-app-theme--header',
       width: 120,
       renderCell: function total(params) {
         return params.row.type * params.row.qty;
       },
     },
+    // {
+    //   field: "action",
+    //   headerName: "action",
+    //   headerClassName: 'super-app-theme--header',
+    //   width: 120,
+    //   disableClickEventBubbling: true,
+    //   renderCell: function delete_row(params) {
+    //     if(params.row.action === undefined){
+    //       return (<Button
+    //       onClick={() => handleDelete(params)}
+    //       variant="contained"
+    //       color="secondary"
+    //     >
+    //       ลบ
+    //     </Button>)
+
+
+    //     }
+    //   },
+    // }
   ];
 
   useEffect(() => {
@@ -607,12 +650,13 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
               {tableState ? (
                 <div>
                   
-                <div style={{ height: 300, width: "200%" }}>
+                <div style={{ height: 300, width: "92%" }} className={classes4.root}>
                 <DataGrid
                   rows={rows}
                   columns={columns}
                   onCellBlur={handleBlur}
                   hideFooterPagination={true}
+                  disableSelectionOnClick={true}
                   />
                   </div>
             <div>
