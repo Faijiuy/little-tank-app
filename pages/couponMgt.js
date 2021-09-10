@@ -52,13 +52,6 @@ export async function getServerSideProps() {
   };
 }
 
-function checkIfDuplicateExists(arr){
-  console.log(Object.Keys(arr).some(type => type.length > 1))
-  // return arr.some(value => value.length > 1)
-}
-
-
-
 const Accordion = withStyles({
   root: {
     border: "1px solid rgba(0, 0, 0, .125)",
@@ -149,11 +142,11 @@ const useStyles3 = makeStyles((theme) => ({
 }));
 
 const useStyles4 = makeStyles({
-  root: {
-    '& .super-app-theme--header': {
-      backgroundColor: 'rgba(255, 7, 0, 0.55)',
-    },
-  },
+  // root: {
+  //   '& .super-app-theme--header': {
+  //     backgroundColor: 'rgba(255, 7, 0, 0.55)',
+  //   },
+  // },
 });
 
 function not(a, b) {
@@ -201,12 +194,11 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const router = useRouter();
 
   const handleBlur = (params) => {
-    // console.log("params ", params)
     let newRow = rows;
     newRow[params.id].type = params.row.type;
     newRow[params.id].qty = params.row.qty;
     newRow[params.id].total = params.row.type * params.row.qty;
-    // newRow[params.id].action = params.row.action;
+    newRow[params.id].action = params.row.action;
 
 
     let total = 0;
@@ -237,11 +229,11 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setRows(newArr);
   };
 
-  // const handleDelete = (params) => {
-  //   let newRows = rows.filter(row => row.id !== params.row.id)
+  const handleDelete = (params) => {
+    let newRows = rows.filter(row => row.id !== params.row.id)
     
-  //   setRows(newRows)
-  // }
+    setRows(newRows)
+  }
 
   const columns = [
     {
@@ -251,6 +243,18 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       type: "number",
       width: 120,
       editable: true,
+      renderCell: (cellValue) => {
+        return (
+          <div
+            style={
+              cellValue.value < 500 ? 
+              {color: "red"} : null
+            }
+          >
+            {cellValue.value}
+          </div>
+        )
+      }  
     },
     {
       field: "qty",
@@ -259,36 +263,48 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       type: "number",
       width: 120,
       editable: true,
+      renderCell: (cellValue) => {
+        return (
+          <div
+            style={
+              cellValue.value == 0 ? 
+              {color: "red"} : null
+            }
+          >
+            {cellValue.value}
+          </div>
+        )
+      }  
     },
     {
       field: "total",
       headerName: "รวม",
       headerClassName: 'super-app-theme--header',
+      headerAlign: 'right',
       width: 120,
-      renderCell: function total(params) {
-        return params.row.type * params.row.qty;
-      },
+      type: "number",
+      renderCell: (cellValue) => {
+        return (
+          <div>
+            {cellValue.row.type * cellValue.row.qty}
+          </div>
+        )
+      } 
     },
-    // {
-    //   field: "action",
-    //   headerName: "action",
-    //   headerClassName: 'super-app-theme--header',
-    //   width: 120,
-    //   disableClickEventBubbling: true,
-    //   renderCell: function delete_row(params) {
-    //     if(params.row.action === undefined){
-    //       return (<Button
-    //       onClick={() => handleDelete(params)}
-    //       variant="contained"
-    //       color="secondary"
-    //     >
-    //       ลบ
-    //     </Button>)
-
-
-    //     }
-    //   },
-    // }
+    {
+      field: "",
+      headerName: "action",
+      headerClassName: 'super-app-theme--header',
+      width: 120,
+      disableClickEventBubbling: true,
+      renderCell: function delete_row(params) {
+          return (<button
+          onClick={() => handleDelete(params)}
+        >
+          ลบ
+        </button>)     
+      },
+    }
   ];
 
   useEffect(() => {
@@ -471,81 +487,94 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const onSubmit = () => {
     let test = groupByKey(rows, "type")
 
-    Object.keys(test).some(type => test[type].length > 1) ? alert("กรุณาระบุราคาเดียวกันในช่องเดียวกัน") :
+
+    if(Object.keys(test).some(type => test[type].length > 1)){
+      alert("กรุณาระบุราคาเดียวกันในช่องเดียวกัน")
+    }else{
+
+      if(rows.some(row => Number(row.type) < 500 || (Number(row.type) % 100 !== 0 && Number(row.type) % 100 !== 50))){
+        alert("กรุณาระบุราคาคูปองไม่ต่ำกว่า 500 และไม่ควรมีเศษ")  
+
+      }else{
+
+        rows.map((row) => {
     
-    rows.some(row => Number(row.type) < 500 || (Number(row.type) % 100 !== 0 && Number(row.type) % 100 !== 50)) ? 
-
-    alert("กรุณาระบุราคาคูปองไม่ต่ำกว่า 500 และไม่ควรมีเศษ") : 
-
-    rows.map((row) => {
-
-      if (Object.keys(ordered_company).includes(row.type.toString())) {
-
-        let runNo = ordered_company[row.type.toString()].length;
-
-        for (let i = 1; i <= Number(row.qty); i++) {
-          fetch("/api/coupon", {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-              "Content-Type": "application/json",
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify({
-              code:
-                company._id + "-" + date + "-" + row.type + "-" + (runNo + i),
-              companyRef: company._id,
-              generatedDate: date,
-              amount: Number(row.type),
-              runningNo: runNo + i,
-              used: false,
-              usedDateTime: "",
-              recordedBy: "",
-              printed: false,
-            }), // body data type must match "Content-Type" header
-          });
-          if (i == Number(row.qty)) {
-            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ");
+          if (Object.keys(ordered_company).includes(row.type.toString())) {
+    
+            let runNo = ordered_company[row.type.toString()].length;
+    
+            for (let i = 1; i <= Number(row.qty); i++) {
+              fetch("/api/coupon", {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                  "Content-Type": "application/json",
+                  // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({
+                  code:
+                    company._id + "-" + date + "-" + row.type + "-" + (runNo + i),
+                  companyRef: company._id,
+                  generatedDate: date,
+                  amount: Number(row.type),
+                  runningNo: runNo + i,
+                  used: false,
+                  usedDateTime: "",
+                  recordedBy: "",
+                  printed: false,
+                }), // body data type must match "Content-Type" header
+              });
+              if (i == Number(row.qty)) {
+                alert("สร้างคูปอง " + row.type + " บาท สำเร็จ");
+              }
+            }
+          } else {
+            
+            for (let i = 1; i <= Number(row.qty); i++) {
+              fetch("/api/coupon", {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                  "Content-Type": "application/json",
+                  // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({
+                  code: company._id + "-" + date + "-" + row.type + "-" + i,
+                  companyRef: company._id,
+                  generatedDate: date,
+                  amount: Number(row.type),
+                  runningNo: i,
+                  used: false,
+                  usedDateTime: "",
+                  recordedBy: "",
+                  printed: false,
+                }), // body data type must match "Content-Type" header
+              });
+              if (i == Number(row.qty)) {
+                alert("สร้างคูปอง " + row.type + " บาท สำเร็จ");
+              }
+            }
           }
-        }
-      } else {
+        })
         
-        for (let i = 1; i <= Number(row.qty); i++) {
-          fetch("/api/coupon", {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-              "Content-Type": "application/json",
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify({
-              code: company._id + "-" + date + "-" + row.type + "-" + i,
-              companyRef: company._id,
-              generatedDate: date,
-              amount: Number(row.type),
-              runningNo: i,
-              used: false,
-              usedDateTime: "",
-              recordedBy: "",
-              printed: false,
-            }), // body data type must match "Content-Type" header
-          });
-          if (i == Number(row.qty)) {
-            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ");
-          }
-        }
+        router.reload()
       }
-    })
+       
+
+
+    }
+
+    // Object.keys(test).some(type => test[type].length > 1) ? alert("กรุณาระบุราคาเดียวกันในช่องเดียวกัน") :
     
-    router.reload()    
+        
   };
 
   const onSubmit_missing_coupon = (e) => {
@@ -650,13 +679,12 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
               {tableState ? (
                 <div>
                   
-                <div style={{ height: 300, width: "92%" }} className={classes4.root}>
+                <div style={{ height: 300, width: "120%" }} className={classes4.root}>
                 <DataGrid
                   rows={rows}
                   columns={columns}
                   onCellBlur={handleBlur}
                   hideFooterPagination={true}
-                  disableSelectionOnClick={true}
                   />
                   </div>
             <div>
