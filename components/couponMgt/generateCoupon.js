@@ -112,7 +112,7 @@ function GenerateCoupon({ customers, coupons }) {
       type: "number",
       width: 120,
       editable: true,
-      renderCell: (cellValue) => {
+      renderCell: function cell_color(cellValue){
         return (
           <div
             style={
@@ -132,7 +132,7 @@ function GenerateCoupon({ customers, coupons }) {
       type: "number",
       width: 120,
       editable: true,
-      renderCell: (cellValue) => {
+      renderCell: function cell_color(cellValue){
         return (
           <div
             style={
@@ -152,7 +152,7 @@ function GenerateCoupon({ customers, coupons }) {
       headerAlign: 'right',
       width: 120,
       type: "number",
-      renderCell: (cellValue) => {
+      renderCell: function cell_calculator(cellValue){
         return (
           <div>
             {cellValue.row.type * cellValue.row.qty}
