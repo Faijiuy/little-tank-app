@@ -36,8 +36,8 @@ import {
 
 import { connectToDatabase } from "../util/mongodb";
 import { object } from "prop-types";
-import MissingCoupon from "../components/couponMgt/missingCoupon";
 import GenerateCoupon from "../components/couponMgt/generateCoupon";
+import MissingCoupon from "../components/couponMgt/missingCoupon";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -53,6 +53,10 @@ export async function getServerSideProps() {
     },
   };
 }
+
+
+
+
 
 const Accordion = withStyles({
   root: {
@@ -95,7 +99,24 @@ const AccordionDetails = withStyles((theme) => ({
   },
 }))(MuiAccordionDetails);
 
-
+const styles = {
+  cardCategoryWhite: {
+    color: "rgba(255,255,255,.62)",
+    margin: "0",
+    fontSize: "14px",
+    marginTop: "0",
+    marginBottom: "0",
+  },
+  cardTitleWhite: {
+    color: "#FFFFFF",
+    marginTop: "0px",
+    minHeight: "auto",
+    fontWeight: "300",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: "3px",
+    textDecoration: "none",
+  },
+};
 
 const useStyles2 = makeStyles((theme) => ({
   formControl: {
@@ -126,7 +147,13 @@ const useStyles3 = makeStyles((theme) => ({
 
 }));
 
-
+const useStyles4 = makeStyles({
+  root: {
+    '& .super-app-theme--header': {
+      backgroundColor: 'rgba(255, 7, 0, 0.55)',
+    },
+  },
+});
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -173,11 +200,12 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   const router = useRouter();
 
   const handleBlur = (params) => {
+    // console.log("params ", params)
     let newRow = rows;
     newRow[params.id].type = params.row.type;
     newRow[params.id].qty = params.row.qty;
     newRow[params.id].total = params.row.type * params.row.qty;
-    newRow[params.id].action = params.row.action;
+    // newRow[params.id].action = params.row.action;
 
 
     let total = 0;
@@ -208,11 +236,11 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     setRows(newArr);
   };
 
-  const handleDelete = (params) => {
-    let newRows = rows.filter(row => row.id !== params.row.id)
+  // const handleDelete = (params) => {
+  //   let newRows = rows.filter(row => row.id !== params.row.id)
     
-    setRows(newRows)
-  }
+  //   setRows(newRows)
+  // }
 
   const columns = [
     {
@@ -222,18 +250,6 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       type: "number",
       width: 120,
       editable: true,
-      renderCell: (cellValue) => {
-        return (
-          <div
-            style={
-              cellValue.value < 500 ? 
-              {color: "red"} : null
-            }
-          >
-            {cellValue.value}
-          </div>
-        )
-      }  
     },
     {
       field: "qty",
@@ -242,48 +258,36 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
       type: "number",
       width: 120,
       editable: true,
-      renderCell: (cellValue) => {
-        return (
-          <div
-            style={
-              cellValue.value == 0 ? 
-              {color: "red"} : null
-            }
-          >
-            {cellValue.value}
-          </div>
-        )
-      }  
     },
     {
       field: "total",
       headerName: "รวม",
       headerClassName: 'super-app-theme--header',
-      headerAlign: 'right',
       width: 120,
-      type: "number",
-      renderCell: (cellValue) => {
-        return (
-          <div>
-            {cellValue.row.type * cellValue.row.qty}
-          </div>
-        )
-      } 
-    },
-    {
-      field: "",
-      headerName: "action",
-      headerClassName: 'super-app-theme--header',
-      width: 120,
-      disableClickEventBubbling: true,
-      renderCell: function delete_row(params) {
-          return (<button
-          onClick={() => handleDelete(params)}
-        >
-          ลบ
-        </button>)     
+      renderCell: function total(params) {
+        return params.row.type * params.row.qty;
       },
-    }
+    },
+    // {
+    //   field: "action",
+    //   headerName: "action",
+    //   headerClassName: 'super-app-theme--header',
+    //   width: 120,
+    //   disableClickEventBubbling: true,
+    //   renderCell: function delete_row(params) {
+    //     if(params.row.action === undefined){
+    //       return (<Button
+    //       onClick={() => handleDelete(params)}
+    //       variant="contained"
+    //       color="secondary"
+    //     >
+    //       ลบ
+    //     </Button>)
+
+
+    //     }
+    //   },
+    // }
   ];
 
   useEffect(() => {
@@ -298,13 +302,13 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
     
   }, []);
 
-  useEffect(() => {
-    let couponsOfCompany = coupons.filter(coupon => coupon.companyRef === company._id)
-    let types = groupByKey(couponsOfCompany, "amount")
+  // useEffect(() => {
+  //   let couponsOfCompany = coupons.filter(coupon => coupon.companyRef === company._id)
+  //   let types = groupByKey(couponsOfCompany, "amount")
 
-    setTypeList(Object.keys(types))
+  //   setTypeList(Object.keys(types))
 
-  }, [company])
+  // }, [company])
 
   useEffect(() => {
     let activeList = coupons.filter(coupon => coupon.companyRef === company._id &&
@@ -340,16 +344,262 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   }, [company])
 
-  
+  const handleChangeCompany = (event) => {
+    setTableState(true);
+    setCompany(event.target.value);
+  };
+
+  const handleChangeType = (event) => {
+    setType(event.target.value);
+  };
+
+  const useStyles = makeStyles(styles);
+  const classes = useStyles();
 
   //List toggle component
 
-  
+  const leftChecked = intersection(checked, couponList);
+  const rightChecked = intersection(checked, right);
 
-  
-  
+  const handleToggle = (value) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
 
-  
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+  };
+
+  const numberOfChecked = (items) => intersection(checked, items).length;
+
+  const handleToggleAll = (items) => () => {
+    if (numberOfChecked(items) === items.length) {
+      setChecked(not(checked, items));
+    } else {
+      setChecked(union(checked, items));
+    }
+  };
+
+  const handleCheckedRight = () => {
+    setRight(right.concat(leftChecked));
+    setCouponList(not(couponList, leftChecked));
+    setChecked(not(checked, leftChecked));
+  };
+
+  const handleCheckedLeft = () => {
+    setCouponList(couponList.concat(rightChecked));
+    setRight(not(right, rightChecked));
+    setChecked(not(checked, rightChecked));
+  };
+
+  const customList = (title, items) => (
+    <Card>
+      <CardHeader
+        className={classes.cardHeader}
+        avatar={
+          <Checkbox
+            onClick={handleToggleAll(items)}
+            checked={
+              numberOfChecked(items) === items.length && items.length !== 0
+            }
+            indeterminate={
+              numberOfChecked(items) !== items.length &&
+              numberOfChecked(items) !== 0
+            }
+            disabled={items.length === 0}
+            inputProps={{ "aria-label": "all items selected" }}
+          />
+        }
+        title={title}
+        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+      />
+      <Divider />
+      <List className={classes.list} dense component="div" role="list">
+        {items.map((value, index) => {
+          const labelId = `transfer-list-all-item-${value}-label`;
+
+          return (
+            <ListItem
+              key={index}
+              role="listitem"
+              button
+              onClick={handleToggle(value)}
+            >
+              <ListItemIcon>
+                <Checkbox
+                  checked={checked.indexOf(value) !== -1}
+                  tabIndex={-1}
+                  disableRipple
+                  inputProps={{ "aria-labelledby": labelId }}
+                />
+              </ListItemIcon>
+              <ListItemText
+                id={labelId}
+                primary={`${value.generatedDate}-${value.amount}-${value.runningNo}`}
+              />
+            </ListItem>
+          );
+        })}
+        <ListItem />
+      </List>
+    </Card>
+  );
+
+  const handleDateChange = (selectedDate) => {
+    let todayDate = format(selectedDate, "dd/MM/yyyy"); 
+
+    if(selectedDate.getFullYear() >= 2564){
+      let thaiDate = format(selectedDate, "dd/MM");
+      let mountDate = format(selectedDate, "MM/dd");
+
+      setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543))
+      setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543))
+    }else{
+      let mountDate = format(selectedDate, "MM/dd/yyyy");
+
+      setDate(todayDate);
+      setSelectedDate(mountDate)
+    }
+
+  };
+
+  const onSubmit = () => {
+    let test = groupByKey(rows, "type")
+
+    Object.keys(test).some(type => test[type].length > 1) ? alert("กรุณาระบุราคาเดียวกันในช่องเดียวกัน") :
+    
+    rows.some(row => Number(row.type) < 500 || (Number(row.type) % 100 !== 0 && Number(row.type) % 100 !== 50)) ? 
+
+    alert("กรุณาระบุราคาคูปองไม่ต่ำกว่า 500 และไม่ควรมีเศษ") : 
+
+    rows.map((row) => {
+
+      if (Object.keys(ordered_company).includes(row.type.toString())) {
+
+        let runNo = ordered_company[row.type.toString()].length;
+
+        for (let i = 1; i <= Number(row.qty); i++) {
+          fetch("/api/coupon", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+              code:
+                company._id + "-" + date + "-" + row.type + "-" + (runNo + i),
+              companyRef: company._id,
+              generatedDate: date,
+              amount: Number(row.type),
+              runningNo: runNo + i,
+              used: false,
+              usedDateTime: "",
+              recordedBy: "",
+              printed: false,
+            }), // body data type must match "Content-Type" header
+          });
+          if (i == Number(row.qty)) {
+            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ");
+          }
+        }
+      } else {
+        
+        for (let i = 1; i <= Number(row.qty); i++) {
+          fetch("/api/coupon", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+              code: company._id + "-" + date + "-" + row.type + "-" + i,
+              companyRef: company._id,
+              generatedDate: date,
+              amount: Number(row.type),
+              runningNo: i,
+              used: false,
+              usedDateTime: "",
+              recordedBy: "",
+              printed: false,
+            }), // body data type must match "Content-Type" header
+          });
+          if (i == Number(row.qty)) {
+            alert("สร้างคูปอง " + row.type + " บาท สำเร็จ");
+          }
+        }
+      }
+    })
+    
+    router.reload()    
+  };
+
+  const onSubmit_missing_coupon = (e) => {
+    // console.log("right === ", right)
+
+    right.map((coupon) => {
+      if (coupon["used"] == false) {
+        coupon["used"] = "missing";
+
+        fetch("/api/coupon", {
+          method: "PUT", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(coupon), // body data type must match "Content-Type" header
+        }).then((response) => response.json());
+        // .then((data) => {
+        //   alert("Add Item:\nResponse from server " + data.message);
+        //   alert("Newly added _id", data._id);
+        // });
+      }
+    });
+
+    couponList.map((coupon) => {
+      if (coupon["used"] == "missing") {
+        coupon["used"] = false;
+
+        fetch("/api/coupon", {
+          method: "PUT", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(coupon), // body data type must match "Content-Type" header
+        }).then((response) => response.json());
+        // .then((data) => {
+        //   alert("Add Item:\nResponse from server " + data.message);
+        //   alert("Newly added _id", data._id);
+        // });
+      }
+    });
+
+    alert("ย้ายสำเร็จ")
+  };
 
   return (
     <div>
@@ -363,8 +613,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <GenerateCoupon />
-            {/* </GridContainer> */}
+            <GenerateCoupon customers={customers} coupons={coupons} />
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -378,7 +627,7 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <MissingCoupon />
+            <MissingCoupon customers={customers} coupons={coupons} />
           </Typography>
         </AccordionDetails>
       </Accordion>
