@@ -4,7 +4,7 @@ import { DataGrid } from '@material-ui/data-grid';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
-import { FormControlLabel, IconButton } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 import { connectToDatabase } from "../../util/mongodb";
 import Admin from "layouts/Admin.js";
@@ -26,9 +26,21 @@ export async function getServerSideProps() {
   };
 }
 
+const useStyles = makeStyles({
+  root: {
+    '& .super-app-theme--header': {
+      backgroundColor: 'rgba(255, 7, 0, 0.55)',
+    },
+  },
+});
+
 function Customers({customer: customers}) {
 
+  const classes = useStyles();
+
+
   const [editRowsModel, setEditRowsModel] = React.useState({});
+
 
   const handleEditRowModelChange = React.useCallback((params) => {
     setEditRowsModel(params.model);
@@ -40,31 +52,21 @@ function Customers({customer: customers}) {
 
   
 
-//   const MatEdit = ({ index }) => {
-
-//     const handleEditClick = () => {
-//         console.log(customers[index]._id)
-//     }
-
-//     return <FormControlLabel control={
-//         <IconButton href={"/customers/"+customers[index]._id} color="secondary" aria-label="add an alarm" onClick={handleEditClick} >
-//             <EditIcon />
-//         </IconButton>
-//     }
-// />
-// };
+  
 
 const columns = [
-  { field: 'company', headerName: 'ชื่อลูกค้า', width: 180, editable: true },
-  { field: 'owner', headerName: 'ชื่อเจ้าของบริษัท', width: 180, editable: true },
+  { field: 'company', headerClassName: 'super-app-theme--header', headerName: 'ชื่อลูกค้า', width: 180, editable: true },
+  { field: 'owner', headerClassName: 'super-app-theme--header', headerName: 'ชื่อเจ้าของบริษัท', width: 180, editable: true },
   {
     field: 'owner_tel',
+    headerClassName: 'super-app-theme--header',
     headerName: 'เบอร์โทรศัพท์',
     width: 180,
     editable: true,
   },
   {
     field: 'owner_email',
+    headerClassName: 'super-app-theme--header',
     headerName: 'อีเมล์ติดต่อ',
     width: 220,
     editable: true,
@@ -72,6 +74,7 @@ const columns = [
 
   {
     field: "edit",
+    headerClassName: 'super-app-theme--header',
     headerName: "แก้ไขข้อมูล",
     sortable: false,
     width: 130,
@@ -90,18 +93,20 @@ const columns = [
 
   return (
     <div style={{ width: '100%' }}>
-      <Box display="flex" flexDirection="row-reverse" p={1} m={1}>
+      <Box display="flex">
          <Button variant="contained" color="primary" href="customers/create">
          เพิ่มบริษัท
          </Button>
       </Box>
-      <div style={{ height: 400, width: '100%' }}>
+      <div style={{ height: 500, width: '73%' }} className={classes.root}>
         <DataGrid
           rows={rowCustomer(customers)}
           columns={columns}
           editRowsModel={editRowsModel}
           onEditRowModelChange={handleEditRowModelChange}
           onCellBlur={handleBlur}
+          hideFooterPagination={true}
+
           // checkboxSelection={handleSelectRow}
           // icons={EditIcon}
           

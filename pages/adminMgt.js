@@ -36,15 +36,20 @@ export async function getServerSideProps() {
   };
 }
 
-const useStyles2 = makeStyles((theme) => ({
+const useStyles2 = makeStyles({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    // margin: theme.spacing(1),
+    minWidth: 100,
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
+    // marginTop: theme.spacing(2),
   },
-}));
+  root: {
+    '& .super-app-theme--header': {
+      backgroundColor: 'rgba(255, 7, 0, 0.55)',
+    },
+  },
+});
 
 function groupByKey(array, key) {
   return array.reduce((hash, obj) => {
@@ -136,18 +141,18 @@ function AdminMgt({ admin: admins, customer: customers }) {
   };
 
   const columns = [
-    { field: "username", headerName: "ชื่อผู้ใช้", width: 150, editable: true },
+    { field: "username", headerClassName: 'super-app-theme--header', headerName: "ชื่อผู้ใช้", width: 150, editable: true },
     {
       field: "status",
       headerName: "สถานะ",
-      width: 120,
+      headerClassName: 'super-app-theme--header',
+      width: 200,
       disableClickEventBubbling: true,
       renderCell: function choose(params) {
         // console.log(params)
         if (params.row.edit == true) {
           return (
             <FormControl
-              variant="outlined"
               className={classes2.formControl}
               error={companyError}
             >
@@ -182,12 +187,14 @@ function AdminMgt({ admin: admins, customer: customers }) {
     {
       field: "userId",
       headerName: "User ID",
+      headerClassName: 'super-app-theme--header',
       width: 180,
       editable: true,
     },
     {
       field: "groupId",
       headerName: "group",
+      headerClassName: 'super-app-theme--header',
       width: 220,
       disableClickEventBubbling: true,
       renderCell: function choose(params) {
@@ -195,7 +202,6 @@ function AdminMgt({ admin: admins, customer: customers }) {
         if (params.row.edit == true) {
           return (
             <FormControl
-              variant="outlined"
               className={classes2.formControl}
               error={companyError}
             >
@@ -225,9 +231,10 @@ function AdminMgt({ admin: admins, customer: customers }) {
     {
       field: "edit",
       headerName: "Edit",
+      headerClassName: 'super-app-theme--header',
       // sortable: false,
       width: 130,
-      hide: true,
+      // hide: true,
       disableClickEventBubbling: true,
       renderCell: function edit(params) {
         // console.log(params)
@@ -241,6 +248,8 @@ function AdminMgt({ admin: admins, customer: customers }) {
               ยืนยัน
             </Button>
           );
+        }else{
+          return (<div></div>)
         }
       },
     },
@@ -365,7 +374,7 @@ function AdminMgt({ admin: admins, customer: customers }) {
         {randomStateEN ? passwordEN : null}
       </div>
 
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: 400, width: "72%" }} className={classes2.root}>
         <DataGrid
           rows={row}
           columns={columns}
