@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import { useRouter } from "next/router";
 
 import randomString from "@smakss/random-string";
@@ -15,6 +15,7 @@ import Button from "@material-ui/core/Button";
 
 // layout for this page
 import Admin from "layouts/Admin.js";
+import NewAdmin_Form from "../components/adminMgt/modal";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -59,6 +60,8 @@ function groupByKey(array, key) {
     });
   }, {});
 }
+
+const AdminContext = React.createContext()
 
 function AdminMgt({ admin: admins, customer: customers }) {
   console.log(admins);
@@ -384,6 +387,12 @@ function AdminMgt({ admin: admins, customer: customers }) {
           // icons={EditIcon}
         />
       </div>
+
+      {/* <AdminContext.Provider value={{}}> */}
+        <NewAdmin_Form />
+
+      {/* </AdminContext.Provider> */}
+
       <Button
         onClick={() => handleAddRow()}
         color="primary"
@@ -396,5 +405,7 @@ function AdminMgt({ admin: admins, customer: customers }) {
 }
 
 AdminMgt.layout = Admin;
+
+export { AdminContext }
 
 export default AdminMgt;

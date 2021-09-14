@@ -51,7 +51,8 @@ return array
 
 export default function Choose_Company() {
   const { company, setCompany, customers, coupons, tableState, setTableState, classes, rows, setRows, 
-            total_table, setTotal_table, total_coupons, setTotal_coupons } = useContext(StepperContext)
+            total_table, setTotal_table, total_coupons, setTotal_coupons, text_rows, setText_rows,
+            ordered_company, setOrdered_company, date, setDate } = useContext(StepperContext)
 
   const handleChangeCompany = (event) => {
     setTableState(true);
@@ -74,6 +75,21 @@ export default function Choose_Company() {
       setTotal_table(sum)
   
     }, [company])
+
+
+    useEffect(() => {
+  
+      let filterCoupon = coupons.filter(coupon => coupon.companyRef === company._id && coupon.generatedDate === date)
+  
+      let groupArray = groupByKey(filterCoupon, "amount")
+  
+      setOrdered_company(groupArray)  
+  
+    }, [company])
+
+  
+
+  
 
   return (
     <Grid>

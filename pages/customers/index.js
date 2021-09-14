@@ -8,6 +8,8 @@ import { makeStyles } from '@material-ui/styles';
 
 import { connectToDatabase } from "../../util/mongodb";
 import Admin from "layouts/Admin.js";
+import { useRouter } from "next/router";
+
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -37,6 +39,8 @@ const useStyles = makeStyles({
 function Customers({customer: customers}) {
 
   const classes = useStyles();
+  const router = useRouter();
+
 
 
   const [editRowsModel, setEditRowsModel] = React.useState({});
@@ -46,9 +50,26 @@ function Customers({customer: customers}) {
     setEditRowsModel(params.model);
   }, []);
 
-  const handleBlur = React.useCallback((params) => {
-    console.log(params)
-  }, []);
+  // const handleBlur = React.useCallback((params) => {
+  //   console.log(params)
+  // }, []);
+
+  const handleDelete = (params) => {
+    fetch('/api/customer', {
+      method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(params.row.company) // body data type must match "Content-Type" header
+    }).then(response => response.json())
+    .then(router.reload())
+  }
 
   
 
@@ -77,13 +98,19 @@ const columns = [
     headerClassName: 'super-app-theme--header',
     headerName: "แก้ไขข้อมูล",
     sortable: false,
-    width: 130,
+    width: 200,
     disableClickEventBubbling: true,
     renderCell: function edit(params){
       return (
-        <Button href={"/customers/"+customers[params.row.id]._id} variant="contained" color="primary" startIcon={<EditIcon />}>
-          แก้ไข
-        </Button>
+        <div>
+          <Button href={"/customers/"+customers[params.row.id]._id} variant="contained" color="primary" startIcon={<EditIcon />}>
+            แก้ไข
+          </Button>
+          <Button onClick={() => handleDelete(params)} variant="contained" color="secondary" startIcon={<EditIcon />}>
+            ลบ
+          </Button>
+        </div>
+        
       );
     }
   },
@@ -98,13 +125,12 @@ const columns = [
          เพิ่มบริษัท
          </Button>
       </Box>
-      <div style={{ height: 500, width: '73%' }} className={classes.root}>
+      <div style={{ height: 500, width: '100%' }} className={classes.root}>
         <DataGrid
           rows={rowCustomer(customers)}
           columns={columns}
           editRowsModel={editRowsModel}
           onEditRowModelChange={handleEditRowModelChange}
-          onCellBlur={handleBlur}
           hideFooterPagination={true}
 
           // checkboxSelection={handleSelectRow}
@@ -123,6 +149,7 @@ const rowCustomer = (props) => {
   props.map((customer, index) =>{
     row.push({
       id: index,
+      _id: customer._id,
       company: customer.company,
       owner: customer.owner,
       owner_tel: customer.owner_tel,

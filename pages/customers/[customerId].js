@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import { DataGrid } from '@material-ui/data-grid';
-import InputLabel from "@material-ui/core/InputLabel";
+
 // layout for this page
 import Admin from "layouts/Admin.js";
 // core components
@@ -16,29 +15,13 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import TextField from '@material-ui/core/TextField';
 
-
-import avatar from "assets/img/faces/marc.jpg";
 import { connectToDatabase } from "../../util/mongodb";
 import { ObjectId } from 'bson';
 
+import LicensePlate_List from "../../components/customer/list"
+import LicensePlate_modal from "../../components/customer/modal"
 
-// if(process.env.NODE_ENV == 'development'){
-
-// }
-const customer1 = {
-  company: "company",
-  owner: "owner",
-  owner_tel: "0969641234",
-  owner_email: "customer1@gmail.com",
-  contact_name: "Contact 1",
-  contact_tel: "0969641234",
-  contact_email: "customer1@gmail.com",
-  address: "address1, address2, Bangkok",
-  TIN: "1234567890123",
-  groupID: "C2345467ref24325346213"
-}
 
 export async function getServerSideProps(props) {
   const { db } = await connectToDatabase();
@@ -85,7 +68,20 @@ const styles = {
   },
 };
 
-function CreateCustomer({customer:customer}) {
+const useStyles2 = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    height: 400,
+    maxWidth: 300,
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
+
+
+const LicenseContext = React.createContext()
+
+
+function CreateCustomer({customer:customers}) {
 
 
   const [company, setCompany] = useState()
@@ -109,6 +105,9 @@ function CreateCustomer({customer:customer}) {
   const [groupID, setGroupID] = useState()
   const router = useRouter()
 
+  
+
+
 
 
   useEffect(() => {
@@ -126,37 +125,19 @@ function CreateCustomer({customer:customer}) {
       licensePlate: []
     }
 
-    if (customer !== null) {
+    if (customers !== null) {
 
-      setCompany(customer.company)
-      setOwner(customer.owner)
-      setOwner_tel(customer.owner_tel)
-      setOwner_email(customer.owner_email)
-      setContact_name(customer.contact_name)
-      setContact_tel(customer.contact_tel)
-      setContact_email(customer.contact_email)
-      setAddress(customer.address)
-      setTIN(customer.TIN)
-      setGroupID(customer.groupID)
-
-      let array = []
-      if(customer.licensePlate){
-        customer.licensePlate.map((licensePlate, index) =>{
-          array.push({
-            id: index,
-            licensePlate: licensePlate
-          })
-        })
-        setLicensePlate(array)
-
-      }else{
-        setLicensePlate(array)
-      }
-
-
-
-      // setRow(customer.row)
-
+      setCompany(customers.company)
+      setOwner(customers.owner)
+      setOwner_tel(customers.owner_tel)
+      setOwner_email(customers.owner_email)
+      setContact_name(customers.contact_name)
+      setContact_tel(customers.contact_tel)
+      setContact_email(customers.contact_email)
+      setAddress(customers.address)
+      setTIN(customers.TIN)
+      setGroupID(customers.groupID)
+      setLicensePlate(customers.licensePlate)
 
     }else{
       setCompany(customer1.company)
@@ -169,15 +150,7 @@ function CreateCustomer({customer:customer}) {
       setAddress(customer1.address)
       setTIN(customer1.TIN)
       setGroupID(customer1.groupID)
-
-      let array = []
-      
-      array.push({
-        id: 0,
-        licensePlate: customer1.licensePlate
-      })
-      
-      setLicensePlate(array)
+      setLicensePlate(customer1.licensePlate)
 
       
     }
@@ -210,20 +183,6 @@ function CreateCustomer({customer:customer}) {
     }
   }
 
-  const handleBlur = (params) => {
-    console.log("params", params)
-    // let newRow = row
-    let newRow = licensePlate
-    newRow[params.id].licensePlate = params.row.licensePlate
-  
-
-
-    
-    setLicensePlate(newRow)
-    
-    
-  }
-
 
   const info = {
     company: company,
@@ -235,52 +194,15 @@ function CreateCustomer({customer:customer}) {
     contact_email: contact_email,
     address: address,
     TIN: TIN,
-    groupID: groupID
+    groupID: groupID,
+    licensePlate: licensePlate
   }
 
-  const columns = [
-    {
-      field: 'licensePlate',
-      headerName: 'ป้ายทะเบียนรถ',
-      width: 200,
-      editable: true
-    },
-    
-  ]
+  const onSubmit = (str) => {
 
-  const handleAddRow = () => {
+    if(str === 'add'){
 
-    let newArr = []
-    licensePlate.map((value, index) =>{
-      newArr.push({
-        id: index,
-        licensePlate: value.licensePlate
-      })
-    })
-    newArr.push({
-      id: licensePlate.length,
-      licensePlate: ""
-    })
-    setLicensePlate(newArr)
-  }
-
-  const onSubmit = (e) => {
-    // console.log('onSubmit', info);
-
-    const submitterId = e.target.id;
-
-    let licenArr = []
-    licensePlate.map(obj => {
-      licenArr.push(obj.licensePlate)
-    })
-
-    info["licensePlate"] = licenArr
-
-    // console.log(submitterId)
-
-    if(submitterId === 'add'){
-
-      fetch('/api/toDB', {
+      fetch('/api/customer', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -299,14 +221,14 @@ function CreateCustomer({customer:customer}) {
           alert("ลงทะเบียนสำเร็จ")
         })
         .then(router.push('/customers'))
-      }else if(submitterId === 'update'){
+      }else if(str === 'update'){
         // console.log(customer._id)
         // let id = ObjectId(customer._id)
         
-        info["_id"] = customer._id
+        info["_id"] = customers._id
 
         // console.log(id)
-        fetch('/api/toDB', {
+        fetch('/api/customer', {
           method: 'PUT', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -320,12 +242,14 @@ function CreateCustomer({customer:customer}) {
           body: JSON.stringify(info) // body data type must match "Content-Type" header
         })
           .then(response => response.json())
-          .then(alert("ลงทะเบียนสำเร็จ"))
+          .then(alert("อัพเดทสำเร็จ"))
           .then(router.push('/customers'))
       }
   }
 
   const classes = useStyles();
+  const classes2 = useStyles2();
+
   return (
     // <form onSubmit={handleSubmit(onSubmit)}>
     <div>
@@ -333,7 +257,7 @@ function CreateCustomer({customer:customer}) {
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
-            {customer === null ? <h4 className={classes.cardTitleWhite}>ลงทะเบียน</h4> : <h4 className={classes.cardTitleWhite}>อัพเดทข้อมูล</h4>}
+            {customers === null ? <h4 className={classes.cardTitleWhite}>ลงทะเบียน</h4> : <h4 className={classes.cardTitleWhite}>อัพเดทข้อมูล</h4>}
               <p className={classes.cardCategoryWhite}>กรุณากรอกข้อมูลด้านล่าง</p>
             </CardHeader>
             <CardBody>
@@ -348,7 +272,7 @@ function CreateCustomer({customer:customer}) {
                       error: companyError
                     }}
                     inputProps={{
-                      defaultValue: customer !== null ? customer.company : null,
+                      defaultValue: customers !== null ? customers.company : null,
                       // onChange: handleChange,
                       onBlur: handleSetState,      
                     }}
@@ -369,7 +293,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.owner : null,
+                      defaultValue: customers !== null ? customers.owner : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -385,7 +309,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.owner_tel : null,
+                      defaultValue: customers !== null ? customers.owner_tel : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -399,7 +323,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.owner_email : null,
+                      defaultValue: customers !== null ? customers.owner_email : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -416,7 +340,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.contact_name : null,
+                      defaultValue: customers !== null ? customers.contact_name : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -431,7 +355,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.contact_tel : null,
+                      defaultValue: customers !== null ? customers.contact_tel : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -445,7 +369,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.contact_email : null,
+                      defaultValue: customers !== null ? customers.contact_email : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -463,7 +387,7 @@ function CreateCustomer({customer:customer}) {
                   // fullWidth={true}
                   inputProps={{
                     // onChange: handleChange,
-                    defaultValue: customer !== null ? customer.address : null,
+                    defaultValue: customers !== null ? customers.address : null,
                     onBlur: handleSetState
                   }}
                 />
@@ -480,7 +404,7 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.TIN : null,
+                      defaultValue: customers !== null ? customers.TIN : null,
                       onBlur: handleSetState
                     }}
                   />
@@ -495,38 +419,30 @@ function CreateCustomer({customer:customer}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      defaultValue: customer !== null ? customer.groupID : null,
+                      disabled: customers ? true : false,
+                      defaultValue: customers !== null ? customers.groupID : null,
                       onBlur: handleSetState
                     }}
                   />
                 </GridItem>
               </GridContainer>
 
-              <GridContainer>
-                <div style={{ height: 300, width: '25%' }}>
-                  <DataGrid
-                    rows={licensePlate}
-                    columns={columns}
-                    onCellBlur={handleBlur}
-                    hideFooterPagination={true}
-                    // checkboxSelection={handleSelectRow}
-                    // icons={EditIcon}
-                    
-                  />
-                </div>
-              </GridContainer>
 
-              <GridContainer>
-                <button onClick={() => handleAddRow()}>เพิ่มทะเบียนรถ</button>
+              <LicenseContext.Provider value={{ licensePlate, setLicensePlate }}>
+                
+                <LicensePlate_List />
 
-              </GridContainer>
-              
-
-              
-              
+                <LicensePlate_modal />
+                
+              </LicenseContext.Provider>
             </CardBody>
             <CardFooter>
-             {customer === null ? <Button onClick={(e) => onSubmit(e)} id="add" color="primary">ลงทะเบียน</Button> : <Button onClick={(e) => onSubmit(e)} id="update" color="primary">อัพเดท</Button>}
+              <div>
+                {customers === null ? <Button onClick={() => onSubmit("add")} color="primary">ลงทะเบียน</Button> : 
+                                      <Button onClick={() => onSubmit("update")} color="primary">อัพเดท</Button>}
+                  <Button onClick={() => router.push('/customers')} color="rose">ยกเลิก</Button>
+
+              </div>
             </CardFooter>
           </Card>
         </GridItem>
@@ -537,5 +453,7 @@ function CreateCustomer({customer:customer}) {
 }
 
 CreateCustomer.layout = Admin;
+
+export {LicenseContext}
 
 export default CreateCustomer;
