@@ -335,18 +335,21 @@ function GenerateCoupon({ customers, coupons }) {
                 </Select>
               </FormControl>
 
-              <FormControl 
+
+              
+
+              {/* <FormControl 
               variant="outlined" className={classes2.formControl}
               >
                 <Button href="/coupon/printPage" color="info">
                   หน้าปริ้น
                 </Button>
-              </FormControl>
+              </FormControl> */}
               
 
             </GridContainer>
             
-
+{/* 
             
               {tableState ? (
                 <div>
@@ -371,8 +374,7 @@ function GenerateCoupon({ customers, coupons }) {
             
                 </div>
                   
-              ) : null}
-            {/* </GridContainer> */}
+              ) : null} */}
           
     </div>
   );
