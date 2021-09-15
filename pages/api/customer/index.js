@@ -122,20 +122,21 @@ export default async (req, res) => {
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
-      company
+      _id,
+      
     } = data;
 
     // let _id = ObjectId(data._id)
     // delete data._id
 
-    console.log(data)
+    console.log("data ==> ", data)
     // console.log(data)
     const { db } = await connectToDatabase();
 
 
     await db.collection("customer").deleteOne(
-      // { _id: ObjectId(_id)},
-      { company: company},
+      { _id: ObjectId(_id)},
+      // { company: company},
 
       // callback
       

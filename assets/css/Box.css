@@ -11,6 +11,10 @@
   display: none;
 }
 
+/* .invisible-scrollbar::-webkit-scrollbar {
+  display: none;
+} */
+
 .child + .child {
   margin-left: 12px;
 }

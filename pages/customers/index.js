@@ -4,11 +4,13 @@ import { DataGrid } from '@material-ui/data-grid';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { connectToDatabase } from "../../util/mongodb";
 import Admin from "layouts/Admin.js";
 import { useRouter } from "next/router";
+import Modal from '@material-ui/core/Modal';
+
 
 
 export async function getServerSideProps() {
@@ -28,20 +30,56 @@ export async function getServerSideProps() {
   };
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({  
   root: {
     '& .super-app-theme--header': {
       backgroundColor: 'rgba(255, 7, 0, 0.55)',
     },
   },
-});
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    maxHeight: 500,
+    overflow: 'auto',
+
+  },
+}));
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 function Customers({customer: customers}) {
 
   const classes = useStyles();
   const router = useRouter();
 
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+  const [company, setCompany] = React.useState("");
 
+  const handleOpen = (params) => {
+    // console.log(params)
+    setCompany(params.row)
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  
 
   const [editRowsModel, setEditRowsModel] = React.useState({});
 
@@ -54,7 +92,7 @@ function Customers({customer: customers}) {
   //   console.log(params)
   // }, []);
 
-  const handleDelete = (params) => {
+  const handleDelete = () => {
     fetch('/api/customer', {
       method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -66,8 +104,9 @@ function Customers({customer: customers}) {
       },
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(params.row.company) // body data type must match "Content-Type" header
-    }).then(response => response.json())
+      body: JSON.stringify(company) // body data type must match "Content-Type" header
+    })
+    .then(response => response.json())
     .then(router.reload())
   }
 
@@ -106,9 +145,30 @@ const columns = [
           <Button href={"/customers/"+customers[params.row.id]._id} variant="contained" color="primary" startIcon={<EditIcon />}>
             แก้ไข
           </Button>
-          <Button onClick={() => handleDelete(params)} variant="contained" color="secondary" startIcon={<EditIcon />}>
+          <Button onClick={() => handleOpen(params)} variant="contained" color="secondary" startIcon={<EditIcon />}>
             ลบ
           </Button>
+          <Modal
+            open={company.company == params.row.company ? open : false}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            <div style={modalStyle} className={classes.paper}>
+              <h2 id="simple-modal-title">ยืนยันการลบ</h2>
+              <p id="simple-modal-description">
+                ท่านต้องการลบบริษัท {company.company} ใช่ไหม
+              </p>
+
+              <Button onClick={() => handleDelete()} variant="contained" color="primary" >
+                ยืนยัน
+              </Button>
+              <Button onClick={handleClose} variant="contained" color="secondary" >
+                ยกเลิก
+              </Button>
+              
+            </div>
+          </Modal>
         </div>
         
       );
