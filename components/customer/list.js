@@ -32,8 +32,8 @@ export default function LicensePlate_List() {
   return (
     <List className={classes.root} subheader={<li />}>
         <ListSubheader>เลขทะเบียนรถ</ListSubheader>
-        {licensePlate.map(row => (
-            <ListItem>
+        {licensePlate.map((row, index) => (
+            <ListItem key={index}>
             <ListItemText primary={row} />
             </ListItem>
 

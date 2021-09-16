@@ -14,9 +14,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField'
 
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
-import Chip from '@material-ui/core/Chip';
+import IconButton from '@material-ui/core/IconButton';
+import CommentIcon from '@material-ui/icons/Comment';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 
 // layout for this page
@@ -124,6 +130,12 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
+  List: {
+    width: '100%',
+    maxWidth: 360,
+    maxHeight: 500,
+    backgroundColor: theme.palette.background.paper,
+  },
 }));
 
 function groupByKey(array, key) {
@@ -152,12 +164,51 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
   // modal
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
+  const [del, setDel] = useState(false);
 
   // form inside modal
   const [username, setUsername] = useState("")
   const [userId, setUserId] = useState("")
 
-  // form inside modal edit
+  // list inside modal edit
+  const [admin, setAdmin] = useState("")
+  const [username_edit, setUsername_edit] = useState("")
+  const [userId_edit, setUserId_edit] = useState("")
+  const [status_edit, setStatus_edit] = useState()
+  const [checked, setChecked] = React.useState([]);
+
+
+  useEffect(() => {
+    const newChecked = [];
+
+    if(admin !== ""){
+      const groupid_list = customers.filter( customer => admin.groupId.includes(customer.company))
+  
+      groupid_list.map(groupid => {
+        newChecked.push(groupid)
+      })
+  
+      setChecked(newChecked)
+      // console.log(newChecked)
+    }
+
+
+  }, [userId_edit])
+
+
+
+  const handleToggle = (value) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+  };
 
   const group = groupByKey(customers, "groupID");
 
@@ -171,20 +222,43 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
     }
   }
 
+  const handleEdit = (e) => {
+    if(e.target.name === 'name'){
+      setUsername_edit(e.target.value)
+    }else if(e.target.name === 'USER_ID'){
+      setUserId_edit(e.target.value)
+    }
+  }
+
   const handleOpen = (name) => {
 
     // console.log(name.row.userId)
     if(name == "add" || name == "password"){
       setOpen(name);
     }else{
-      setUsername(name.row.username)
-      setUserId(name.row.userId)
+      setAdmin(name.row)
+      setUsername_edit(name.row.username)
+      setUserId_edit(name.row.userId)
+      setStatus_edit(name.row.status)
       setOpen(name.row.userId)
+      setDel(true)
     }
   };
 
+  const handleOpen_delete = (name) => {
+
+    // console.log(name.row.userId)
+    setAdmin(name.row)
+ 
+    setDel(name.row.userId)
+    
+  };
+
+
+
   const handleClose = () => {
     setOpen(false);
+    setDel(false)
   };
 
   useEffect(() => {
@@ -215,9 +289,30 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
     setStatus(event.target.value);
   };
 
+  const handleChangeStatus_edit = (event) => {
+    // console.log(company)
+    setStatus_edit(event.target.value);
+  };
+
   const classes2 = useStyles2();
 
-  const submit = () => {
+  const submit = (value) => {
+    let username_submit = username
+    let userId_submit = userId
+    let status_submit = status
+    let groupId_submit = [company.groupID]
+
+    if(value !== "add"){
+      username_submit = username_edit
+      userId_submit = userId_edit
+      status_submit = status_edit
+
+      let newArray = []
+      checked.map(obj => {
+        newArray.push(obj.groupID)
+      })
+      groupId_submit = newArray
+    }
     
     fetch("/api/admin", {
       method: "PUT", // *GET, POST, PUT, DELETE, etc.
@@ -231,59 +326,44 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify({
-        username: username,
-        userId: userId,
-        status: status,
-        groupId: company.groupID,
+        username: username_submit,
+        userId: userId_submit,
+        status: status_submit,
+        groupId: groupId_submit,
       }), // body data type must match "Content-Type" header
     })
-      .then(alert("ลงทะเบียนสำเร็จ"))
+      .then(value == "add" ? alert("ลงทะเบียนสำเร็จ") : alert("แก้ไขสำเร็จ"))
       .then(router.reload());
   };
 
+  const handleDelete = () => {
+    fetch("/api/admin", {
+      method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify({
+        userId: admin.userId
+      }), // body data type must match "Content-Type" header
+    })
+      .then(alert("ลบสำเร็จ"))
+      .then(router.reload());
+  }
+
   const columns = [
-    { field: "username", headerClassName: 'super-app-theme--header', headerName: "ชื่อผู้ใช้", width: 150, editable: true },
+    { field: "username", headerClassName: 'super-app-theme--header', headerName: "ชื่อผู้ใช้", width: 150 },
     {
       field: "status",
       headerName: "สถานะ",
       headerClassName: 'super-app-theme--header',
       width: 200,
-      disableClickEventBubbling: true,
-      renderCell: function choose(params) {
-        // console.log(params)
-        if (params.row.edit == true) {
-          return (
-            <FormControl
-              className={classes2.formControl}
-              error={companyError}
-            >
-              <InputLabel id="demo-simple-select-outlined-label1">
-                Status
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label1"
-                id="demo-simple-select-outlined"
-                value={status ? status : ""}
-                onChange={handleChangeStatus}
-                label="Status"
-              >
-                <MenuItem key="แคชเชียร์" value="แคชเชียร์">
-                  แคชเชียร์
-                </MenuItem>
-                <MenuItem
-                  key="เจ้าของ หรือ ผู้ช่วย"
-                  value="เจ้าของ หรือ ผู้ช่วย"
-                >
-                  เจ้าของ หรือ ผู้ช่วย
-                </MenuItem>
-                <MenuItem key="ลูกค้า" value="ลูกค้า">
-                  ลูกค้า
-                </MenuItem>
-              </Select>
-            </FormControl>
-          );
-        }
-      },
+      
     },
     {
       field: "userId",
@@ -305,7 +385,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
       headerName: "Edit",
       headerClassName: 'super-app-theme--header',
       // sortable: false,
-      width: 130,
+      width: 150,
       // hide: true,
       disableClickEventBubbling: true,
       renderCell: function edit(params) {
@@ -313,94 +393,114 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
         return (
           <div>
             <Button
-        onClick={() => handleOpen(params)}
-        color="primary"
-        variant="contained"
-      >
-        แก้ไข
-      </Button>
-      <Modal
-        open={open === params.row.userId ? true : false}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        <div style={modalStyle} className={classes.paper}>
-          <h2 id="simple-modal-title">แก้ไขข้อมูล</h2>
-          <p id="simple-modal-description">
-            กรอกข้อมูลด้านล่าง
-          </p>
-          
-          
-          <TextField className={classes.TextField1} required name="name" label="ชื่อผู้ใช้" value={params.row.username} onChange={(e) => handleChangeText(e)}  />
-          <TextField className={classes.TextField} disable required name="USER_ID" label="USER ID" value={params.row.userId} onChange={(e) => handleChangeText(e)}  />
-
-          <div>
-            <FormControl
-              // variant="outlined"
-              className={classes.formControl}
-              error={companyError}
+              onClick={() => handleOpen(params)}
+              color="primary"
+              variant="contained"
             >
-              <InputLabel id="demo-simple-select-outlined-label1">
-                ชื่อลูกค้า
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label1"
-                id="demo-simple-select-outlined"
-                value={company ? company : ""}
-                onChange={handleChangeCompany}
-                label="Company"
-              >
-                {customers.map((company) => {
-                  return (
-                    <MenuItem key={company.company} value={company}>
-                      {company.company}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-
-            <FormControl
-              className={classes.formControl}
-              error={companyError}
+              แก้ไข
+            </Button>
+            <Modal
+              open={open === params.row.userId ? true : false}
+              onClose={handleClose}
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
             >
-              <InputLabel id="demo-simple-select-outlined-label1">
-                Status
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label1"
-                id="demo-simple-select-outlined"
-                value={status ? status : ""}
-                onChange={handleChangeStatus}
-                label="Status"
-              >
-                <MenuItem key="แคชเชียร์" value="แคชเชียร์">
-                  แคชเชียร์
-                </MenuItem>
-                <MenuItem
-                  key="เจ้าของ หรือ ผู้ช่วย"
-                  value="เจ้าของ หรือ ผู้ช่วย"
-                >
-                  เจ้าของ หรือ ผู้ช่วย
-                </MenuItem>
-                <MenuItem key="ลูกค้า" value="ลูกค้า">
-                  ลูกค้า
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </div>
+              <div style={modalStyle} className={classes.paper}>
+                <h2 id="simple-modal-title">แก้ไขข้อมูล</h2>
+                <p id="simple-modal-description">
+                  กรอกข้อมูลด้านล่าง
+                </p>
+                
+                
+                <TextField className={classes.TextField1} required name="name" label="ชื่อผู้ใช้" value={username_edit} onChange={(e) => handleEdit(e)}  />
+                <TextField className={classes.TextField} disable required name="USER_ID" label="USER ID" value={userId_edit} onChange={(e) => handleEdit(e)}  />
+
+                <div>
+                  <List subheader={<ListSubheader>รายชื่อลูกค้า</ListSubheader>} className={classes.List}>
+                    {customers.map((customer) => {
+                      const labelId = `checkbox-list-label-${customer.company}`;
+
+                      return (
+                        <ListItem key={customer.company} role={undefined} dense button onClick={handleToggle(customer)}>
+                          <ListItemIcon>
+                            <Checkbox
+                              edge="start"
+                              checked={checked.indexOf(customer) !== -1}
+                              tabIndex={-1}
+                              disableRipple
+                              inputProps={{ 'aria-labelledby': labelId }}
+                            />
+                          </ListItemIcon>
+                          <ListItemText id={labelId} primary={customer.company} />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+
+                  <FormControl
+                    className={classes.formControl}
+                    error={companyError}
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label1">
+                      Status
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-outlined-label1"
+                      id="demo-simple-select-outlined"
+                      value={status_edit ? status_edit : ""}
+                      onChange={handleChangeStatus_edit}
+                      label="Status"
+                    >
+                      <MenuItem key="แคชเชียร์" value="แคชเชียร์">
+                        แคชเชียร์
+                      </MenuItem>
+                      <MenuItem
+                        key="เจ้าของ หรือ ผู้ช่วย"
+                        value="เจ้าของ หรือ ผู้ช่วย"
+                      >
+                        เจ้าของ หรือ ผู้ช่วย
+                      </MenuItem>
+                      <MenuItem key="ลูกค้า" value="ลูกค้า">
+                        ลูกค้า
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
 
 
-          <Button className={classes.button} onClick={() => submit()} variant="contained" color="primary" >
-            ยืนยัน
-          </Button>
-          <Button className={classes.button} onClick={handleClose} variant="contained" color="secondary" >
-            ยกเลิก
-          </Button>
-          
-        </div>
-      </Modal>
+                <Button className={classes.button} onClick={() => submit(params)} variant="contained" color="primary" >
+                  ยืนยัน
+                </Button>
+                <Button className={classes.button} onClick={handleClose} variant="contained" color="secondary" >
+                  ยกเลิก
+                </Button>
+                
+              </div>
+            </Modal>
+            <Button onClick={() => handleOpen_delete(params)} variant="contained" color="secondary">
+              ลบ
+            </Button>
+            <Modal
+              open={del === params.row.userId  ? true : false}
+              onClose={handleClose}
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
+            >
+              <div style={modalStyle} className={classes.paper}>
+                <h2 id="simple-modal-title">ยืนยันการลบ</h2>
+                <p id="simple-modal-description">
+                  ท่านต้องการลบ {admin.username} ใช่ไหม
+                </p>
+
+                <Button onClick={() => handleDelete()} variant="contained" color="primary" >
+                  ยืนยัน
+                </Button>
+                <Button onClick={handleClose} variant="contained" color="secondary" >
+                  ยกเลิก
+                </Button>
+                
+              </div>
+            </Modal>
           </div>
         )
       },
@@ -553,7 +653,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
           </div>
 
 
-          <Button className={classes.button} onClick={() => submit()} variant="contained" color="primary" >
+          <Button className={classes.button} onClick={() => submit("add")} variant="contained" color="primary" >
             ยืนยัน
           </Button>
           <Button className={classes.button} onClick={handleClose} variant="contained" color="secondary" >
