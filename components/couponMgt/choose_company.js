@@ -5,6 +5,8 @@ import { StepperContext } from '../../pages/couponMgt/purchaseCoupon'
 import Admin from "layouts/Admin.js";
 import Typography from "@material-ui/core/Typography";
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import Grid from '@material-ui/core/Grid';
 
 
@@ -47,9 +49,19 @@ return array
     }, {})
 }
 
-
+const useStyles2 = makeStyles((theme) => ({
+  select: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 export default function Choose_Company() {
+  // const classes2 = useStyles2();
+
   const { company, setCompany, customers, coupons, tableState, setTableState, classes, rows, setRows, 
             total_table, setTotal_table, total_coupons, setTotal_coupons, text_rows, setText_rows,
             ordered_company, setOrdered_company, date, setDate } = useContext(StepperContext)
@@ -92,9 +104,10 @@ export default function Choose_Company() {
   
 
   return (
-    <Grid>
+    <div>
           <FormControl 
             variant="outlined" 
+            className={classes.select}
             >
             <InputLabel id="demo-simple-select-outlined-label1">
               ชื่อลูกค้า
@@ -147,6 +160,6 @@ export default function Choose_Company() {
           </Table>
         </TableContainer> : null
           }
-        </Grid>
+        </div>
   )
 }

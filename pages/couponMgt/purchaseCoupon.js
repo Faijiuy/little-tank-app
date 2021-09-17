@@ -65,6 +65,10 @@ const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: 500,
   },
+  select: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 }));
 
 // Stepper
