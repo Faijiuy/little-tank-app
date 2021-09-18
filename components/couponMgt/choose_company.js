@@ -27,14 +27,20 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+function thousands_separators(num) {
+  var num_parts = num.toString().split(".");
+  num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num_parts.join(".");
+}
+
 
 function priceRow(price, qty) {
     return price * qty;
   }
   
-function createRow( price, qty) {
+function createRow(key, price, qty, date) {
 const total = priceRow(price, qty);
-return { price, qty, total };
+return {key, price, qty, total, date };
 }
 
 function subtotal(items) {
@@ -73,18 +79,35 @@ export default function Choose_Company() {
   };
 
   useEffect(() => {
-      let coupons_in_company = coupons.filter(coupon => coupon.companyRef === company._id && coupon.used === false)
+    let coupons_in_company = coupons.filter(coupon => coupon.companyRef === company._id && coupon.used === false)
+
+    
+    
+      let helper = {};
+      let result = coupons_in_company.reduce(function(r, o) {
+        let key = o.amount + '-' + o.generatedDate;
+        
+        if(!helper[key]) {
+          helper[key] = Object.assign({}, o); // create a copy of o
+          helper[key].qty = 1
+          r.push(helper[key]);
+        } else {
+          helper[key].qty += 1;
+        }
   
-      let coupons_groupBy_price = groupByKey(coupons_in_company, "amount")
+        return r;
+      }, []);
   
-      let array_rows = Object.keys(coupons_groupBy_price).map(price => 
-                          createRow(price, 
-                                    coupons_groupBy_price[price].length))
+      let array_rows = result.map(group => createRow(group._id, Number(group.amount), Number(group.qty), group.generatedDate))
+      console.log("rows", rows)
   
       setRows(array_rows)
       
       let sum = subtotal(array_rows);
       setTotal_table(sum)
+
+    
+
   
     }, [company])
 
@@ -98,10 +121,6 @@ export default function Choose_Company() {
       setOrdered_company(groupArray)  
   
     }, [company])
-
-  
-
-  
 
   return (
     <div>
@@ -135,26 +154,30 @@ export default function Choose_Company() {
             <TableHead>
               <TableRow>
                 <TableCell>ราคาคูปอง</TableCell>
+                <TableCell>วันที่ซื้อ</TableCell>
                 <TableCell >จำนวนที่เหลือ</TableCell>
                 <TableCell >รวม</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <TableRow key={row.price}>
+                <TableRow key={row.key}>
                   <TableCell component="th" scope="row">
                     {row.price}
                   </TableCell>
+                  <TableCell>{row.date}</TableCell>
                   <TableCell >{row.qty}</TableCell>
-                  <TableCell >{row.price * row.qty}</TableCell>
+                  <TableCell >{thousands_separators(row.price * row.qty)}</TableCell>
                 </TableRow>       
               ))}
 
               <TableRow>
                 <TableCell></TableCell>
-                <TableCell>Total</TableCell>
+                <TableCell></TableCell>
 
-                <TableCell >{total_table}</TableCell>
+                <TableCell>รวม</TableCell>
+
+                <TableCell >{thousands_separators(total_table)}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

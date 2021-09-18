@@ -21,6 +21,9 @@ import { useRouter } from "next/router";
 
 import { format } from 'date-fns'
 
+import { ObjectId } from 'bson';
+
+
 
 
 export async function getServerSideProps() {
@@ -51,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(1),
     marginRight: theme.spacing(1),
+  },
+  button_add: {
+    // marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(10)
   },
   button_text_rows: {
     marginTop: theme.spacing(2),
@@ -135,6 +142,13 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
     let groupArray = groupByKey(filterCoupon, "amount")
 
     setOrdered_company(groupArray)
+
+  }, [company])
+
+  useEffect(() => {
+  
+    console.log(Date("6131cca312d2f884f5688130") < Date("613096934aef07e6ba8df98b"))
+
 
   }, [company])
 

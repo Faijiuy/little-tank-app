@@ -11,7 +11,16 @@ function subtotal(items) {
   return items.map(({ total }) => total).reduce((sum, i) => sum + i, 0);
 }
 
+function thousands_separators(num) {
+  if(!num){
+    return ""
+  }else{
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num_parts.join(".");
 
+  }
+}
 
 
 
@@ -80,7 +89,7 @@ export default function Buy_Coupons() {
           <TextField
             name="total"
             label="ราคารวม"
-            value={row.price * row.qty}
+            value={thousands_separators(row.price * row.qty)}
             InputProps={{
               readOnly: true,
             }}
@@ -93,17 +102,18 @@ export default function Buy_Coupons() {
         )
 
       })}
-      <div>มูลค่ารวม {total_coupons} บาท</div>
         <div>
           <Button
             variant="contained"
             color="primary"
             onClick={handleAddRow}
-            className={classes.button}
-          >
+            className={classes.button_add}
+            >
             เพิ่ม
           </Button>
+          <div  style={{ margin: 15 }}>มูลค่าคูปองรวม {thousands_separators(total_coupons)} บาท</div>
         </div>
+        <br />
     </form>
   )
 }
