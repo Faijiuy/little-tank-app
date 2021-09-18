@@ -99,7 +99,7 @@ export default async function test(req, res) {
     reply(reply_token, "ID ของคุณคือ " + id)
   }
   else if (event.message.text == "สอบถาม groupid") {
-    let customers = await fetch(process.env.API + "/toDB", {
+    let customers = await fetch(process.env.API + "/customer", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
@@ -117,7 +117,7 @@ export default async function test(req, res) {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
-    let customers = await fetch(process.env.API + "/toDB", {
+    let customers = await fetch(process.env.API + "/customer", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
@@ -228,7 +228,7 @@ export default async function test(req, res) {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
-    let customers = await fetch(process.env.API + "/toDB", {
+    let customers = await fetch(process.env.API + "/customer", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
@@ -261,7 +261,7 @@ export default async function test(req, res) {
     );
 
     if (admin[0].status == "แคชเชียร์" || admin[0].status == "เจ้าของ หรือ ผู้ช่วย") {
-      let customers = await fetch(process.env.API + "/toDB", {
+      let customers = await fetch(process.env.API + "/customer", {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
       }).then((response) => response.json());
 
