@@ -18,6 +18,9 @@ import CardFooter from "components/Card/CardFooter.js";
 
 import { connectToDatabase } from "../../util/mongodb";
 import { ObjectId } from 'bson';
+import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField'
+
 
 import LicensePlate_List from "../../components/customer/list"
 import LicensePlate_modal from "../../components/customer/modal"
@@ -49,6 +52,17 @@ export async function getServerSideProps(props) {
   }
 }
 
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -66,6 +80,9 @@ const styles = {
     marginBottom: "3px",
     textDecoration: "none",
   },
+  button: {
+    height: 40
+  }
 };
 
 const useStyles2 = makeStyles((theme) => ({
@@ -74,6 +91,28 @@ const useStyles2 = makeStyles((theme) => ({
     height: 400,
     maxWidth: 300,
     backgroundColor: theme.palette.background.paper,
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    maxHeight: 500,
+    overflow: 'auto',
+
+  },
+  paper2: {
+    position: 'absolute',
+    width: 200,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    maxHeight: 500,
+    overflow: 'auto',
+
   },
 }));
 
@@ -103,12 +142,33 @@ function CreateCustomer({customer:customers}) {
   const [address, setAddress] = useState()
   const [TIN, setTIN] = useState()
   const [groupID, setGroupID] = useState()
+  const [new_groupID, setNew_GroupID] = useState()
+
+
   const router = useRouter()
 
-  
+  const [modalStyle] = React.useState(getModalStyle);
+
+  const [open, setOpen] = React.useState(false);
+  const [open_new, setOpen_new] = React.useState(false);
 
 
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen_pass = () => {
+    setOpen_new(true);
+  };
+
+  const handleClose_pass = () => {
+    setOpen_new(false);
+  };
 
   useEffect(() => {
     const customer1 = {
@@ -121,7 +181,7 @@ function CreateCustomer({customer:customers}) {
       contact_email: "customer1@gmail.com",
       address: "address1, address2, Bangkok",
       TIN: "1234567890123",
-      groupID: "C2345467ref24325346213",
+      groupID: "",
       licensePlate: []
     }
 
@@ -155,6 +215,17 @@ function CreateCustomer({customer:customers}) {
       
     }
   },[])
+
+  const handleChangePass = (e) => {
+    setNew_GroupID(e.target.value)
+  }
+
+  const handleChange_groupId = () => {
+    setGroupID(new_groupID)
+    setOpen(false)
+    setOpen_new(false)
+    console.log(groupID)
+  }
 
 
   const useStyles = makeStyles(styles);
@@ -395,7 +466,7 @@ function CreateCustomer({customer:customers}) {
               </GridContainer>
 
               <GridContainer>
-              <GridItem xs={12} sm={12} md={6}>
+              <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="เลขประจำตัวผู้เสียภาษี"
                     id="TIN"
@@ -421,12 +492,70 @@ function CreateCustomer({customer:customers}) {
                       // onChange: handleChange,
                       disabled: customers ? true : false,
                       defaultValue: customers !== null ? customers.groupID : null,
+                      value: groupID,
                       onBlur: handleSetState
                     }}
                   />
                 </GridItem>
+                {customers !== null ? (
+
+                  <div>
+                  <Button className={classes.button} style={{ marginTop: 30 }} onClick={handleOpen} >แก้รหัส</Button>
+                  <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                  >
+                    <div style={modalStyle} className={classes2.paper}>
+                      <h2 id="simple-modal-title">แก้ไขรหัส</h2>
+                    
+                      <form className={classes.root} noValidate autoComplete="off">
+                      
+                      <TextField name="LINE" label="รหัสไลน์" style={{ width: 350}} defaultValue={customers.groupID} onChange={(e) => handleChangePass(e)} />
+                        <div>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleOpen_pass()}
+                            // className={classes.button}
+                          >
+                            ยืนยัน
+                          </Button>
+                          <Modal
+                            open={open_new}
+                            onClose={handleClose_pass}
+                            aria-labelledby="simple-modal-title"
+                            aria-describedby="simple-modal-description"
+                          >
+                            <div style={modalStyle} className={classes2.paper2}>
+                            <p id="simple-title">ท่านแน่ใจใช่ไหม</p>
+
+                            <Button variant="contained" color="primary" onClick={handleChange_groupId}>ยืนยัน</Button>
+                            <Button variant="contained" color="primary" onClick={handleClose_pass}>ยกเลิก</Button>
+                            </div>
+                          </Modal>
+
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleClose}
+                            // className={classes.button}
+                          >
+                            ยกเลิก
+                          </Button>
+                        </div>
+                    </form>
+
+                    </div>
+                  </Modal>
+                  </div>
+
+                ) : null}
+
               </GridContainer>
 
+                <br />
 
               <LicenseContext.Provider value={{ licensePlate, setLicensePlate }}>
                 
