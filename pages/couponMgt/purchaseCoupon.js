@@ -5,9 +5,6 @@ import Grid from '@material-ui/core/Grid';
 
 
 import { connectToDatabase } from "../../util/mongodb";
-import GenerateCoupon from "../../components/couponMgt/generateCoupon";
-import MissingCoupon from "../../components/couponMgt/missingCoupon";
-
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -15,31 +12,18 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import { DataGrid } from "@material-ui/data-grid";
-
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-
-import TextField from '@material-ui/core/TextField';
-
-
-
-import { format } from 'date-fns'
 import Choose_Company from "../../components/couponMgt/choose_company";
 import Buy_Coupons from "../../components/couponMgt/buy_coupons";
 import Confirm from "../../components/couponMgt/confirm";
+
+import { useRouter } from "next/router";
+
+import { format } from 'date-fns'
+
+import { ObjectId } from 'bson';
+
+
 
 
 export async function getServerSideProps() {
@@ -71,6 +55,14 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
+  button_add: {
+    // marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(10)
+  },
+  button_text_rows: {
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(1),
+  },
   actionsContainer: {
     marginBottom: theme.spacing(2),
   },
@@ -80,6 +72,10 @@ const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: 500,
   },
+  select: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 }));
 
 // Stepper
@@ -87,18 +83,13 @@ function getSteps() {
   return ['เลือกบริษัท', 'ซื้อคูปอง', 'ยืนยัน'];
 }
 
-// Table
-function priceRow(price, qty) {
-  return price * qty;
-}
-
-function createRow( price, qty) {
-  const total = priceRow(price, qty);
-  return { price, qty, total };
-}
-
-function subtotal(items) {
-  return items.map(({ total }) => total).reduce((sum, i) => sum + i, 0);
+function checkText_Rows(text_rows){
+  return text_rows.some(row => Number(row.price) < 500 || 
+                        !row.price ||
+                        !row.qty ||
+                        (Number(row.price) % 100 !== 0 && Number(row.price) % 100 !== 50 ) || 
+                        Number(row.qty) === 0) 
+                 
 }
 
 function groupByKey(array, key) {
@@ -112,122 +103,13 @@ function groupByKey(array, key) {
 
 
 function getStepContent(step) {
-  // const classes = useStyles();
-  
-  // const [company, setCompany] = useState("");
-  // const [rows, setRows] = useState([]);
-  // const [tableState, setTableState] = useState(false);
-  // const [total_table, setTotal_table] = useState();
-  // const [total_coupons, setTotal_coupons] = useState();
-  // const [company_name, setcompany_name] = useState("");
-
-  // const [text_rows, setText_rows] = useState([{ price: 0, qty: 0, total: 0,}])
-
-
-
-  
-
-  // const handleAddRow = () => {
-
-  //   setText_rows((prevText_rows) => {
-  //     return ([...prevText_rows, {
-  //         price: 0,
-  //         qty: 0,
-  //         total: 0,}] )
-      
-  //   })
-    
-  // };
-
-  // const handleChangeText = (e) => {
-  //   let newRow = text_rows;
-
-  //   if(e.target.id.split(" ")[1] == "price"){
-  //     newRow[Number(e.target.id.split(" ")[0])].price = e.target.value
-  //   }else if(e.target.id.split(" ")[1] == "qty"){
-  //     newRow[e.target.id.split(" ")[0]].qty = e.target.value
-  //   }
-
-  //   newRow[e.target.id.split(" ")[0]].total = newRow[e.target.id.split(" ")[0]].price * newRow[e.target.id.split(" ")[0]].qty
-    
-  //   setText_rows(newRow)
-
-  //   let sum = subtotal(newRow);
-  //   setTotal_coupons(sum)
-
-  // }
-
-  // useEffect(() => {
-  //   let coupons_in_company = coupons.filter(coupon => coupon.companyRef === company._id && coupon.used === false)
-
-  //   let coupons_groupBy_price = groupByKey(coupons_in_company, "amount")
-
-  //   let array_rows = Object.keys(coupons_groupBy_price).map(price => 
-  //                       createRow(price, 
-  //                                 coupons_groupBy_price[price].length))
-
-  //   setRows(array_rows)
-    
-  //   let sum = subtotal(array_rows);
-  //   setTotal_table(sum)
-
-  // }, [company])
-
-
   switch (step) {
     case 0:
       return <Choose_Company />
     case 1:
       return <Buy_Coupons />
-        // 
-      
     case 2:
-      // const [test, setTest] = useState()
-
-      // if(company_name == ""){
-      //   let value = company_name
-      //   console.log("value ", value)
-      // }else{
-      //   setTest(company_name)
-      //   console.log("test ", test)
-      // }
-
       return <Confirm />
-      // (<form>
-      //           บริษัท {test}
-
-               
-
-      //           <TableContainer>
-      //             <Table className={classes.table} aria-label="simple table">
-      //               <TableHead>
-      //                 <TableRow>
-      //                   <TableCell>คูปอง</TableCell>
-      //                   <TableCell >จำนวน</TableCell>
-      //                   <TableCell >รวม</TableCell>
-      //                 </TableRow>
-      //               </TableHead>
-      //               <TableBody>
-      //                 {text_rows.map((row) => (
-      //                   <TableRow key={row.price}>
-      //                     <TableCell component="th" scope="row">
-      //                       {row.price}
-      //                     </TableCell>
-      //                     <TableCell >{row.qty}</TableCell>
-      //                     <TableCell >{row.price * row.qty}</TableCell>
-      //                   </TableRow>       
-      //                 ))}
-
-      //                 <TableRow>
-      //                   <TableCell></TableCell>
-      //                   <TableCell>Total</TableCell>
-
-      //                   <TableCell >{total_coupons}</TableCell>
-      //                 </TableRow>
-      //               </TableBody>
-      //             </Table>
-      //           </TableContainer>
-      //         </form>);
     default:
       return 'Unknown step';
   }
@@ -247,10 +129,99 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
   const [tableState, setTableState] = useState(false);
   const [total_table, setTotal_table] = useState();
   const [total_coupons, setTotal_coupons] = useState();
-  const [company_name, setcompany_name] = useState("");
-  const [text_rows, setText_rows] = useState([{ price: 0, qty: 0, total: 0,}])
+  const [text_rows, setText_rows] = useState([{ price: null, qty: null, total: null,}])
+  const [date, setDate] = useState();
+  const router = useRouter();
+
+  const [ordered_company, setOrdered_company] = useState([]);
+
+  useEffect(() => {
+  
+    let filterCoupon = coupons.filter(coupon => coupon.companyRef === company._id && coupon.generatedDate === date)
+
+    let groupArray = groupByKey(filterCoupon, "amount")
+
+    setOrdered_company(groupArray)
+
+  }, [company])
+
+  useEffect(() => {
+  
+    console.log(Date("6131cca312d2f884f5688130") < Date("613096934aef07e6ba8df98b"))
+
+
+  }, [company])
 
   const handleNext = () => {
+    if(activeStep == 2){
+      text_rows.map((row) => {
+
+        if (Object.keys(ordered_company).includes(row.price.toString())) {
+  
+          let runNo = ordered_company[row.price.toString()].length;
+  
+          for (let i = 1; i <= Number(row.qty); i++) {
+            fetch("/api/coupon", {
+              method: "POST", // *GET, POST, PUT, DELETE, etc.
+              mode: "cors", // no-cors, *cors, same-origin
+              cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+              credentials: "same-origin", // include, *same-origin, omit
+              headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              redirect: "follow", // manual, *follow, error
+              referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+              body: JSON.stringify({
+                code:
+                  company._id + "-" + date + "-" + row.price + "-" + (runNo + i),
+                companyRef: company._id,
+                generatedDate: date,
+                amount: Number(row.price),
+                runningNo: runNo + i,
+                used: false,
+                usedDateTime: "",
+                recordedBy: "",
+                printed: false,
+              }), // body data type must match "Content-Type" header
+            });
+            if (i == Number(row.qty)) {
+              alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
+            }
+          }
+        } else {
+          
+          for (let i = 1; i <= Number(row.qty); i++) {
+            fetch("/api/coupon", {
+              method: "POST", // *GET, POST, PUT, DELETE, etc.
+              mode: "cors", // no-cors, *cors, same-origin
+              cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+              credentials: "same-origin", // include, *same-origin, omit
+              headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              redirect: "follow", // manual, *follow, error
+              referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+              body: JSON.stringify({
+                code: company._id + "-" + date + "-" + row.price + "-" + i,
+                companyRef: company._id,
+                generatedDate: date,
+                amount: Number(row.price),
+                runningNo: i,
+                used: false,
+                usedDateTime: "",
+                recordedBy: "",
+                printed: false,
+              }), // body data type must match "Content-Type" header
+            });
+            if (i == Number(row.qty)) {
+              alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
+            }
+          }
+        }
+      })  
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -258,17 +229,25 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleReset = () => {
-    setActiveStep(0);
-  };
   
+  useEffect(() => {
+    let todayDate = format(new Date(), "dd/MM/yyyy"); 
+
+    if(new Date().getFullYear() >= 2564){
+      let thaiDate = format(new Date(), "dd/MM"); 
+      setDate(thaiDate + "/" + (new Date().getFullYear() - 543))
+    }else{
+      setDate(todayDate);
+    }
+    
+  }, []);
+
   
-
-
   return (
     <StepperContext.Provider 
           value={{company, setCompany, customers, coupons, tableState, setTableState, classes, rows, setRows, 
-                  total_table, setTotal_table, total_coupons, setTotal_coupons, text_rows, setText_rows }}
+                  total_table, setTotal_table, total_coupons, setTotal_coupons, text_rows, setText_rows, 
+                  ordered_company, setOrdered_company, date, setDate }}
     
     >
       <Grid container>
@@ -289,14 +268,49 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
                     >
                       Back
                     </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      className={classes.button}
-                    >
-                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                    </Button>
+                    {activeStep === steps.length - 1  ? <Button 
+                                                         variant="contained"
+                                                         color="primary"
+                                                         onClick={handleNext}
+                                                         className={classes.button}
+                                                        >
+                                                         ยืนยัน
+                                                        </Button> : 
+
+                                                        activeStep == 0 ? 
+                                                        <Button
+                                                          disabled={!company}
+                                                          variant="contained"
+                                                          color="primary"
+                                                          onClick={handleNext}
+                                                          className={classes.button}
+                                                        >
+                                                          ต่อไป
+                                                        </Button> : 
+
+                                                        activeStep == 1 ?
+                                                        <Button
+                                                          disabled={checkText_Rows(text_rows)}
+                                                          variant="contained"
+                                                          color="primary"
+                                                          onClick={handleNext}
+                                                          className={classes.button}
+                                                        >
+                                                          ต่อไป
+                                                        </Button> :
+
+                                                        activeStep == 2 ?
+                                                        <Button
+                                                          variant="contained"
+                                                          color="primary"
+                                                          onClick={handleNext}
+                                                          className={classes.button}
+                                                        >
+                                                          ยืนยัน
+                                                        </Button> : null
+                                                        
+                                                        
+                                                        }
                   </div>
                 </div>
               </StepContent>
@@ -306,8 +320,11 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
         {activeStep === steps.length && (
           <Paper square elevation={0} className={classes.resetContainer}>
             <Typography>All steps completed - you&apos;re finished</Typography>
-            <Button onClick={handleReset} className={classes.button}>
+            <Button onClick={() => router.reload()} className={classes.button}>
               Reset
+            </Button>
+            <Button href="/coupon/printPage" className={classes.button}>
+              หน้าปริ้น
             </Button>
           </Paper>
         )}

@@ -1,6 +1,8 @@
 import Admin from "layouts/Admin.js";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Box from '@material-ui/core/Box';
+
 
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
@@ -36,6 +38,9 @@ import {
 
 
 const styles = {
+  root: {
+    marginLeft: "9px"
+  },
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
     margin: "0",
@@ -65,6 +70,12 @@ const useStyles2 = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     minWidth: 120,
   },
+  formControl1: {
+    // margin: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+    minWidth: 120,
+    marginTop: 16
+  },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
@@ -72,6 +83,9 @@ const useStyles2 = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
     },
+  button: {
+    marginLeft: theme.spacing(3)
+  }
   },
 }));
 
@@ -327,8 +341,13 @@ function MissingCoupon({ customers, coupons }) {
 
   return (
     <div>
+      <Box className="no-print" bgcolor="secondary.main" color="secondary.contrastText" p={2}>
+        เลือก บริษัท ราคา และวันที่ เพื่อแสดงคูปองคงเหลือ
+      </Box>
+     
       <GridContainer>
-        <FormControl className={classes2.formControl}>
+        
+        <FormControl className={classes2.formControl1}>
           <InputLabel id="demo-simple-select-outlined-label">
             ชื่อลูกค้า
           </InputLabel>
@@ -349,7 +368,7 @@ function MissingCoupon({ customers, coupons }) {
           </Select>
         </FormControl>
 
-        <FormControl className={classes2.formControl}>
+        <FormControl className={classes2.formControl1}>
           <InputLabel id="demo-simple-select-outlined-label">
             ราคา
           </InputLabel>
@@ -396,7 +415,7 @@ function MissingCoupon({ customers, coupons }) {
         <Grid
           container
           spacing={2}
-          justifyContent="center"
+          justifyContent="left"
           alignItems="center"
           className={classes.root}
         >
@@ -428,11 +447,11 @@ function MissingCoupon({ customers, coupons }) {
           <Grid item>{customList("คูปองสูญหาย", right)}</Grid>
         </Grid>
 
-        <Button onClick={() => onSubmit_missing_coupon()} color="primary">
-          ยืนยัน
-        </Button>
       </GridContainer>
         
+        <Button className={classes2.button} onClick={() => onSubmit_missing_coupon()} color="primary">
+          ยืนยัน
+        </Button>
     </div>
   );
 }

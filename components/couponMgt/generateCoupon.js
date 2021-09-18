@@ -104,79 +104,79 @@ function GenerateCoupon({ customers, coupons }) {
     setRows(newRows)
   }
 
-  const columns = [
-    {
-      field: "type",
-      headerName: "ราคา",
-      headerClassName: 'super-app-theme--header',
-      type: "number",
-      width: 120,
-      editable: true,
-      renderCell: (cellValue) => {
-        return (
-          <div
-            style={
-              cellValue.value < 500 ? 
-              {color: "red"} : null
-            }
-          >
-            {cellValue.value}
-          </div>
-        )
-      }  
-    },
-    {
-      field: "qty",
-      headerName: "จำนวน",
-      headerClassName: 'super-app-theme--header',
-      type: "number",
-      width: 120,
-      editable: true,
-      renderCell: (cellValue) => {
-        return (
-          <div
-            style={
-              cellValue.value == 0 ? 
-              {color: "red"} : null
-            }
-          >
-            {cellValue.value}
-          </div>
-        )
-      }  
-    },
-    {
-      field: "total",
-      headerName: "รวม",
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'right',
-      width: 120,
-      type: "number",
-      renderCell: (cellValue) => {
-        return (
-          <div>
-            {cellValue.row.type * cellValue.row.qty}
-          </div>
-        )
-      } 
-    },
-    {
-      field: "",
-      headerName: "action",
-      headerClassName: 'super-app-theme--header',
-      width: 120,
-      disableClickEventBubbling: true,
-      renderCell: function delete_row(params) {
-          return (<Button
-          onClick={() => handleDelete(params)}
-          // variant="contained"
-          color="rose"
-        >
-          ลบ
-        </Button>)     
-      },
-    }
-  ];
+  // const columns = [
+  //   {
+  //     field: "type",
+  //     headerName: "ราคา",
+  //     headerClassName: 'super-app-theme--header',
+  //     type: "number",
+  //     width: 120,
+  //     editable: true,
+  //     renderCell: (cellValue) => {
+  //       return (
+  //         <div
+  //           style={
+  //             cellValue.value < 500 ? 
+  //             {color: "red"} : null
+  //           }
+  //         >
+  //           {cellValue.value}
+  //         </div>
+  //       )
+  //     }  
+  //   },
+  //   {
+  //     field: "qty",
+  //     headerName: "จำนวน",
+  //     headerClassName: 'super-app-theme--header',
+  //     type: "number",
+  //     width: 120,
+  //     editable: true,
+  //     renderCell: (cellValue) => {
+  //       return (
+  //         <div
+  //           style={
+  //             cellValue.value == 0 ? 
+  //             {color: "red"} : null
+  //           }
+  //         >
+  //           {cellValue.value}
+  //         </div>
+  //       )
+  //     }  
+  //   },
+  //   {
+  //     field: "total",
+  //     headerName: "รวม",
+  //     headerClassName: 'super-app-theme--header',
+  //     headerAlign: 'right',
+  //     width: 120,
+  //     type: "number",
+  //     renderCell: (cellValue) => {
+  //       return (
+  //         <div>
+  //           {cellValue.row.type * cellValue.row.qty}
+  //         </div>
+  //       )
+  //     } 
+  //   },
+  //   {
+  //     field: "",
+  //     headerName: "action",
+  //     headerClassName: 'super-app-theme--header',
+  //     width: 120,
+  //     disableClickEventBubbling: true,
+  //     renderCell: function delete_row(params) {
+  //         return (<Button
+  //         onClick={() => handleDelete(params)}
+  //         // variant="contained"
+  //         color="rose"
+  //       >
+  //         ลบ
+  //       </Button>)     
+  //     },
+  //   }
+  // ];
 
   useEffect(() => {
     let todayDate = format(new Date(), "dd/MM/yyyy"); 
@@ -338,43 +338,9 @@ function GenerateCoupon({ customers, coupons }) {
 
               
 
-              {/* <FormControl 
-              variant="outlined" className={classes2.formControl}
-              >
-                <Button href="/coupon/printPage" color="info">
-                  หน้าปริ้น
-                </Button>
-              </FormControl> */}
-              
-
             </GridContainer>
             
-{/* 
-            
-              {tableState ? (
-                <div>
-                  
-                <div style={{ height: 300, width: "120%" }} className={classes4.root}>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  onCellBlur={handleBlur}
-                  hideFooterPagination={true}
-                  disableSelectionOnClick={true}
-                  />
-                  </div>
-            <div>
-              <Button color="primary" onClick={() => handleAddRow()}>เพิ่มคูปอง</Button>
-              &emsp;คูปองที่ต้องการพิมพ์ทั้งหมด มูลค่ารวม {totalCoupon}
-            </div>
-            <Button onClick={() => onSubmit()} color="success">
-              ยืนยัน
-            </Button>
-            &emsp;
-            
-                </div>
-                  
-              ) : null} */}
+
           
     </div>
   );

@@ -99,7 +99,7 @@ export default async function test(req, res) {
     reply(reply_token, "ID ของคุณคือ " + id)
   }
   else if (event.message.text == "สอบถาม groupid") {
-    let customers = await fetch(process.env.API + "/toDB", {
+    let customers = await fetch(process.env.API + "/customer", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
@@ -117,7 +117,7 @@ export default async function test(req, res) {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
-    let customers = await fetch(process.env.API + "/toDB", {
+    let customers = await fetch(process.env.API + "/customer", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
@@ -223,7 +223,34 @@ export default async function test(req, res) {
       replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
     }
     reply(reply_token, replyCommand);
-  } else if (event.message.type == "image") {
+  } else if(event.message.text == "ทะเบียนรถ"){
+    let admins = await fetch(process.env.API + "/admin", {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+    }).then((response) => response.json());
+
+    let customers = await fetch(process.env.API + "/customer", {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+    }).then((response) => response.json());
+
+    let admin = await admins.filter(
+      (admin) => admin.userId === id && admin.groupId.includes(GID)
+    );
+
+    if (admin[0].status == "แคชเชียร์" || admin[0].status == "เจ้าของ หรือ ผู้ช่วย" || admin[0].status == "ลูกค้า"){
+      let replyCommand = "ป้ายทะเบียนรถ: "
+
+      let customer = await customers.filter((customer) => customer.groupID === GID);
+
+      if(!customer[0].licensePlate){
+        reply(reply_token, "ขออภัย ขณะนี้ยังไม่มีเลขทะเบียนรถที่ลงทะเบียนไว้")
+      }else{
+        customer[0].licensePlate.map(license => {
+          replyCommand += "\n" + license
+        })
+        reply(reply_token, replyCommand)
+      }
+    }
+  }else if (event.message.type == "image") {
     console.log("yes")
     let admins = await fetch(process.env.API + "/admin", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -234,7 +261,7 @@ export default async function test(req, res) {
     );
 
     if (admin[0].status == "แคชเชียร์" || admin[0].status == "เจ้าของ หรือ ผู้ช่วย") {
-      let customers = await fetch(process.env.API + "/toDB", {
+      let customers = await fetch(process.env.API + "/customer", {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
       }).then((response) => response.json());
 

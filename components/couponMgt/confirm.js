@@ -7,7 +7,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { StepperContext } from '../../pages/couponMgt/purchaseCoupon'
 
-
+function thousands_separators(num) {
+  var num_parts = num.toString().split(".");
+  num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num_parts.join(".");
+}
 
 export default function Confirm(){
     const { company, setCompany, customers, coupons, tableState, setTableState, classes, rows, setRows, 
@@ -33,7 +37,7 @@ export default function Confirm(){
                             {row.price}
                           </TableCell>
                           <TableCell >{row.qty}</TableCell>
-                          <TableCell >{row.price * row.qty}</TableCell>
+                          <TableCell >{thousands_separators(row.price * row.qty)}</TableCell>
                         </TableRow>       
                       ))}
 
@@ -41,7 +45,7 @@ export default function Confirm(){
                         <TableCell></TableCell>
                         <TableCell>Total</TableCell>
 
-                        <TableCell >{total_coupons}</TableCell>
+                        <TableCell >{thousands_separators(total_coupons)}</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
