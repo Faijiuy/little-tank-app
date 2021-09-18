@@ -240,14 +240,16 @@ export default async function test(req, res) {
       let replyCommand = "ป้ายทะเบียนรถ: "
 
       let customer = await customers.filter((customer) => customer.groupID === GID);
-      
-      customer[0].licensePlate.map(license => {
-        replyCommand += "\n" + license
-      })
 
-
+      if(!customer[0].licensePlate){
+        reply(reply_token, "ขออภัย ขณะนี้ยังไม่มีเลขทะเบียนรถที่ลงทะเบียนไว้")
+      }else{
+        customer[0].licensePlate.map(license => {
+          replyCommand += "\n" + license
+        })
+        reply(reply_token, replyCommand)
+      }
     }
-
   }else if (event.message.type == "image") {
     console.log("yes")
     let admins = await fetch(process.env.API + "/admin", {
