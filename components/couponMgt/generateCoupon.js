@@ -104,79 +104,79 @@ function GenerateCoupon({ customers, coupons }) {
     setRows(newRows)
   }
 
-  const columns = [
-    {
-      field: "type",
-      headerName: "ราคา",
-      headerClassName: 'super-app-theme--header',
-      type: "number",
-      width: 120,
-      editable: true,
-      renderCell: function cell_color(cellValue){
-        return (
-          <div
-            style={
-              cellValue.value < 500 ? 
-              {color: "red"} : null
-            }
-          >
-            {cellValue.value}
-          </div>
-        )
-      }  
-    },
-    {
-      field: "qty",
-      headerName: "จำนวน",
-      headerClassName: 'super-app-theme--header',
-      type: "number",
-      width: 120,
-      editable: true,
-      renderCell: function cell_color(cellValue){
-        return (
-          <div
-            style={
-              cellValue.value == 0 ? 
-              {color: "red"} : null
-            }
-          >
-            {cellValue.value}
-          </div>
-        )
-      }  
-    },
-    {
-      field: "total",
-      headerName: "รวม",
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'right',
-      width: 120,
-      type: "number",
-      renderCell: function cell_calculator(cellValue){
-        return (
-          <div>
-            {cellValue.row.type * cellValue.row.qty}
-          </div>
-        )
-      } 
-    },
-    {
-      field: "",
-      headerName: "action",
-      headerClassName: 'super-app-theme--header',
-      width: 120,
-      disableClickEventBubbling: true,
-      renderCell: function delete_row(params) {
-          return (<Button
-          onClick={() => handleDelete(params)}
-          // variant="contained"
-          color="rose"
-        >
-          ลบ
-        </Button>)     
-      },
-    }
-  ];
+  // const columns = [
+  //   {
+  //     field: "type",
+  //     headerName: "ราคา",
+  //     headerClassName: 'super-app-theme--header',
+  //     type: "number",
+  //     width: 120,
+  //     editable: true,
+  //     renderCell: (cellValue) => {
+  //       return (
+  //         <div
+  //           style={
+  //             cellValue.value < 500 ? 
+  //             {color: "red"} : null
+  //           }
+  //         >
+  //           {cellValue.value}
+  //         </div>
+  //       )
+  //     }  
+  //   },
+  //   {
+  //     field: "qty",
+  //     headerName: "จำนวน",
+  //     headerClassName: 'super-app-theme--header',
+  //     type: "number",
+  //     width: 120,
+  //     editable: true,
+  //     renderCell: (cellValue) => {
+  //       return (
+  //         <div
+  //           style={
+  //             cellValue.value == 0 ? 
+  //             {color: "red"} : null
+  //           }
+  //         >
+  //           {cellValue.value}
+  //         </div>
+  //       )
+  //     }  
+  //   },
+  //   {
+  //     field: "total",
+  //     headerName: "รวม",
+  //     headerClassName: 'super-app-theme--header',
+  //     headerAlign: 'right',
+  //     width: 120,
+  //     type: "number",
+  //     renderCell: (cellValue) => {
+  //       return (
+  //         <div>
+  //           {cellValue.row.type * cellValue.row.qty}
+  //         </div>
+  //       )
+  //     } 
+  //   },
+  //   {
+  //     field: "",
+  //     headerName: "action",
+  //     headerClassName: 'super-app-theme--header',
+  //     width: 120,
+  //     disableClickEventBubbling: true,
+  //     renderCell: function delete_row(params) {
+  //         return (<Button
+  //         onClick={() => handleDelete(params)}
+  //         // variant="contained"
+  //         color="rose"
+  //       >
+  //         ลบ
+  //       </Button>)     
+  //     },
+  //   }
+  // ];
 
   useEffect(() => {
     let todayDate = format(new Date(), "dd/MM/yyyy"); 
@@ -335,18 +335,21 @@ function GenerateCoupon({ customers, coupons }) {
                 </Select>
               </FormControl>
 
-              <FormControl 
+
+              
+
+              {/* <FormControl 
               variant="outlined" className={classes2.formControl}
               >
                 <Button href="/coupon/printPage" color="info">
                   หน้าปริ้น
                 </Button>
-              </FormControl>
+              </FormControl> */}
               
 
             </GridContainer>
             
-
+{/* 
             
               {tableState ? (
                 <div>
@@ -371,8 +374,7 @@ function GenerateCoupon({ customers, coupons }) {
             
                 </div>
                   
-              ) : null}
-            {/* </GridContainer> */}
+              ) : null} */}
           
     </div>
   );

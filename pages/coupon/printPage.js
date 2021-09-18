@@ -138,6 +138,9 @@ function PrintPage() {
       >
         {body}
       </Modal>
+      <Button variant="contained" color="primary" className="no-print" onClick={() => router.push('/couponMgt')}>
+        ย้อนกลับ ยังไม่พิมพ์
+      </Button>
 
       <Box className="no-print" bgcolor="secondary.main" color="secondary.contrastText" p={2}>
         กด ctrl + P เพื่อปริ้น หลังจากนั้นกดปุ่มยืนยันด้านบน หากรูปแสดงตัวอย่างตกขอบ กดปุ่ม Refresh หรือ F5

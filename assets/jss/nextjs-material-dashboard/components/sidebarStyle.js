@@ -16,6 +16,9 @@ import {
 } from "assets/jss/nextjs-material-dashboard.js";
 
 const sidebarStyle = (theme) => ({
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
   drawerPaper: {
     border: "none",
     position: "fixed",
@@ -156,6 +159,18 @@ const sidebarStyle = (theme) => ({
     backgroundColor: "transparent",
     ...defaultFont,
   },
+  itemLink2: {
+    paddingLeft: theme.spacing(7),
+    width: "auto",
+    transition: "all 300ms linear",
+    margin: "10px 15px 0",
+    borderRadius: "3px",
+    position: "relative",
+    display: "block",
+    padding: "10px 15px",
+    backgroundColor: "transparent",
+    ...defaultFont,
+  },
   itemIcon: {
     width: "24px",
     height: "30px",
@@ -163,6 +178,17 @@ const sidebarStyle = (theme) => ({
     lineHeight: "30px",
     float: "left",
     marginRight: "15px",
+    textAlign: "center",
+    verticalAlign: "middle",
+    color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)",
+  },
+  itemIcon2: {
+    width: "24px",
+    height: "30px",
+    fontSize: "24px",
+    lineHeight: "30px",
+    float: "right",
+    // marginRight: "15px",
     textAlign: "center",
     verticalAlign: "middle",
     color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)",
