@@ -138,7 +138,7 @@ function PrintPage() {
       >
         {body}
       </Modal>
-      <Button variant="contained" color="primary" className="no-print" onClick={() => router.push('/couponMgt')}>
+      <Button variant="contained" color="secondary" className="no-print" onClick={() => router.push('/couponMgt/purchaseCoupon')}>
         ย้อนกลับ ยังไม่พิมพ์
       </Button>
 
