@@ -1,31 +1,11 @@
 import Grid from "./Grid";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Box from '@material-ui/core/Box';
 import QRCode from "react-qr-code";
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from "next/router";
-
-
-import { connectToDatabase } from "../../util/mongodb";
-
-export async function getServerSideProps() {
-  const { db } = await connectToDatabase();
-
-  const coupons = await db.collection("coupons").find().sort({}).toArray();
-  const customers = await db.collection("customer").find().sort({}).toArray();
-
-
-  let printList = coupons.filter((coupon) => coupon.printed === false);
-
-  return {
-    props: {
-      coupon: JSON.parse(JSON.stringify(printList)),
-      customer: JSON.parse(JSON.stringify(customers)), 
-    },
-  };
-}
 
 const divStyle = {
   fontSize: "15px",
@@ -60,13 +40,39 @@ function getModalStyle() {
   };
 }
 
-export default function PrintPage({ coupon: printList, customer: customers }) {
+function PrintPage() {
   // console.log(customers)
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [modalStyle] = React.useState(getModalStyle);
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(true)
+  const [customers, setCustomers] = useState([])
+  const [printList, setPrintList] = useState([])
+
+  // const result = dotenv.config()
+
+  useEffect(() => {
+    async function fetchData(){
+      let response_printList = await fetch("/api/coupon")
+      let data_printList = await response_printList.json()
+      let filter_printList = data_printList.filter(coupon => coupon.printed === false)
+      setPrintList(filter_printList)
+
+      let response_customers = await fetch("/api/customer")
+      let data_customers = await response_customers.json()
+
+      setCustomers(data_customers)
+
+      setIsLoading(false)
+    }
+    fetchData()
+  }, [])
+
+  if(isLoading){
+    return <h2>Loading..</h2>
+  }
 
   const handleOpen = () => {
     setOpen(true);
@@ -91,9 +97,9 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
     </div>
   );
 
-  const handleClick = async () => {
+  const handleClick = () => {
 
-    await printList.map((coupon) => {
+    printList.map((coupon) => {
       coupon.printed = true;
       fetch("/api/coupon/print", {
         method: "PUT", // *GET, POST, PUT, DELETE, etc.
@@ -108,15 +114,14 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify(coupon), // body data type must match "Content-Type" header
       })
-        .then((response) => response.json())
-        // .then((data) => {
-        //   console.log();
-        //   // alert("Add Item:\nResponse from server " + data._id);
-        // });
-    });
+    })
 
-    // router.reload();
+    alert("ปริ้นสำเร็จ")
     router.push('/couponMgt')
+
+    
+    
+
 
   };
 
@@ -133,9 +138,12 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
       >
         {body}
       </Modal>
+      <Button variant="contained" color="secondary" className="no-print" onClick={() => router.push('/couponMgt/purchaseCoupon')}>
+        ย้อนกลับ ยังไม่พิมพ์
+      </Button>
 
       <Box className="no-print" bgcolor="secondary.main" color="secondary.contrastText" p={2}>
-        กด ctrl + P เพื่อปริ้น หลังจากนั้นกดปุ่มยืนยันด้านบน
+        กด ctrl + P เพื่อปริ้น หลังจากนั้นกดปุ่มยืนยันด้านบน หากรูปแสดงตัวอย่างตกขอบ กดปุ่ม Refresh หรือ F5
       </Box>
 
       <Grid>
@@ -175,3 +183,5 @@ export default function PrintPage({ coupon: printList, customer: customers }) {
     </div>
   );
 }
+
+export default PrintPage;

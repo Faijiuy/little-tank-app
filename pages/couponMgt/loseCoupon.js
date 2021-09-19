@@ -8,9 +8,8 @@ import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 
 
-import { connectToDatabase } from "../util/mongodb";
-import GenerateCoupon from "../components/couponMgt/generateCoupon";
-import MissingCoupon from "../components/couponMgt/missingCoupon";
+import { connectToDatabase } from "../../util/mongodb";
+import MissingCoupon from "../../components/couponMgt/missingCoupon";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -83,34 +82,9 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
 
   return (
     <div>
-      <Accordion
-        square
-        expanded={expanded === "panel1"}
-        onChange={handleChange("panel1")}
-      >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>พิมพ์คูปอง</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            <GenerateCoupon customers={customers} coupons={coupons} />
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion
-        square
-        expanded={expanded === "panel2"}
-        onChange={handleChange("panel2")}
-      >
-        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-          <Typography>คูปองหาย</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
+      
             <MissingCoupon customers={customers} coupons={coupons} />
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
+        
     </div>
   );
 }

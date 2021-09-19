@@ -19,11 +19,24 @@ import RTLNavbarLinks from "components/Navbars/RTLNavbarLinks.js";
 import styles from "assets/jss/nextjs-material-dashboard/components/sidebarStyle.js";
 
 
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+
+
 
 import IconExpandLess from '@material-ui/icons/ExpandLess'
 import IconExpandMore from '@material-ui/icons/ExpandMore'
 
 export default function Sidebar(props) {
+  // collapse
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
   // used for checking current route
   const router = useRouter();
   // creates styles for this component
@@ -39,19 +52,14 @@ export default function Sidebar(props) {
       {routes.map((prop, key) => {
         var activePro = " ";
         var listItemClasses;
-        if (prop.path === "/upgrade-to-pro") {
-          activePro = classes.activePro + " ";
-          listItemClasses = classNames({
-            [" " + classes[color]]: true,
-          });
-        } else {
-          listItemClasses = classNames({
-            // [" " + classes[color]]: activeRoute(prop.layout + prop.path),
+        
+        listItemClasses = classNames({
+          // [" " + classes[color]]: activeRoute(prop.layout + prop.path),
 
-            [" " + classes[color]]: activeRoute(prop.path),
+          [" " + classes[color]]: activeRoute(prop.path),
 
-          });
-        }
+        });
+        
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]:
             // activeRoute(prop.layout + prop.path) ||
@@ -61,35 +69,107 @@ export default function Sidebar(props) {
         return (
           //orginal
           // <Link href={prop.layout + prop.path} key={key}> 
-
-          <Link href={prop.path} key={key}> 
-            <a className={activePro + classes.item}>
-              <ListItem button className={classes.itemLink + listItemClasses}>
-                {typeof prop.icon === "string" ? (
-                  <Icon
-                    className={classNames(classes.itemIcon, whiteFontClasses, {
-                      [classes.itemIconRTL]: props.rtlActive,
-                    })}
-                  >
-                    {prop.icon}
-                  </Icon>
-                ) : (
-                  <prop.icon
-                    className={classNames(classes.itemIcon, whiteFontClasses, {
-                      [classes.itemIconRTL]: props.rtlActive,
-                    })}
-                  />
-                )}
-                <ListItemText
-                  primary={props.rtlActive ? prop.rtlName : prop.name}
-                  className={classNames(classes.itemText, whiteFontClasses, {
-                    [classes.itemTextRTL]: props.rtlActive,
-                  })}
-                  disableTypography={true}
-                />
+          <div>
+            {prop.path === "/couponMgt" ? (
+              <div>
+              <ListItem button className={classes.itemLink + listItemClasses} onClick={handleClick}>
+              {typeof prop.icon === "string" ? (
+                      <Icon
+                        className={classNames(classes.itemIcon, whiteFontClasses, {
+                          [classes.itemIconRTL]: props.rtlActive,
+                        })}
+                      >
+                        {prop.icon}
+                      </Icon>
+                    ) : (
+                      <prop.icon
+                        className={classNames(classes.itemIcon, whiteFontClasses, {
+                          [classes.itemIconRTL]: props.rtlActive,
+                        })}
+                      />
+                    )}
+                  {open ? <ExpandLess className={classNames(classes.itemIcon2, whiteFontClasses, {
+                            [classes.itemIconRTL]: props.rtlActive,
+                          })} /> : 
+                          <ExpandMore className={classNames(classes.itemIcon2, whiteFontClasses, {
+                            [classes.itemIconRTL]: props.rtlActive,
+                          })} />}
+                <ListItemText primary="การจัดการคูปอง" className={classNames(classes.itemText, whiteFontClasses, {
+                        [classes.itemTextRTL]: props.rtlActive,
+                      })}
+                      disableTypography={true} />
+                        {/* {open ? <ExpandLess /> : <ExpandMore />} */}
               </ListItem>
-            </a>
-          </Link>
+              <Collapse in={open} timeout="auto" unmountOnExit>
+                {prop.pathArr.map((obj, key) => {
+                  return (<Link href={obj.path} key={key}>
+                    {/* <List component="div" disablePadding>
+                      <ListItem button className={classes.itemLink2 + listItemClasses}>
+                        
+                        <ListItemText primary="ซื้อคูปอง" className={classNames(classes.itemText, whiteFontClasses, {
+                            [classes.itemTextRTL]: props.rtlActive,
+                          })}
+                          disableTypography={true} />
+                      </ListItem>
+                    </List> */}
+
+                    {/* <a className={activePro + classes.item} disablePadding> */}
+                    <List component="div" disablePadding>
+                      <ListItem button  className={classes.itemLink2} >
+                        
+                        <ListItemText
+                          primary={obj.name}
+                          className={classNames(classes.itemText, whiteFontClasses, {
+                            [classes.itemTextRTL]: props.rtlActive,
+                          })}
+                          disableTypography={true}
+                        />
+                      </ListItem>
+                      </List>
+                    {/* </a> */}
+                  </Link>)
+
+                })}
+                
+              </Collapse>
+
+              </div>
+            ) : (
+              <Link href={prop.path} key={key}> 
+              
+                <a className={activePro + classes.item}>
+                  <ListItem button className={classes.itemLink + listItemClasses}>
+                    {typeof prop.icon === "string" ? (
+                      <Icon
+                        className={classNames(classes.itemIcon, whiteFontClasses, {
+                          [classes.itemIconRTL]: props.rtlActive,
+                        })}
+                      >
+                        {prop.icon}
+                      </Icon>
+                    ) : (
+                      <prop.icon
+                        className={classNames(classes.itemIcon, whiteFontClasses, {
+                          [classes.itemIconRTL]: props.rtlActive,
+                        })}
+                      />
+                    )}
+                    <ListItemText
+                      primary={props.rtlActive ? prop.rtlName : prop.name}
+                      className={classNames(classes.itemText, whiteFontClasses, {
+                        [classes.itemTextRTL]: props.rtlActive,
+                      })}
+                      disableTypography={true}
+                    />
+                  </ListItem>
+                </a>
+              </Link>
+
+            )}
+
+          </div>
+          
+
         );
       })}
     </List>
@@ -97,7 +177,7 @@ export default function Sidebar(props) {
   var brand = (
     <div className={classes.logo}>
       <a
-        href="https://www.creative-tim.com?ref=njsmd-sidebar"
+        href="/dashboard"
         className={classNames(classes.logoLink, {
           [classes.logoLinkRTL]: props.rtlActive,
         })}

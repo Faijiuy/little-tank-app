@@ -1,5 +1,3 @@
-import fs from "fs";
-
 var QrCode = require("qrcode-reader");
 var Jimp = require("jimp");
 
@@ -11,6 +9,9 @@ import { uploadFile } from "../../util/googledrive";
 
 const request = require("request");
 
+import { format } from 'date-fns'
+
+
 const { Readable } = require("stream");
 
 export default async function test(req, res) {
@@ -20,21 +21,6 @@ export default async function test(req, res) {
     return;
   }
 
-  // let admins =  await fetch(process.env.API + "/admin", {
-  //               method: "GET", // *GET, POST, PUT, DELETE, etc.
-  //               }).then((response) => response.json())
-
-  // let customers = await fetch(process.env.API + "/toDB", {
-  //                 method: "GET", // *GET, POST, PUT, DELETE, etc.
-  //               })
-  //                 .then((response) => response.json())
-
-  // let coupons = await fetch(process.env.API + "/coupon/used", {
-  //                 method: "GET", // *GET, POST, PUT, DELETE, etc.
-  //               })
-  //                 .then((response) => response.json())
-
-  // console.log(admins)
   const client = new line.Client({
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   });
@@ -65,58 +51,55 @@ export default async function test(req, res) {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
-    if (
-      await passwords.some((password) => {
-        if (password.password === parts[2]) {
-          client
-            .getProfile(id)
-            .then((profile) => {
-              fetch(process.env.API + "/admin", {
-                method: "PUT", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                  "Content-Type": "application/json",
-                  // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({
-                  username: profile.displayName,
-                  userId: id,
-                  status: password.status,
-                  groupId: password.groupId,
-                }), // body data type must match "Content-Type" header
-              }).then(reply(reply_token, "เอา admin ไป"));
-            })
-            .then(
-              fetch(process.env.API + "/admin/password", {
-                method: "DELETE", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                  "Content-Type": "application/json",
-                  // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({ password: password.password }),
-              }) // body data type must match "Content-Type" header
-            );
-        }
-      })
-    ) {
-      // if(part[3]){
-      // }
-      // reply(reply_token, "เอา admin ไป")
+    if(GID === undefined){
+        await passwords.some((password) => {
+          if (password.password === parts[2]) {
+            client
+              .getProfile(id)
+              .then((profile) => {
+                fetch(process.env.API + "/admin", {
+                  method: "PUT", // *GET, POST, PUT, DELETE, etc.
+                  mode: "cors", // no-cors, *cors, same-origin
+                  cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                  credentials: "same-origin", // include, *same-origin, omit
+                  headers: {
+                    "Content-Type": "application/json",
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  redirect: "follow", // manual, *follow, error
+                  referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                  body: JSON.stringify({
+                    username: profile.displayName,
+                    userId: id,
+                    status: password.status,
+                    groupId: password.groupId,
+                  }), // body data type must match "Content-Type" header
+                }).then(reply(reply_token, "เอา admin ไป"));
+              })
+              .then(
+                fetch(process.env.API + "/admin/password", {
+                  method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+                  mode: "cors", // no-cors, *cors, same-origin
+                  cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                  credentials: "same-origin", // include, *same-origin, omit
+                  headers: {
+                    "Content-Type": "application/json",
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  redirect: "follow", // manual, *follow, error
+                  referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                  body: JSON.stringify({ password: password.password }),
+                }) // body data type must match "Content-Type" header
+              );
+          }
+        })
     }
 
-    // reply(reply_token, [admins[0].status, customers[0].company, coupons[0].amount])
-    // reply(reply_token, [parts[0], parts[1], parts[2]])
-  } else if (event.message.text == "สอบถาม groupid") {
-    let customers = await fetch(process.env.API + "/toDB", {
+  } else if (event.message.text == "ไอดีของฉัน") {
+    reply(reply_token, "ID ของคุณคือ " + id)
+  }
+  else if (event.message.text == "สอบถาม groupid") {
+    let customers = await fetch(process.env.API + "/customer", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
@@ -134,28 +117,31 @@ export default async function test(req, res) {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
-    let customers = await fetch(process.env.API + "/toDB", {
+    let customers = await fetch(process.env.API + "/customer", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
 
     let admin = await admins.filter(
       (admin) => admin.userId === id && admin.groupId.includes(GID)
     );
-    // console.log(admin.groupId.includes(GID))
-    console.log("admins ", admins);
-    console.log("admin ", admin);
-    console.log(GID);
+    
+    // console.log("admins ", admins);
+    // console.log("admin ", admin);
+    // console.log(GID);
 
-    let tDate = new Date();
-    let todayDate = "";
-    todayDate += tDate.getDate() + "/";
-    todayDate += tDate.getMonth() + 1 + "/";
-    todayDate += tDate.getFullYear();
+    let today = new Date()
+    let todayDate = ""
+
+    if(today.getFullYear >= 2564){
+      todayDate = (today.getFullYear() - 543) + "-" + format(today, "MM-dd"); 
+    }else{
+      todayDate = format(today, "yyyy-MM-dd"); 
+    }
 
     if (
-      admin[0].status == "SA" ||
-      admin[0].status == "SO" ||
-      admin[0].status == "EN"
+      admin[0].status == "แคชเชียร์" ||
+      admin[0].status == "เจ้าของ หรือ ผู้ช่วย" ||
+      admin[0].status == "ลูกค้า"
     ) {
       let coupons = await fetch(process.env.API + "/coupon/used", {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -172,12 +158,10 @@ export default async function test(req, res) {
 
       let group = await groupByKey(couponUsed, "amount");
 
-      let couponToday = await coupons.filter(
-        (coupon) =>
-          coupon.companyRef === customer[0]._id &&
-          coupon.used === true &&
-          coupon.usedDateTime === todayDate
-      );
+      let couponToday = await coupons.filter((coupon) =>  coupon.companyRef === customer[0]._id &&
+                                                          coupon.used === true &&
+                                                          coupon.usedDateTime === todayDate
+                                                      );
 
       let group2 = groupByKey(couponToday, "amount");
 
@@ -232,14 +216,42 @@ export default async function test(req, res) {
 
     let replyCommand = "";
 
-    if (admin[0].status == "SO" || admin[0].status == "SA") {
+    if (admin[0].status == "เจ้าของ หรือ ผู้ช่วย" || admin[0].status == "แคชเชียร์") {
       replyCommand =
         "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
     } else {
       replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
     }
     reply(reply_token, replyCommand);
-  } else if (event.message.type == "image") {
+  } else if(event.message.text == "ทะเบียนรถ"){
+    let admins = await fetch(process.env.API + "/admin", {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+    }).then((response) => response.json());
+
+    let customers = await fetch(process.env.API + "/customer", {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+    }).then((response) => response.json());
+
+    let admin = await admins.filter(
+      (admin) => admin.userId === id && admin.groupId.includes(GID)
+    );
+
+    if (admin[0].status == "แคชเชียร์" || admin[0].status == "เจ้าของ หรือ ผู้ช่วย" || admin[0].status == "ลูกค้า"){
+      let replyCommand = "ป้ายทะเบียนรถ: "
+
+      let customer = await customers.filter((customer) => customer.groupID === GID);
+
+      if(!customer[0].licensePlate){
+        reply(reply_token, "ขออภัย ขณะนี้ยังไม่มีเลขทะเบียนรถที่ลงทะเบียนไว้")
+      }else{
+        customer[0].licensePlate.map(license => {
+          replyCommand += "\n" + license
+        })
+        reply(reply_token, replyCommand)
+      }
+    }
+  }else if (event.message.type == "image") {
+    console.log("yes")
     let admins = await fetch(process.env.API + "/admin", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
@@ -248,8 +260,8 @@ export default async function test(req, res) {
       (admin) => admin.userId === id && admin.groupId.includes(GID)
     );
 
-    if (admin[0].status == "SA" || admin[0].status == "SO") {
-      let customers = await fetch(process.env.API + "/toDB", {
+    if (admin[0].status == "แคชเชียร์" || admin[0].status == "เจ้าของ หรือ ผู้ช่วย") {
+      let customers = await fetch(process.env.API + "/customer", {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
       }).then((response) => response.json());
 
@@ -289,23 +301,12 @@ export default async function test(req, res) {
         });
 
         stream.on("end", function () {
-          var buffer = Buffer.concat(newArr);
           buffer1 = Buffer.concat(newArr);
-          // fs.writeFileSync(path, buffer, function (err) {
-          //   if (err) throw err;
-          //   console.log("File saved.");
-
-          // });
+          
         });
 
         stream.on("end", function () {
-          // const imageFile = "./public/img/QR-Code.png";
-
-          // var buffer = fs.readFileSync(imageFile);
-          // buffer2 = fs.readFileSync(imageFile)
-
-          // buffer1 == buffer2 ? console.log("buffer eq") : console.log("nahhhhh")
-          // console.log("path ==> ", fs.createReadStream(path))
+          
           let stream = Readable.from(buffer1);
 
           Jimp.read(buffer1, function (err, image) {
@@ -317,7 +318,11 @@ export default async function test(req, res) {
             var qr = new QrCode();
             qr.callback = function (err, value) {
               if (value) {
-                // temp = value.result;
+                let today = new Date()
+                let recordDate = format(today, "yyyy-MM-dd"); 
+                let recordDate2 = format(today, "MM-dd"); 
+
+            
 
                 let codeDetect = value.result.split("-");
 
@@ -384,7 +389,7 @@ export default async function test(req, res) {
                     body: JSON.stringify({
                       code: value.result,
                       used: true,
-                      usedDateTime: tStp,
+                      usedDateTime: today.getFullYear() >= 2564 ? (today.getFullYear() - 543) + "-" + recordDate2 : recordDate,
                       recordedBy: {
                         userID: id,
                         name: recordby,
@@ -430,11 +435,11 @@ export default async function test(req, res) {
       });
     }
   } else {
-    console.log("Trivial API", process.env.API);
-    reply(
-      reply_token,
-      "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
-    );
+    // console.log("Trivial API", process.env.API);
+    // reply(
+    //   reply_token,
+    //   "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
+    // );
   }
 }
 
