@@ -56,7 +56,11 @@ const dashboardRoutes = [
     icon: Person,
 
     // layout: "/admin",
-  },
+  },{
+    path: "/users",
+    name: "การจัดการผู้ใช้",
+    icon: Person,
+  }
  
   
 ];
