@@ -34,6 +34,6 @@ export async function uploadFile(uploadName, fsReadStreamOfFilePath){
         console.log(response.data)
 
     }catch(err){
-        console.log(err.message)
+        console.log("this is error", err.message)
     }
 }
