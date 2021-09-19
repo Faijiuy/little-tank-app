@@ -23,7 +23,7 @@ const LoginForm = () => {
     username: "",
     password: "",
     loginStatus: false,
-    rememberStatus: false
+    // rememberStatus: false
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const LoginForm = () => {
 
   const [username, setUsername] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
-  const [checked, setChecked] = useState(false);
+  // const [checked, setChecked] = useState(false);
   const [loginStatus, setLoginStatus] = useState(false);
 
   const [open, setOpen] = React.useState(false);
@@ -92,18 +92,19 @@ const LoginForm = () => {
     setPasswordUser(event.target.value);
   };
 
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
+  // const handleChange = (event) => {
+  //   setChecked(event.target.checked);
+  // };
 
   const onSubmit = () => {
     console.log(
       "Click\nผู้ใช้: " +
         username +
         "\nรหัสผ่าน: " +
-        passwordUser +
-        "\nCheck: " +
-        checked
+        passwordUser 
+        // +
+        // "\nCheck: " +
+        // checked
     );
 
     let filterUser = users.filter(
@@ -119,13 +120,13 @@ const LoginForm = () => {
         setLoginStatus(true);
         console.log("Login Successfully");
         user.loginStatus = true;
-        user.rememberStatus = checked;
+        // user.rememberStatus = checked;
       } else {
         setLoginStatus(false);
         console.log("error");
         console.log(loginStatus);
         user.loginStatus = false;
-        user.rememberStatus = checked;
+        // user.rememberStatus = checked;
       }
     });
 
