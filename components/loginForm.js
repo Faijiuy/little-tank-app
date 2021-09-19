@@ -59,7 +59,7 @@ const LoginForm = () => {
 
   const paperStyle = {
     padding: 20,
-    height: "30vh",
+    height: "40vh",
     width: 400,
     margin: "50px auto",
   };
