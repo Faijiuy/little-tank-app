@@ -22,7 +22,7 @@ function Dashboard() {
     });
     const chart = sdk.createChart({
       chartId: "b91605a3-b18c-4782-a755-bb0d6ae0cc27",
-      width: 450,
+      width: 480,
       height: 220,
       theme: "dark",
     });
@@ -36,14 +36,14 @@ function Dashboard() {
 
     const chart3 = sdk.createChart({
       chartId: "4c2a3639-147b-4532-b6a0-321ab9eec6fb",
-      width: 450,
+      width: 480,
       height: 420,
       theme: "dark",
     });
 
     const chart4 = sdk.createChart({
       chartId: "9188d9fb-81e8-49f2-b939-d724888136e7",
-      width: 500,
+      width: 400,
       height: 660,
       theme: "dark",
     });
