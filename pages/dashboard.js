@@ -29,7 +29,7 @@ function Dashboard() {
 
     const chart2 = sdk.createChart({
       chartId: "eea67d55-e0a7-4cc7-9eba-77cc25a48a7b",
-      width: 300,
+      width: 360,
       height: 660,
       theme: "dark",
     });
@@ -43,7 +43,7 @@ function Dashboard() {
 
     const chart4 = sdk.createChart({
       chartId: "9188d9fb-81e8-49f2-b939-d724888136e7",
-      width: 400,
+      width: 406,
       height: 660,
       theme: "dark",
     });
