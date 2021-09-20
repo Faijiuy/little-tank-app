@@ -1,8 +1,7 @@
 import Admin from "layouts/Admin.js";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Box from '@material-ui/core/Box';
-
+import Box from "@material-ui/core/Box";
 
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,23 +22,21 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "components/CustomButtons/Button.js";
 
-
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Divider from "@material-ui/core/Divider";
 
-import { format } from 'date-fns'
+import { format } from "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 
-
 const styles = {
   root: {
-    marginLeft: "9px"
+    marginLeft: "9px",
   },
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -60,8 +57,8 @@ const styles = {
   list: {
     width: 220,
     height: 230,
-    overflow: 'auto',
-  }
+    overflow: "auto",
+  },
 };
 
 const useStyles2 = makeStyles((theme) => ({
@@ -74,21 +71,25 @@ const useStyles2 = makeStyles((theme) => ({
     // margin: theme.spacing(1),
     marginLeft: theme.spacing(2),
     minWidth: 120,
-    marginTop: 16
+    marginTop: 16,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
   root: {
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(1),
     },
-  button: {
-    marginLeft: theme.spacing(3)
-  }
+    button: {
+      marginLeft: theme.spacing(3),
+    },
   },
 }));
 
+const boxStyle = {
+  padding: 0,
+  margin: "20px",
+};
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -101,7 +102,6 @@ function intersection(a, b) {
 function union(a, b) {
   return [...a, ...not(b, a)];
 }
-
 
 function MissingCoupon({ customers, coupons }) {
   const classes2 = useStyles2();
@@ -117,50 +117,54 @@ function MissingCoupon({ customers, coupons }) {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [date, setDate] = useState();
 
-
-
   useEffect(() => {
-    let todayDate = format(new Date(), "dd/MM/yyyy"); 
+    let todayDate = format(new Date(), "dd/MM/yyyy");
 
-    if(new Date().getFullYear() >= 2564){
-      let thaiDate = format(new Date(), "dd/MM"); 
-      setDate(thaiDate + "/" + (new Date().getFullYear() - 543))
-    }else{
+    if (new Date().getFullYear() >= 2564) {
+      let thaiDate = format(new Date(), "dd/MM");
+      setDate(thaiDate + "/" + (new Date().getFullYear() - 543));
+    } else {
       setDate(todayDate);
     }
-    
   }, []);
 
   useEffect(() => {
-    let couponsOfCompany = coupons.filter(coupon => coupon.companyRef === company._id)
-    let types = groupByKey(couponsOfCompany, "amount")
+    let couponsOfCompany = coupons.filter(
+      (coupon) => coupon.companyRef === company._id
+    );
+    let types = groupByKey(couponsOfCompany, "amount");
 
-    setTypeList(Object.keys(types))
-
-  }, [company])
+    setTypeList(Object.keys(types));
+  }, [company]);
 
   useEffect(() => {
-    let activeList = coupons.filter(coupon => coupon.companyRef === company._id &&
-                                              !coupon.used &&
-                                              coupon.generatedDate === date && (type ? coupon.amount === Number(type) : true)) 
-    let missingList = coupons.filter(coupon => coupon.companyRef === company._id &&
-                                                coupon.used === "missing" &&
-                                                coupon.generatedDate === date && (type ? coupon.amount === Number(type) : true))  
+    let activeList = coupons.filter(
+      (coupon) =>
+        coupon.companyRef === company._id &&
+        !coupon.used &&
+        coupon.generatedDate === date &&
+        (type ? coupon.amount === Number(type) : true)
+    );
+    let missingList = coupons.filter(
+      (coupon) =>
+        coupon.companyRef === company._id &&
+        coupon.used === "missing" &&
+        coupon.generatedDate === date &&
+        (type ? coupon.amount === Number(type) : true)
+    );
 
     setCouponList(activeList);
     setRight(missingList);
-
   }, [company, date, type]);
 
   function groupByKey(array, key) {
-    return array
-      .reduce((hash, obj) => {
-        if(obj[key] === undefined) return hash; 
-        return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
-      }, {})
+    return array.reduce((hash, obj) => {
+      if (obj[key] === undefined) return hash;
+      return Object.assign(hash, {
+        [obj[key]]: (hash[obj[key]] || []).concat(obj),
+      });
+    }, {});
   }
-
-  
 
   const handleChangeCompany = (event) => {
     setCompany(event.target.value);
@@ -267,23 +271,21 @@ function MissingCoupon({ customers, coupons }) {
   );
 
   const handleDateChange = (selectedDate) => {
-    let todayDate = format(selectedDate, "dd/MM/yyyy"); 
+    let todayDate = format(selectedDate, "dd/MM/yyyy");
 
-    if(selectedDate.getFullYear() >= 2564){
+    if (selectedDate.getFullYear() >= 2564) {
       let thaiDate = format(selectedDate, "dd/MM");
       let mountDate = format(selectedDate, "MM/dd");
 
-      setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543))
-      setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543))
-    }else{
+      setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543));
+      setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543));
+    } else {
       let mountDate = format(selectedDate, "MM/dd/yyyy");
 
       setDate(todayDate);
-      setSelectedDate(mountDate)
+      setSelectedDate(mountDate);
     }
-
   };
-
 
   const onSubmit_missing_coupon = (e) => {
     // console.log("right === ", right)
@@ -336,62 +338,64 @@ function MissingCoupon({ customers, coupons }) {
       }
     });
 
-    alert("ย้ายสำเร็จ")
+    alert("ย้ายสำเร็จ");
   };
 
   return (
     <div>
-      <Box className="no-print" bgcolor="secondary.main" color="secondary.contrastText" p={2}>
+      <Box
+        className="no-print"
+        bgcolor="secondary.main"
+        color="secondary.contrastText"
+        p={2}
+      >
         เลือก บริษัท ราคา และวันที่ เพื่อแสดงคูปองคงเหลือ
       </Box>
-     
-      <GridContainer>
-        
-        <FormControl className={classes2.formControl1}>
-          <InputLabel id="demo-simple-select-outlined-label">
-            ชื่อลูกค้า
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
-            value={company ? company : ""}
-            onChange={handleChangeCompany}
-            label="Company"
-          >
-            {customers.map((company) => {
-              return (
-                <MenuItem key={company.company} value={company}>
-                  {company.company}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
 
-        <FormControl className={classes2.formControl1}>
-          <InputLabel id="demo-simple-select-outlined-label">
-            ราคา
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
-            value={type ? type : ""}
-            onChange={handleChangeType}
-            label="Company"
-          >
-            {typeList.map((type) => {
-              return (
-                <MenuItem key={type} value={type}>
-                  {type}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
+      <div style={boxStyle}>
+        <GridContainer>
+          <FormControl className={classes2.formControl1}>
+            <InputLabel id="demo-simple-select-outlined-label">
+              ชื่อลูกค้า
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={company ? company : ""}
+              onChange={handleChangeCompany}
+              label="Company"
+            >
+              {customers.map((company) => {
+                return (
+                  <MenuItem key={company.company} value={company}>
+                    {company.company}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
 
-        
-        <FormControl className={classes2.formControl}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <FormControl className={classes2.formControl1}>
+            <InputLabel id="demo-simple-select-outlined-label">ราคา</InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={type ? type : ""}
+              onChange={handleChangeType}
+              label="Company"
+            >
+              {typeList.map((type) => {
+                return (
+                  <MenuItem key={type} value={type}>
+                    {type}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+
+          <FormControl className={classes2.formControl}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
                 disableToolbar
                 variant="outlined"
@@ -406,52 +410,54 @@ function MissingCoupon({ customers, coupons }) {
                   "aria-label": "change date",
                 }}
               />
-          </MuiPickersUtilsProvider>
-        </FormControl>
+            </MuiPickersUtilsProvider>
+          </FormControl>
 
-
-
-
-        <Grid
-          container
-          spacing={2}
-          justifyContent="left"
-          alignItems="center"
-          className={classes.root}
-        >
-          <Grid item>{customList("คูปองคงเหลือ", couponList)}</Grid>
-          <Grid item>
-            <Grid container direction="column" alignItems="center">
-              <Button
-                variant="outlined"
-                size="small"
-                className={classes.button}
-                onClick={handleCheckedRight}
-                disabled={leftChecked.length === 0}
-                aria-label="move selected right"
-              >
-                &gt;
-              </Button>
-              <Button
-                variant="outlined"
-                size="small"
-                className={classes.button}
-                onClick={handleCheckedLeft}
-                disabled={rightChecked.length === 0}
-                aria-label="move selected left"
-              >
-                &lt;
-              </Button>
+          <Grid
+            container
+            spacing={2}
+            justifyContent="left"
+            alignItems="center"
+            className={classes.root}
+          >
+            <Grid item>{customList("คูปองคงเหลือ", couponList)}</Grid>
+            <Grid item>
+              <Grid container direction="column" alignItems="center">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  className={classes.button}
+                  onClick={handleCheckedRight}
+                  disabled={leftChecked.length === 0}
+                  aria-label="move selected right"
+                >
+                  &gt;
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  className={classes.button}
+                  onClick={handleCheckedLeft}
+                  disabled={rightChecked.length === 0}
+                  aria-label="move selected left"
+                >
+                  &lt;
+                </Button>
+              </Grid>
             </Grid>
+            <Grid item>{customList("คูปองสูญหาย", right)}</Grid>
           </Grid>
-          <Grid item>{customList("คูปองสูญหาย", right)}</Grid>
-        </Grid>
+        </GridContainer>
+      </div>
+      <br />
 
-      </GridContainer>
-        
-        <Button className={classes2.button} onClick={() => onSubmit_missing_coupon()} color="primary">
-          ยืนยัน
-        </Button>
+      <Button
+        className={classes2.button}
+        onClick={() => onSubmit_missing_coupon()}
+        color="primary"
+      >
+        ยืนยัน
+      </Button>
     </div>
   );
 }

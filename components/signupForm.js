@@ -57,9 +57,9 @@ const SignUpForm = () => {
 
   const paperStyle = {
     padding: 20,
-    height: "40vh",
-    width: 400,
-    margin: "50px auto",
+    height: "50vh",
+    width: 280,
+    margin: "0 auto",
   };
 
   const avatarStyle = {
@@ -67,7 +67,7 @@ const SignUpForm = () => {
   };
 
   const formStyle = {
-    width: 400,
+    width: 280,
   };
 
   const modalStyle = {
@@ -132,14 +132,14 @@ const SignUpForm = () => {
 
   return (
     <Grid>
-      <Paper elevation={10} style={paperStyle}>
+      <Paper style={paperStyle}>
         <Grid align="center">
           <Avatar style={avatarStyle}>
             <AddCircleOutlineOutlinedIcon />
           </Avatar>
-          <h3>
+          <h4>
             <b>สร้างบัญชีใหม่</b>
-          </h3>
+          </h4>
         </Grid>
         <FormControl style={formStyle}>
           <TextField

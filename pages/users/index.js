@@ -10,7 +10,7 @@ import { connectToDatabase } from "../../util/mongodb";
 import Admin from "layouts/Admin.js";
 import { useRouter } from "next/router";
 import Modal from "@material-ui/core/Modal";
-import UserProfile from 'components/UserProfile';
+// import UserProfile from "components/UserProfile";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -42,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const boxStyle = {
+  padding: 30,
+  margin: "50px",
+};
+
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -62,7 +67,7 @@ function Users({ user: users }) {
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = React.useState("");
-  const [loginStatus, setLoginStatus] = React.useState(false)
+  const [loginStatus, setLoginStatus] = React.useState(false);
 
   const handleOpen = (params) => {
     // console.log(params)
@@ -106,21 +111,21 @@ function Users({ user: users }) {
 
   const signOut = (value) => {
     let signOutUser = {
-      _id: '',
+      _id: "",
       username: "",
       password: "",
-      loginStatus: ""
-    }
-    let locateUser = users.filter((u) => value == u.username)
+      loginStatus: "",
+    };
+    let locateUser = users.filter((u) => value == u.username);
     locateUser.map((u) => {
       if (u.loginStatus == true) {
-        signOutUser._id = u._id
-        signOutUser.username = u.username
-        signOutUser.password = u.password
-        signOutUser.loginStatus = loginStatus
+        signOutUser._id = u._id;
+        signOutUser.username = u.username;
+        signOutUser.password = u.password;
+        signOutUser.loginStatus = loginStatus;
       }
-    })
-    console.log("signOutUser ===> ", signOutUser)
+    });
+    console.log("signOutUser ===> ", signOutUser);
     // fetch("/api/user/loginAPI", {
     //   method: "PUT", // *GET, POST, PUT, DELETE, etc.
     //   mode: "cors", // no-cors, *cors, same-origin
@@ -136,7 +141,7 @@ function Users({ user: users }) {
     // })
     //   .then((response) => response.json())
     //   .then(router.reload());
-  }
+  };
 
   const columns = [
     {
@@ -147,13 +152,13 @@ function Users({ user: users }) {
       editable: true,
     },
     // { field: 'password', headerClassName: 'super-app-theme--header', headerName: 'รหัสผ่าน', width: 180, editable: true },
-    {
-      field: "loginStatus",
-      headerClassName: "super-app-theme--header",
-      headerName: "สถานะเข้าระบบ",
-      width: 180,
-      editable: true,
-    },
+    // {
+    //   field: "loginStatus",
+    //   headerClassName: "super-app-theme--header",
+    //   headerName: "สถานะเข้าระบบ",
+    //   width: 180,
+    //   editable: true,
+    // },
     {
       field: "edit",
       headerClassName: "super-app-theme--header",
@@ -189,7 +194,7 @@ function Users({ user: users }) {
               <div style={modalStyle} className={classes.paper}>
                 <h2 id="simple-modal-title">ยืนยันการลบ</h2>
                 <p id="simple-modal-description">
-                  ท่านต้องการลบบริษัท {user.username} ใช่ไหม
+                  ท่านต้องการลบผู้ใช้ {user.username} ใช่ไหม
                 </p>
 
                 <Button
@@ -215,56 +220,62 @@ function Users({ user: users }) {
   ];
   return (
     <div style={{ width: "100%" }}>
-      <Box display="flex">
-        <Button variant="contained" color="primary" href="users/create">
-          เพิ่มผู้ใช้
-        </Button>
-      </Box>
-      <div style={{ height: 500, width: "100%" }} className={classes.root}>
-        <DataGrid
-          rows={rowUser(users)}
-          columns={columns}
-          editRowsModel={editRowsModel}
-          onEditRowModelChange={handleEditRowModelChange}
-          hideFooterPagination={true}
+      <Box style={boxStyle}>
+        <Box display="flex">
+          <Button variant="contained" color="primary" href="users/create">
+            เพิ่มผู้ใช้
+          </Button>
+        </Box>
+        <br />
+        <div style={{ height: 400, width: "35%" }} className={classes.root}>
+          <DataGrid
+            rows={rowUser(users)}
+            columns={columns}
+            editRowsModel={editRowsModel}
+            onEditRowModelChange={handleEditRowModelChange}
+            hideFooterPagination={true}
 
-          // checkboxSelection={handleSelectRow}
-          // icons={EditIcon}
-        />
-      </div>
-      <Box display="flex">
-        <Button variant="contained" color="primary" onClick={handleOpenLogout}>
-          ออกจากระบบ
-        </Button>
-        <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            >
-              <div style={modalStyle} className={classes.paper}>
-                <h2 id="simple-modal-title">ยืนยันการออกจากระบบ</h2>
-                <p id="simple-modal-description">
-                  ท่านต้องการออกจากระบบใช่ไหม
-                </p>
+            // checkboxSelection={handleSelectRow}
+            // icons={EditIcon}
+          />
+        </div>
+        <br />
+        <Box display="flex">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenLogout}
+          >
+            ออกจากระบบ
+          </Button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            <div style={modalStyle} className={classes.paper}>
+              <h2 id="simple-modal-title">ยืนยันการออกจากระบบ</h2>
+              <p id="simple-modal-description">ท่านต้องการออกจากระบบใช่ไหม</p>
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  // href="/login"
-                  onClick={() => signOut(UserProfile.getName())}
-                >
-                  ยืนยัน
-                </Button>
-                <Button
-                  onClick={handleClose}
-                  variant="contained"
-                  color="secondary"
-                >
-                  ยกเลิก
-                </Button>
-              </div>
-            </Modal>
+              <Button
+                variant="contained"
+                color="primary"
+                href="/login"
+                // onClick={() => signOut(UserProfile.getName())}
+              >
+                ยืนยัน
+              </Button>
+              <Button
+                onClick={handleClose}
+                variant="contained"
+                color="secondary"
+              >
+                ยกเลิก
+              </Button>
+            </div>
+          </Modal>
+        </Box>
       </Box>
     </div>
   );

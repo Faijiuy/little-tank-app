@@ -3,13 +3,14 @@ import React, { useState, useEffect, Component } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
-import LoginForm from "components/loginForm.js";
-import SignUpForm from "components/signupForm.js";
+// import LoginForm from "components/loginForm.js";
+// import SignUpForm from "components/signupForm.js";
 
 // layout for this page
 import Admin from "layouts/Admin.js";
 // core components
 import GridItem from "components/Grid/GridItem.js";
+import SignInOutContainer from "../containers";
 
 function Login() {
 
@@ -34,8 +35,9 @@ function Login() {
   return (
     <div>
       <h2 style={firstStyle}>Little-Tank Coupon Management</h2>
-      <LoginForm />
-      <SignUpForm />
+      <SignInOutContainer/>
+      {/*<LoginForm />
+      <SignUpForm />*/}
     </div>
   );
 }

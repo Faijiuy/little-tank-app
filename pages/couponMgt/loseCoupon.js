@@ -7,7 +7,6 @@ import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 
-
 import { connectToDatabase } from "../../util/mongodb";
 import MissingCoupon from "../../components/couponMgt/missingCoupon";
 
@@ -25,7 +24,6 @@ export async function getServerSideProps() {
     },
   };
 }
-
 
 const Accordion = withStyles({
   root: {
@@ -68,23 +66,21 @@ const AccordionDetails = withStyles((theme) => ({
   },
 }))(MuiAccordionDetails);
 
-
-
+const boxStyle = {
+  padding: 30,
+  margin: "50px",
+};
 
 function CouponMgt({ customer: customers, coupon: coupons }) {
-  
   const [expanded, setExpanded] = React.useState("panel1");
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-
   return (
-    <div>
-      
-            <MissingCoupon customers={customers} coupons={coupons} />
-        
+    <div style={boxStyle}>
+      <MissingCoupon customers={customers} coupons={coupons} />
     </div>
   );
 }

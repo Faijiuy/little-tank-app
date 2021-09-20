@@ -60,9 +60,9 @@ const LoginForm = () => {
 
   const paperStyle = {
     padding: 20,
-    height: "40vh",
-    width: 400,
-    margin: "50px auto",
+    height: "50vh",
+    width: 280,
+    margin: "0 auto",
   };
 
   const avatarStyle = {
@@ -70,7 +70,7 @@ const LoginForm = () => {
   };
 
   const formStyle = {
-    width: 400,
+    width: 280,
   };
 
   const modalStyle = {
@@ -160,14 +160,14 @@ const LoginForm = () => {
 
   return (
     <Grid>
-      <Paper elevation={10} style={paperStyle}>
+      <Paper style={paperStyle}>
         <Grid align="center">
           <Avatar style={avatarStyle}>
             <LockOutlinedIcon />
           </Avatar>
-          <h3>
+          <h4>
             <b>ลงชื่อเข้าใช้ระบบ</b>
-          </h3>
+          </h4>
         </Grid>
         <FormControl style={formStyle}>
           <TextField
