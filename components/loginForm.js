@@ -15,6 +15,7 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useGridSelection } from "@material-ui/data-grid";
 import router from "next/router";
+// import UserProfile from './UserProfile';
 
 const LoginForm = () => {
   let users = [];
@@ -99,9 +100,10 @@ const LoginForm = () => {
   const onSubmit = () => {
     console.log(
       "Click\nผู้ใช้: " +
-        username +
-        "\nรหัสผ่าน: " +
-        passwordUser 
+        username 
+        // +
+        // "\nรหัสผ่าน: " +
+        // passwordUser 
         // +
         // "\nCheck: " +
         // checked
@@ -116,6 +118,8 @@ const LoginForm = () => {
       user._id = u._id
       user.username = u.username
       user.password = u.password
+      // UserProfile.setName(u.username);
+      // console.log("UserProfile.getName() ==> ",UserProfile.getName())
       if (username == u.username && passwordUser == u.password) {
         setLoginStatus(true);
         console.log("Login Successfully");
@@ -133,7 +137,7 @@ const LoginForm = () => {
     console.log("user ===> ", user);
 
     // setTimeout(() => {
-      fetch("/api/user", {
+      fetch("/api/user/loginAPI", {
         method: "PUT", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached

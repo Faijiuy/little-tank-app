@@ -14,7 +14,7 @@ import GridItem from "components/Grid/GridItem.js";
 function Login() {
 
   const firstStyle = {
-    margin: "10px 50px 10px",
+    margin: "10px 50px auto",
     fontWeight: "bold"
   }
   // let users = []

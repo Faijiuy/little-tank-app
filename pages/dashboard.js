@@ -8,6 +8,7 @@ import Admin from "layouts/Admin.js";
 // core components
 import GridContainer from "components/Grid/GridContainer.js";
 import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
+import UserProfile from 'components/UserProfile';
 
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { Box, Grid } from "@material-ui/core";
@@ -73,6 +74,7 @@ function Dashboard() {
 
   return (
     <div>
+      <h3 className="right">{UserProfile.getName()}</h3>
       <Box className="left" id="chart3" />
       <Box className="right" id="chart4" />
       <Box className="right" id="chart2" />

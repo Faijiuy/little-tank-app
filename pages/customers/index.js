@@ -11,8 +11,6 @@ import Admin from "layouts/Admin.js";
 import { useRouter } from "next/router";
 import Modal from '@material-ui/core/Modal';
 
-
-
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
 
