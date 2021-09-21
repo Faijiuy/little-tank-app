@@ -97,16 +97,23 @@ const LoginForm = () => {
   //   setChecked(event.target.checked);
   // };
 
-  const onSubmit = () => {
+  const handleKeypress = (e) => {
+    //it triggers by pressing the enter key
+    if (e.keyCode === 13) {
+      handleOpen();
+      handleSubmit();
+    }
+  };
+
+  const handleSubmit = () => {
     console.log(
-      "Click\nผู้ใช้: " +
-        username 
-        // +
-        // "\nรหัสผ่าน: " +
-        // passwordUser 
-        // +
-        // "\nCheck: " +
-        // checked
+      "Click\nผู้ใช้: " + username
+      // +
+      // "\nรหัสผ่าน: " +
+      // passwordUser
+      // +
+      // "\nCheck: " +
+      // checked
     );
 
     let filterUser = users.filter(
@@ -114,10 +121,10 @@ const LoginForm = () => {
     );
 
     filterUser.map((u) => {
-      console.log("u ===>  ", u.username, u.password, u._id)
-      user._id = u._id
-      user.username = u.username
-      user.password = u.password
+      console.log("u ===>  ", u.username, u.password, u._id);
+      user._id = u._id;
+      user.username = u.username;
+      user.password = u.password;
       // UserProfile.setName(u.username);
       // console.log("UserProfile.getName() ==> ",UserProfile.getName())
       if (username == u.username && passwordUser == u.password) {
@@ -137,24 +144,25 @@ const LoginForm = () => {
     console.log("user ===> ", user);
 
     // setTimeout(() => {
-      fetch("/api/user/loginAPI", {
-        method: "PUT", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(user), // body data type must match "Content-Type" header
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          alert("Update Login Status:\nResponse from server " + data.message);
-          console.log(data);
-        });
+    fetch("/api/user/loginAPI", {
+      method: "PUT", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(user), // body data type must match "Content-Type" header
+    })
+      .then((response) => response.json())
+      // .then((data) => {
+      //   alert("Update Login Status:\nResponse from server " + data.message);
+      //   console.log(data);
+      // })
+      ;
     // }, 2000);
   };
 
@@ -207,12 +215,13 @@ const LoginForm = () => {
             onClick={
               () => {
                 handleOpen();
-                onSubmit();
+                handleSubmit();
               }
               // () => onSubmit()
               // alert("ผู้ใช้: " + username + "\nรหัสผ่าน: " + passwordUser + "\nCheck: " + checked)
             }
             fullWidth
+            onKeyPress={handleKeypress}
           >
             ลงชื่อเข้าใช้
           </Button>

@@ -109,15 +109,15 @@ function Users({ user: users }) {
       .then(router.reload());
   };
 
-  const signOut = (value) => {
+  const signOut = () => {
     let signOutUser = {
       _id: "",
       username: "",
       password: "",
       loginStatus: "",
     };
-    let locateUser = users.filter((u) => value == u.username);
-    locateUser.map((u) => {
+    // let locateUser = users.filter((u) => value == u.username);
+    users.map((u) => {
       if (u.loginStatus == true) {
         signOutUser._id = u._id;
         signOutUser.username = u.username;
@@ -126,21 +126,25 @@ function Users({ user: users }) {
       }
     });
     console.log("signOutUser ===> ", signOutUser);
-    // fetch("/api/user/loginAPI", {
-    //   method: "PUT", // *GET, POST, PUT, DELETE, etc.
-    //   mode: "cors", // no-cors, *cors, same-origin
-    //   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-    //   credentials: "same-origin", // include, *same-origin, omit
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     // 'Content-Type': 'application/x-www-form-urlencoded',
-    //   },
-    //   redirect: "follow", // manual, *follow, error
-    //   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    //   body: JSON.stringify(loginStatus), // body data type must match "Content-Type" header
-    // })
-    //   .then((response) => response.json())
-    //   .then(router.reload());
+    fetch("/api/user/loginAPI", {
+      method: "PUT", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(signOutUser), // body data type must match "Content-Type" header
+    })
+      .then((response) => response.json())
+      // .then((data) => {
+      //   alert("Update Login Status:\nResponse from server " + data.message);
+      //   console.log(data);
+      // })
+      .then(router.reload());
   };
 
   const columns = [
@@ -259,10 +263,10 @@ function Users({ user: users }) {
               <p id="simple-modal-description">ท่านต้องการออกจากระบบใช่ไหม</p>
 
               <Button
+                onClick={() => signOut()}
                 variant="contained"
                 color="primary"
                 href="/login"
-                // onClick={() => signOut(UserProfile.getName())}
               >
                 ยืนยัน
               </Button>

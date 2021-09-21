@@ -90,7 +90,7 @@ const SignUpForm = () => {
     setPasswordUser(event.target.value);
   };
 
-  const onSubmit = () => {
+  const handleSubmit = () => {
     console.log("Click\nผู้ใช้: " + username + "\nรหัสผ่าน: " + passwordUser);
 
     let filterUser = users.filter((u) => username === u.username);
@@ -121,10 +121,11 @@ const SignUpForm = () => {
       body: JSON.stringify(user), // body data type must match "Content-Type" header
     })
       .then((response) => response.json())
-      .then((data) => {
-        alert("Insert New User:\nResponse from server " + data.message);
-        console.log(data);
-      });
+      // .then((data) => {
+      //   alert("Insert New User:\nResponse from server " + data.message);
+      //   console.log(data);
+      // })
+      ;
     // }, 2000);
   };
 
@@ -179,7 +180,7 @@ const SignUpForm = () => {
             onClick={
               () => {
                 handleOpen();
-                onSubmit();
+                handleSubmit();
               }
               // () => onSubmit()
               // alert("ผู้ใช้: " + username + "\nรหัสผ่าน: " + passwordUser + "\nCheck: " + checked)
