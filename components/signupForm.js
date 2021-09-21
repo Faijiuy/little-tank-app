@@ -21,8 +21,8 @@ const SignUpForm = () => {
   let user = {
     username: "",
     password: "",
-    loginStatus: false,
-    rememberStatus: false,
+    loginStatus: false
+    // rememberStatus: false,
   };
 
   useEffect(() => {
@@ -101,6 +101,7 @@ const SignUpForm = () => {
       setDulplicateUser(false);
       user.username = username;
       user.password = passwordUser;
+      console.log("user ===> ", user)
     } else {
       setDulplicateUser(true);
       console.log("Dulplicated Username");

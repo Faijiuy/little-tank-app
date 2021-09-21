@@ -12,7 +12,7 @@ export default async (req, res) => {
     let data = req.body;
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
-    let { username, password} = data;
+    let { username, password, loginStatus} = data;
 
     const { db } = await connectToDatabase();
     await db.collection("user").insertOne(
