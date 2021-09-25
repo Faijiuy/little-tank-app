@@ -483,7 +483,80 @@ function CreateCustomer({customer:customers}) {
                   />
                 </GridItem>
 
-                <GridItem xs={12} sm={12} md={6}>
+                {customers !== null ? (
+                  <>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <CustomInput
+                        labelText="รหัสไลน์กลุ่ม"
+                        id="groupID"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          // onChange: handleChange,
+                          disabled: customers ? true : false,
+                          defaultValue: customers !== null ? customers.groupID : null,
+                          value: groupID,
+                          onBlur: handleSetState
+                        }}
+                      />
+                    </GridItem>
+                    
+
+                    <div>
+                      <Button className={classes.button} style={{ marginTop: 30 }} onClick={handleOpen} >แก้รหัส</Button>
+                      <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                      >
+                        <div style={modalStyle} className={classes2.paper}>
+                          <h2 id="simple-modal-title">แก้ไขรหัส</h2>
+                        
+                          <form className={classes.root} noValidate autoComplete="off">
+                          
+                          <TextField name="LINE" label="รหัสไลน์" style={{ width: 350}} defaultValue={customers.groupID} onChange={(e) => handleChangePass(e)} />
+                            <div>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleOpen_pass()}
+                                // className={classes.button}
+                              >
+                                ยืนยัน
+                              </Button>
+                              <Modal
+                                open={open_new}
+                                onClose={handleClose_pass}
+                                aria-labelledby="simple-modal-title"
+                                aria-describedby="simple-modal-description"
+                              >
+                                <div style={modalStyle} className={classes2.paper2}>
+                                <p id="simple-title">ท่านแน่ใจใช่ไหม</p>
+
+                                <Button variant="contained" color="primary" onClick={handleChange_groupId}>ยืนยัน</Button>
+                                <Button variant="contained" color="primary" onClick={handleClose_pass}>ยกเลิก</Button>
+                                </div>
+                              </Modal>
+
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleClose}
+                                // className={classes.button}
+                              >
+                                ยกเลิก
+                              </Button>
+                            </div>
+                        </form>
+
+                        </div>
+                      </Modal>
+                    </div>
+                  </>
+
+                ) : (<GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="รหัสไลน์กลุ่ม"
                     id="groupID"
@@ -492,68 +565,13 @@ function CreateCustomer({customer:customers}) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      disabled: customers ? true : false,
                       defaultValue: customers !== null ? customers.groupID : null,
-                      value: groupID,
                       onBlur: handleSetState
                     }}
                   />
-                </GridItem>
-                {customers !== null ? (
+                </GridItem>)}
 
-                  <div>
-                  <Button className={classes.button} style={{ marginTop: 30 }} onClick={handleOpen} >แก้รหัส</Button>
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                  >
-                    <div style={modalStyle} className={classes2.paper}>
-                      <h2 id="simple-modal-title">แก้ไขรหัส</h2>
-                    
-                      <form className={classes.root} noValidate autoComplete="off">
-                      
-                      <TextField name="LINE" label="รหัสไลน์" style={{ width: 350}} defaultValue={customers.groupID} onChange={(e) => handleChangePass(e)} />
-                        <div>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleOpen_pass()}
-                            // className={classes.button}
-                          >
-                            ยืนยัน
-                          </Button>
-                          <Modal
-                            open={open_new}
-                            onClose={handleClose_pass}
-                            aria-labelledby="simple-modal-title"
-                            aria-describedby="simple-modal-description"
-                          >
-                            <div style={modalStyle} className={classes2.paper2}>
-                            <p id="simple-title">ท่านแน่ใจใช่ไหม</p>
-
-                            <Button variant="contained" color="primary" onClick={handleChange_groupId}>ยืนยัน</Button>
-                            <Button variant="contained" color="primary" onClick={handleClose_pass}>ยกเลิก</Button>
-                            </div>
-                          </Modal>
-
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleClose}
-                            // className={classes.button}
-                          >
-                            ยกเลิก
-                          </Button>
-                        </div>
-                    </form>
-
-                    </div>
-                  </Modal>
-                  </div>
-
-                ) : null}
+              
 
               </GridContainer>
 

@@ -349,7 +349,15 @@ function MissingCoupon({ customers, coupons }) {
         color="secondary.contrastText"
         p={2}
       >
-        เลือก บริษัท ราคา และวันที่ เพื่อแสดงคูปองคงเหลือ
+        <h4>วิธีการใช้</h4>
+        <ol>
+          <li>เลือก บริษัท ราคา และวันที่ เพื่อแสดงคูปองคงเหลือ</li>
+          <li>รูปแบบคูปอง {'=>'} "(วันที่ซื้อ) - (ราคา) - (ลำดับเลข)" เช่น "25/09/2021-1000-3" หมายถึง คูปองราคา 1000 บาท ลำดับเลขที่ 3 ซื้อเมื่อ 25/09/2021</li>
+          <li>คลิกเลือกลำดับคูปองที่หายไป </li>
+          <li>กดปุ่ม {'>'} ที่อยู่ข้างกล่อง เพื่อย้ายคูปองไปสู่กล่อง "คูปองสูญหาย"</li>
+          <li>เมื่อเลือกเสร็จหมดแล้ว กดปุ่ม "ยืนยัน" ด้านล่าง</li>
+        </ol> 
+        
       </Box>
 
       <div style={boxStyle}>
@@ -413,40 +421,42 @@ function MissingCoupon({ customers, coupons }) {
             </MuiPickersUtilsProvider>
           </FormControl>
 
-          <Grid
-            container
-            spacing={2}
-            justifyContent="left"
-            alignItems="center"
-            className={classes.root}
-          >
-            <Grid item>{customList("คูปองคงเหลือ", couponList)}</Grid>
-            <Grid item>
-              <Grid container direction="column" alignItems="center">
-                <Button
-                  variant="outlined"
-                  size="small"
-                  className={classes.button}
-                  onClick={handleCheckedRight}
-                  disabled={leftChecked.length === 0}
-                  aria-label="move selected right"
-                >
-                  &gt;
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  className={classes.button}
-                  onClick={handleCheckedLeft}
-                  disabled={rightChecked.length === 0}
-                  aria-label="move selected left"
-                >
-                  &lt;
-                </Button>
+          <div style={{marginTop: "10px"}}>
+            <Grid
+              container
+              spacing={2}
+              justifyContent="left"
+              alignItems="center"
+              className={classes.root}
+            >
+              <Grid item>{customList("คูปองคงเหลือ", couponList)}</Grid>
+              <Grid item>
+                <Grid container direction="column" alignItems="center">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    className={classes.button}
+                    onClick={handleCheckedRight}
+                    disabled={leftChecked.length === 0}
+                    aria-label="move selected right"
+                  >
+                    &gt;
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    className={classes.button}
+                    onClick={handleCheckedLeft}
+                    disabled={rightChecked.length === 0}
+                    aria-label="move selected left"
+                  >
+                    &lt;
+                  </Button>
+                </Grid>
               </Grid>
+              <Grid item>{customList("คูปองสูญหาย", right)}</Grid>
             </Grid>
-            <Grid item>{customList("คูปองสูญหาย", right)}</Grid>
-          </Grid>
+          </div>
         </GridContainer>
       </div>
       <br />

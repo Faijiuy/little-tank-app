@@ -149,7 +149,9 @@ export default function Choose_Company() {
           </FormControl>
 
           {tableState ? 
-          <TableContainer>
+          (rows[0] !== undefined ? 
+          <TableContainer style={{marginTop: "15px"}}>
+            <p style={{marginLeft: "15px", fontSize: 25}}>ประวัติการซื้อคูปอง</p>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -181,7 +183,7 @@ export default function Choose_Company() {
               </TableRow>
             </TableBody>
           </Table>
-        </TableContainer> : null
+        </TableContainer> : <div style={{marginTop: "15px" ,marginLeft: "15px", fontSize: 20}}>บริษัทนี้ไม่มีประวัติการซื้อคูปอง</div>) : null
           }
         </div>
   )

@@ -19,9 +19,10 @@ export default function Confirm(){
 
     return (
         <form>
-                บริษัท {company.company}
+                <p style={{marginTop: "15px" ,marginLeft: "15px", fontSize: 20}}>บริษัท {company.company}</p>
 
                 <TableContainer>
+                <p style={{marginLeft: "15px", fontSize: 16}}>คูปองที่ต้องการซื้อ</p>
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                       <TableRow>
