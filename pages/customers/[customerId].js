@@ -122,6 +122,8 @@ const LicenseContext = React.createContext()
 
 function CreateCustomer({customer:customers}) {
 
+  console.log("customerers ===> ", customers);
+
 
   const [company, setCompany] = useState()
   const [owner, setOwner] = useState()

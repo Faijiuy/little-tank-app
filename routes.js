@@ -19,6 +19,8 @@
 import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
 import Unarchive from "@material-ui/icons/Unarchive";
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 
 const dashboardRoutes = [
   {
@@ -39,14 +41,14 @@ const dashboardRoutes = [
   {
     path: "/customers",
     name: "การจัดการลูกค้า",
-    icon: Person,
+    icon: PeopleAltIcon,
 
     // layout: "/admin",
   },
   {
     path: "/couponMgt",
     name: "การจัดการคูปอง",
-    pathArr: [{path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}],
+    pathArr: [{path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}, {path: "/coupon/printPage", name: "หน้าปริ้นคูปอง"}],
     icon: Unarchive,
 
     // layout: "/admin",
@@ -57,7 +59,11 @@ const dashboardRoutes = [
     icon: Person,
 
     // layout: "/admin",
-  },
+  },{
+    path: "/users",
+    name: "การจัดการผู้ใช้",
+    icon: AccountBoxIcon,
+  }
  
   
 ];

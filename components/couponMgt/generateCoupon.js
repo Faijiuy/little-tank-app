@@ -338,43 +338,9 @@ function GenerateCoupon({ customers, coupons }) {
 
               
 
-              {/* <FormControl 
-              variant="outlined" className={classes2.formControl}
-              >
-                <Button href="/coupon/printPage" color="info">
-                  หน้าปริ้น
-                </Button>
-              </FormControl> */}
-              
-
             </GridContainer>
             
-{/* 
-            
-              {tableState ? (
-                <div>
-                  
-                <div style={{ height: 300, width: "120%" }} className={classes4.root}>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  onCellBlur={handleBlur}
-                  hideFooterPagination={true}
-                  disableSelectionOnClick={true}
-                  />
-                  </div>
-            <div>
-              <Button color="primary" onClick={() => handleAddRow()}>เพิ่มคูปอง</Button>
-              &emsp;คูปองที่ต้องการพิมพ์ทั้งหมด มูลค่ารวม {totalCoupon}
-            </div>
-            <Button onClick={() => onSubmit()} color="success">
-              ยืนยัน
-            </Button>
-            &emsp;
-            
-                </div>
-                  
-              ) : null} */}
+
           
     </div>
   );
