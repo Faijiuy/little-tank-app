@@ -31,7 +31,7 @@ import IconExpandMore from '@material-ui/icons/ExpandMore'
 
 export default function Sidebar(props) {
   // collapse
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleClick = () => {
     setOpen(!open);
