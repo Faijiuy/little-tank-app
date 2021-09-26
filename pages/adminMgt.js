@@ -24,6 +24,9 @@ import IconButton from "@material-ui/core/IconButton";
 import CommentIcon from "@material-ui/icons/Comment";
 import ListSubheader from "@material-ui/core/ListSubheader";
 
+import AddIcon from '@mui/icons-material/Add';
+
+
 // layout for this page
 import Admin from "layouts/Admin.js";
 import Modal from "@material-ui/core/Modal";
@@ -133,17 +136,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   toRight: {
-    position: "relative",
-    // marginRight: 0,
-    // marginLeft: "auto"
-    left:490,
-    // right: 500
+    float: "right",
+    marginRight: 10,
+    height: 50
   },
   toRight2: {
-    position: "relative",
-    // marginRight: 0,
-    // marginLeft: "auto"
-    left:470,
+    float: "right",
+    height: 50
   }
 }));
 
@@ -597,16 +596,16 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
       <Box style={boxStyle}>
         
 
-        <div>
+        <div style={{ width: "83%" }}>
           <h3>รายชื่อแอดมิน 
           
           <Button
           onClick={() => handleOpen("add")}
           color="primary"
           variant="contained"
-          className={classes.toRight}
+          className={classes.toRight2}
         >
-          เพิ่ม admin
+          <AddIcon />เพิ่ม admin
         </Button>
         <Modal
           open={open == "add" ? true : false}
@@ -709,7 +708,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
           onClick={() => handleOpen("password")}
           color="primary"
           variant="contained"
-          className={classes.toRight2}
+          className={classes.toRight}
         >
           รับ password
         </Button>

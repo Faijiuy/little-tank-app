@@ -145,7 +145,7 @@ function Customers({ customer: customers }) {
       headerClassName: "super-app-theme--header",
       headerName: "แก้ไขข้อมูล",
       sortable: false,
-      width: 200,
+      width: 330,
       disableClickEventBubbling: true,
       renderCell: function edit(params) {
         return (
@@ -204,7 +204,8 @@ function Customers({ customer: customers }) {
     <Box style={boxStyle}>
       <h3>รายชื่อลูกค้า
       {/* <Box display="flex" > */}
-        <Button variant="contained" color="primary" href="customers/create" style={{position: "relative", left: 610, width: 200, height: 50}}>
+        {/* <Button variant="contained" color="primary" href="customers/create" style={{position: "relative", left: 610, width: 200, height: 50}}> */}
+        <Button variant="contained" color="primary" href="customers/create" style={{float: "right", width: 200, height: 50}}> 
           <AddIcon />เพิ่มบริษัท
         </Button>
       {/* </Box> */}
