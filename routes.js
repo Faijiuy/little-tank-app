@@ -48,7 +48,7 @@ const dashboardRoutes = [
   {
     path: "/couponMgt",
     name: "การจัดการคูปอง",
-    pathArr: [{path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}, {path: "/coupon/printPage", name: "หน้าปริ้นคูปอง"}],
+    pathArr: [{path: "/couponMgt/couponList", name: "รายการคูปอง"}, {path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}, {path: "/coupon/printPage", name: "หน้าปริ้นคูปอง"}],
     icon: Unarchive,
 
     // layout: "/admin",

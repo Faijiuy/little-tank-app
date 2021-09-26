@@ -39,6 +39,7 @@
     "googleapis": "^84.0.0",
     "history": "5.0.0",
     "jimp": "^0.16.1",
+    "material-ui-search-bar": "^1.0.0",
     "mongodb": "^3.6.10",
     "next": "latest",
     "next-compose-plugins": "2.2.1",
