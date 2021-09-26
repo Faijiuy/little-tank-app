@@ -69,7 +69,7 @@ export default function Sidebar(props) {
         return (
           //orginal
           // <Link href={prop.layout + prop.path} key={key}> 
-          <div>
+          <div key={key}>
             {prop.path === "/couponMgt" ? (
               <div>
               <ListItem button className={classes.itemLink + listItemClasses} onClick={handleClick}>

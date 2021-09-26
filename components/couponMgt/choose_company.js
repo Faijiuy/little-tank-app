@@ -3,7 +3,6 @@ import TextField from '@material-ui/core/TextField'
 import { StepperContext } from '../../pages/couponMgt/purchaseCoupon'
 
 import Admin from "layouts/Admin.js";
-import Typography from "@material-ui/core/Typography";
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -150,8 +149,10 @@ export default function Choose_Company() {
 
           {tableState ? 
           (rows[0] !== undefined ? 
+            <div>
+              <br />
+            <div style={{marginLeft: "15px", fontSize: 20}}>ประวัติการซื้อคูปอง</div>
           <TableContainer style={{marginTop: "15px"}}>
-            <p style={{marginLeft: "15px", fontSize: 25}}>ประวัติการซื้อคูปอง</p>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -183,7 +184,7 @@ export default function Choose_Company() {
               </TableRow>
             </TableBody>
           </Table>
-        </TableContainer> : <div style={{marginTop: "15px" ,marginLeft: "15px", fontSize: 20}}>บริษัทนี้ไม่มีประวัติการซื้อคูปอง</div>) : null
+        </TableContainer></div> : <div style={{marginTop: "15px" ,marginLeft: "15px", fontSize: 20}}>บริษัทนี้ไม่มีประวัติการซื้อคูปอง</div>) : null
           }
         </div>
   )

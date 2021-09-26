@@ -218,7 +218,7 @@ export default async function test(req, res) {
 
     if (admin[0].status == "เจ้าของ หรือ ผู้ช่วย" || admin[0].status == "แคชเชียร์") {
       replyCommand =
-        "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม GroupID : เช็คเลข GroupID ของ LINE Group นี้";
+        "สอบถามยอด : สอบถามยอดคงเหลือคูปอง\nสอบถาม groupid : เช็คเลข GroupID ของ LINE Group นี้\nไอดีของฉัน : เช็ค ID ของผู้ถาม";
     } else {
       replyCommand = "สอบถามยอด : สอบถามยอดคงเหลือคูปอง";
     }

@@ -132,6 +132,19 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 500,
     backgroundColor: theme.palette.background.paper,
   },
+  toRight: {
+    position: "relative",
+    // marginRight: 0,
+    // marginLeft: "auto"
+    left:490,
+    // right: 500
+  },
+  toRight2: {
+    position: "relative",
+    // marginRight: 0,
+    // marginLeft: "auto"
+    left:470,
+  }
 }));
 
 const boxStyle = {
@@ -365,21 +378,21 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
     },
     {
       field: "userId",
-      headerName: "User ID",
+      headerName: "ไอดีผู้ใช้",
       headerClassName: "super-app-theme--header",
       width: 180,
       editable: true,
     },
     {
       field: "groupId",
-      headerName: "group",
+      headerName: "ลูกค้าที่ดูแล",
       headerClassName: "super-app-theme--header",
       width: 220,
       disableClickEventBubbling: true,
     },
     {
       field: "edit",
-      headerName: "Edit",
+      headerName: "แก้ไข",
       headerClassName: "super-app-theme--header",
       // sortable: false,
       width: 150,
@@ -582,56 +595,16 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
   return (
     <div>
       <Box style={boxStyle}>
-        {passwords[0] !== undefined ? (
-          <div className={classes.div}>
-            รหัสผ่านสำหรับเป็น admin
-            {passwords.map((password, index) => {
-              return (
-                <div key={index}>
-                  <TextField
-                    className={classes.TextField}
-                    label="รหัสผ่าน"
-                    value={password.password}
-                    InputProps={{ readOnly: true }}
-                  />
-                  <TextField
-                    className={classes.TextField}
-                    label="สถานะ"
-                    value={password.status}
-                    InputProps={{ readOnly: true }}
-                  />
-                  <TextField
-                    className={classes.TextField}
-                    label="บริษัท"
-                    value={group[password.groupId.toString()][0].company}
-                    InputProps={{ readOnly: true }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
+        
 
-        <div style={{ height: 400, width: "83%" }} className={classes2.root}>
-          <DataGrid
-            rows={row}
-            columns={columns}
-            hideFooterPagination={true}
-
-            // checkboxSelection={handleSelectRow}
-            // icons={EditIcon}
-          />
-        </div>
-
-        {/* <AdminContext.Provider value={{}}> */}
-        {/* <NewAdmin_Form /> */}
-
-        {/* </AdminContext.Provider> */}
-        <br />
-        <Button
+        <div>
+          <h3>รายชื่อแอดมิน 
+          
+          <Button
           onClick={() => handleOpen("add")}
           color="primary"
           variant="contained"
+          className={classes.toRight}
         >
           เพิ่ม admin
         </Button>
@@ -736,6 +709,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
           onClick={() => handleOpen("password")}
           color="primary"
           variant="contained"
+          className={classes.toRight2}
         >
           รับ password
         </Button>
@@ -820,6 +794,58 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
             </Button>
           </div>
         </Modal>
+        
+          </h3>
+          
+        </div>
+        <div style={{ height: 300, width: "83%" }} className={classes2.root}>
+          <DataGrid
+            rows={row}
+            columns={columns}
+            hideFooterPagination={true}
+
+            // checkboxSelection={handleSelectRow}
+            // icons={EditIcon}
+          />
+        </div>
+        <br />
+
+        {passwords[0] !== undefined ? (
+          <div className={classes.div}>
+            <h4>รหัสผ่านสำหรับเป็น admin</h4>
+            {passwords.map((password, index) => {
+              return (
+                <div key={index}>
+                  <TextField
+                    className={classes.TextField}
+                    label="รหัสผ่าน"
+                    value={password.password}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    className={classes.TextField}
+                    label="สถานะ"
+                    value={password.status}
+                    InputProps={{ readOnly: true }}
+                  />
+                  <TextField
+                    className={classes.TextField}
+                    label="บริษัท"
+                    value={group[password.groupId.toString()][0].company}
+                    InputProps={{ readOnly: true }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+
+        {/* <AdminContext.Provider value={{}}> */}
+        {/* <NewAdmin_Form /> */}
+
+        {/* </AdminContext.Provider> */}
+        <br />
+        
       </Box>
     </div>
   );

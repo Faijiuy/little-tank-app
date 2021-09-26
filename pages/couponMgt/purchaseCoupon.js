@@ -85,6 +85,7 @@ function getSteps() {
 }
 
 function checkText_Rows(text_rows) {
+  if(text_rows[0] === undefined) return true
   return text_rows.some(
     (row) =>
       Number(row.price) < 500 ||
