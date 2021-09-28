@@ -15,6 +15,7 @@ export default async (req, res) => {
         usedDateTime,
         recordedBy,
         printed,
+        generatedBy
     } = data;
 
     console.log("data ", data)
@@ -32,7 +33,8 @@ export default async (req, res) => {
         used: used,
         usedDateTime: usedDateTime,
         recordedBy: recordedBy,
-        printed: printed
+        printed: printed,
+        generatedBy: generatedBy
       },
       // callback
       (err, result) => {

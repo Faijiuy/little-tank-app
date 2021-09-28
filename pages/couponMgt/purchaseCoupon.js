@@ -11,7 +11,7 @@ import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Choose_Company from "../../components/couponMgt/choose_company";
 import Buy_Coupons from "../../components/couponMgt/buy_coupons";
 import Confirm from "../../components/couponMgt/confirm";
@@ -19,6 +19,8 @@ import Confirm from "../../components/couponMgt/confirm";
 import { useRouter } from "next/router";
 
 import { format } from "date-fns";
+import AuthContext from "../../stores/authContext";
+
 
 import { ObjectId } from "bson";
 
@@ -138,6 +140,11 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
 
   const [ordered_company, setOrdered_company] = useState([]);
 
+  const { user2 } = useContext(AuthContext)
+
+
+  
+
   useEffect(() => {
     let filterCoupon = coupons.filter(
       (coupon) =>
@@ -190,6 +197,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
                 usedDateTime: "",
                 recordedBy: "",
                 printed: false,
+                generatedBy: user2
               }), // body data type must match "Content-Type" header
             });
             if (i == Number(row.qty)) {
@@ -219,6 +227,8 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
                 usedDateTime: "",
                 recordedBy: "",
                 printed: false,
+                generatedBy: user2
+
               }), // body data type must match "Content-Type" header
             });
             if (i == Number(row.qty)) {

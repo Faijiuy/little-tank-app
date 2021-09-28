@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Modal, Box } from "@material-ui/core";
 import {
   Avatar,
@@ -15,6 +15,7 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useGridSelection } from "@material-ui/data-grid";
 import router from "next/router";
+import AuthContext from "../stores/authContext";
 // import UserProfile from './UserProfile';
 
 const LoginForm = () => {
@@ -34,9 +35,9 @@ const LoginForm = () => {
       .then((response) => response.json())
       .then((data) => {
         users.push(...data);
-        console.log("data ===> ", data);
+        // console.log("data ===> ", data);
       });
-    console.log("users ====> ", users);
+    // console.log("users ====> ", users);
   });
 
   // let user = fetch(process.env.API + "/user", {
@@ -48,6 +49,9 @@ const LoginForm = () => {
   //     console.log(data);
   //   });
   // console.log("user ====> ", users);;
+  const { user2, setUser2, auth, setAuth } = useContext(AuthContext)
+
+  console.log("this is user2: ", user2)
 
   const [username, setUsername] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
@@ -129,6 +133,8 @@ const LoginForm = () => {
       // console.log("UserProfile.getName() ==> ",UserProfile.getName())
       if (username == u.username && passwordUser == u.password) {
         setLoginStatus(true);
+        setAuth(true)
+        setUser2(username)
         console.log("Login Successfully");
         user.loginStatus = true;
         // user.rememberStatus = checked;

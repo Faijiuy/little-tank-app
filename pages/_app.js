@@ -26,6 +26,7 @@ import PageChange from "components/PageChange/PageChange.js";
 import "assets/css/nextjs-material-dashboard.css?v=1.1.0";
 import "assets/css/Box.css";
 import 'assets/css/Grid.css'
+import { AuthContextProvider } from "../stores/authContext";
 
 
 
@@ -91,9 +92,11 @@ export default class MyApp extends App {
           <title>Little Tank App</title>
           {/* <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script> */}
         </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AuthContextProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthContextProvider>
       </React.Fragment>
     );
   }

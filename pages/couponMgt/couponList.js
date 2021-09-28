@@ -14,8 +14,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import DirectionsIcon from '@mui/icons-material/Directions';
 
 import { connectToDatabase } from "../../util/mongodb";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
+import AuthContext from '../../stores/authContext'
 
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -30,10 +31,13 @@ export async function getServerSideProps() {
 
   const coupons = await db.collection("coupons").find().sort({}).toArray();
 
+  const users = await db.collection("user").find().sort({}).toArray();
+
   return {
     props: {
       customer: JSON.parse(JSON.stringify(customers)),
       coupon: JSON.parse(JSON.stringify(coupons)),
+      user: JSON.parse(JSON.stringify(users)),
     },
   };
 }
@@ -101,6 +105,15 @@ const columns = [
       
     },
     {
+      field: "generatedBy",
+      headerClassName: "super-app-theme--header",
+      headerName: "สร้างโดย",
+      width: 150,
+
+      
+      
+  },
+    {
         field: "used",
         headerClassName: "super-app-theme--header",
         headerName: "สถานะ",
@@ -129,9 +142,12 @@ function groupByKey(array, key) {
     }, {});
 }
 
-function CouponList({ customer: customers, coupon: coupons }) {
+function CouponList({ customer: customers, coupon: coupons, user: users }) {
+
+    const hello = useContext(AuthContext)
     const classes = useStyles();
 
+    // console.log(hello)
 
     const [rows, setRows] = useState([])
     const [id, setId] = useState("")
@@ -141,6 +157,8 @@ function CouponList({ customer: customers, coupon: coupons }) {
   
     const [selectedDate, setSelectedDate] = useState("");
     const [status, setStatus] = useState("");
+
+    const [user, setUser] = useState("")
 
     
 
@@ -162,11 +180,12 @@ function CouponList({ customer: customers, coupon: coupons }) {
                                                         (company  ? coupon.companyRef === company._id : true) && 
                                                         (type  ? coupon.amount === Number(type) : true) && 
                                                         (selectedDate  ? coupon.generatedDate.includes(selectedDate) : true) &&
-                                                        (status !== "" ? coupon.used === status : true))
+                                                        (status !== "" ? coupon.used === status : true) && 
+                                                        (user ? coupon.generatedBy === user : true))
         
         filtered_coupons.map(coupon => {
             let obj = {id: coupon._id, companyRef: "", amount: coupon.amount, generatedDate: coupon.generatedDate,
-                runningNo: coupon.runningNo, used: coupon.used, usedDateTime: coupon.usedDateTime}
+                runningNo: coupon.runningNo, used: coupon.used, usedDateTime: coupon.usedDateTime, generatedBy: coupon.generatedBy}
 
             customers.map(customer => {
                 if(customer._id === coupon.companyRef){
@@ -179,7 +198,7 @@ function CouponList({ customer: customers, coupon: coupons }) {
 
         setRows(init_rows)
         
-    }, [id, company, type, selectedDate ,status])
+    }, [id, company, type, selectedDate ,status, user])
 
     const handleSearch = (e) => {
         setId(e.target.value)
@@ -201,6 +220,10 @@ function CouponList({ customer: customers, coupon: coupons }) {
         console.log(e.target.value)
         setStatus(e.target.value)
     };
+
+    const handleChangeUser = (event) => {
+      setUser(event.target.value);
+  };
 
     return (
     <div>
@@ -283,9 +306,30 @@ function CouponList({ customer: customers, coupon: coupons }) {
             </Select>
           </FormControl>
 
-          <FormControl style={{width: 200}}>
+          <FormControl style={{width: 200, marginRight: 10}}>
             <TextField label="วัน/เดือน/ปี" value={selectedDate} onChange={(e) => handleDateChange(e)}/>
 
+          </FormControl>
+
+          <FormControl style={{width: 120, marginRight: 10}}>
+            <InputLabel id="demo-simple-select-outlined-label">
+              ถูกสร้างโดย
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={user ? user : ""}
+              onChange={handleChangeUser}
+              label="ชื่อผู้สร้าง"
+            >
+              {users.map((user) => {
+                return (
+                  <MenuItem key={user.username} value={user.username}>
+                    {user.username}
+                  </MenuItem>
+                );
+              })}
+            </Select>
           </FormControl>
           
 
