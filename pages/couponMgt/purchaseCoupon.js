@@ -197,7 +197,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
                 usedDateTime: "",
                 recordedBy: "",
                 printed: false,
-                generatedBy: user2
+                generatedBy: sessionStorage.getItem('user2')
               }), // body data type must match "Content-Type" header
             });
             if (i == Number(row.qty)) {
@@ -258,6 +258,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
 
   return (
     <div style={boxStyle}>
+      {(sessionStorage.getItem('status') === "root" || sessionStorage.getItem('status') === "admin") ? (
       <StepperContext.Provider
         value={{
           company,
@@ -362,7 +363,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
             )}
           </div>
         </Grid>
-      </StepperContext.Provider>
+      </StepperContext.Provider>) : <h1>คุณไม่มีสิทธิในการเข้าถึงหน้านี้</h1>}
     </div>
   );
 }

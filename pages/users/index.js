@@ -10,6 +10,8 @@ import { connectToDatabase } from "../../util/mongodb";
 import Admin from "layouts/Admin.js";
 import { useRouter } from "next/router";
 import Modal from "@material-ui/core/Modal";
+import AuthContext from "../../stores/authContext";
+
 // import UserProfile from "components/UserProfile";
 
 export async function getServerSideProps() {
@@ -68,6 +70,11 @@ function Users({ user: users }) {
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = React.useState("");
   const [loginStatus, setLoginStatus] = React.useState(false);
+
+  const { user2, status } = React.useContext(AuthContext)
+
+
+  
 
   const handleOpen = (params) => {
     // console.log(params)
@@ -224,63 +231,66 @@ function Users({ user: users }) {
   ];
   return (
     <div style={{ width: "100%" }}>
-      <Box style={boxStyle}>
-        <Box display="flex">
-          <Button variant="contained" color="primary" href="users/create">
-            เพิ่มผู้ใช้
-          </Button>
-        </Box>
-        <br />
-        <div style={{ height: 400, width: "35%" }} className={classes.root}>
-          <DataGrid
-            rows={rowUser(users)}
-            columns={columns}
-            editRowsModel={editRowsModel}
-            onEditRowModelChange={handleEditRowModelChange}
-            hideFooterPagination={true}
+      {(sessionStorage.getItem('status') === "root" || sessionStorage.getItem('status') === "admin") ? (
+        <Box style={boxStyle}>
+          <Box display="flex">
+            <Button variant="contained" color="primary" href="users/create">
+              เพิ่มผู้ใช้
+            </Button>
+          </Box>
+          <br />
+          <div style={{ height: 400, width: "35%" }} className={classes.root}>
+            <DataGrid
+              rows={rowUser(users)}
+              columns={columns}
+              editRowsModel={editRowsModel}
+              onEditRowModelChange={handleEditRowModelChange}
+              hideFooterPagination={true}
 
-            // checkboxSelection={handleSelectRow}
-            // icons={EditIcon}
-          />
-        </div>
-        <br />
-        <Box display="flex">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenLogout}
-          >
-            ออกจากระบบ
-          </Button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            <div style={modalStyle} className={classes.paper}>
-              <h2 id="simple-modal-title">ยืนยันการออกจากระบบ</h2>
-              <p id="simple-modal-description">ท่านต้องการออกจากระบบใช่ไหม</p>
+              // checkboxSelection={handleSelectRow}
+              // icons={EditIcon}
+            />
+          </div>
+          <br />
+          <Box display="flex">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenLogout}
+            >
+              ออกจากระบบ
+            </Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
+            >
+              <div style={modalStyle} className={classes.paper}>
+                <h2 id="simple-modal-title">ยืนยันการออกจากระบบ</h2>
+                <p id="simple-modal-description">ท่านต้องการออกจากระบบใช่ไหม</p>
 
-              <Button
-                onClick={() => signOut()}
-                variant="contained"
-                color="primary"
-                href="/login"
-              >
-                ยืนยัน
-              </Button>
-              <Button
-                onClick={handleClose}
-                variant="contained"
-                color="secondary"
-              >
-                ยกเลิก
-              </Button>
-            </div>
-          </Modal>
+                <Button
+                  onClick={() => signOut()}
+                  variant="contained"
+                  color="primary"
+                  href="/login"
+                >
+                  ยืนยัน
+                </Button>
+                <Button
+                  onClick={handleClose}
+                  variant="contained"
+                  color="secondary"
+                >
+                  ยกเลิก
+                </Button>
+              </div>
+            </Modal>
+          </Box>
         </Box>
-      </Box>
+
+      ) : <div>ขออภัย คุณไม่มีสิทธิในการเข้าถึงหน้านี้</div> }
     </div>
   );
 }

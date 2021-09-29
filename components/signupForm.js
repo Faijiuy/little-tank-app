@@ -21,7 +21,8 @@ const SignUpForm = () => {
   let user = {
     username: "",
     password: "",
-    loginStatus: false
+    loginStatus: false,
+    status: "normal"
     // rememberStatus: false,
   };
 

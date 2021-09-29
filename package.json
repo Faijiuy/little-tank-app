@@ -52,6 +52,7 @@
     "qrcode-reader": "^1.0.4",
     "react": "17.0.1",
     "react-chartist": "0.14.3",
+    "react-client-session": "^0.0.7",
     "react-dom": "17.0.1",
     "react-hook-form": "^7.10.1",
     "react-qr-code": "^2.0.0",

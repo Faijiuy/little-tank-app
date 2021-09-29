@@ -12,6 +12,9 @@ import { useRouter } from "next/router";
 import Modal from "@material-ui/core/Modal";
 import AddIcon from '@mui/icons-material/Add';
 
+import AuthContext from "../../stores/authContext";
+
+
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
 
@@ -70,6 +73,11 @@ function Customers({ customer: customers }) {
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const [company, setCompany] = React.useState("");
+
+  const { user2, status, auth, setAuth } = React.useContext(AuthContext)
+
+  console.log(status)
+
 
   const handleOpen = (params) => {
     // console.log(params)
@@ -201,35 +209,37 @@ function Customers({ customer: customers }) {
   ];
 
   return (
-    <Box style={boxStyle}>
-      <h3>รายชื่อลูกค้า
-      {/* <Box display="flex" > */}
-        {/* <Button variant="contained" color="primary" href="customers/create" style={{position: "relative", left: 610, width: 200, height: 50}}> */}
-        <Button variant="contained" color="primary" href="customers/create" style={{float: "right", width: 200, height: 50}}> 
-          <AddIcon />เพิ่มบริษัท
-        </Button>
-      {/* </Box> */}
-        
-      </h3>
-      <div style={{ width: "100%" }}>
-        {/* <Box style={boxStyle}> */}
-          {/* <br /> */}
-          <div style={{ height: 500, width: "100%" }} className={classes.root}>
-            <DataGrid
-              rows={rowCustomer(customers)}
-              columns={columns}
-              editRowsModel={editRowsModel}
-              onEditRowModelChange={handleEditRowModelChange}
-              hideFooterPagination={true}
+    <div>
+        <Box style={boxStyle}>
+          <h3>รายชื่อลูกค้า
+          {/* <Box display="flex" > */}
+            {/* <Button variant="contained" color="primary" href="customers/create" style={{position: "relative", left: 610, width: 200, height: 50}}> */}
+            <Button variant="contained" color="primary" href="customers/create" style={{float: "right", width: 200, height: 50}}> 
+              <AddIcon />เพิ่มบริษัท
+            </Button>
+          {/* </Box> */}
+            
+          </h3>
+          <div style={{ width: "100%" }}>
+            {/* <Box style={boxStyle}> */}
+              {/* <br /> */}
+              <div style={{ height: 500, width: "100%" }} className={classes.root}>
+                <DataGrid
+                  rows={rowCustomer(customers)}
+                  columns={columns}
+                  editRowsModel={editRowsModel}
+                  onEditRowModelChange={handleEditRowModelChange}
+                  hideFooterPagination={true}
 
-              // checkboxSelection={handleSelectRow}
-              // icons={EditIcon}
-            />
+                  // checkboxSelection={handleSelectRow}
+                  // icons={EditIcon}
+                />
+              </div>
+            {/* </Box> */}
           </div>
-        {/* </Box> */}
-      </div>
 
-    </Box>
+        </Box>
+    </div>
   );
 }
 

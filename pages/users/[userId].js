@@ -105,7 +105,7 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-const LicenseContext = React.createContext();
+// const LicenseContext = React.createContext();
 
 function CreateUser({ user: users }) {
   // console.log("users ===> ", users);
@@ -116,6 +116,7 @@ function CreateUser({ user: users }) {
   //   const [contact_name, setContact_name] = useState()
   //   const [contact_tel, setContact_tel] = useState()
   //   const [contact_email, setContact_email] = useState()
+  const [status, setStatus] = useState();
 
   const [usernameError, setUsernameError] = useState(false);
   const [passwordUserError, setPasswordError] = useState(false);
@@ -179,6 +180,11 @@ function CreateUser({ user: users }) {
     setOpen(false);
     setOpen_new(false);
     // console.log(passwordUser);
+  };
+
+  const handleChangeStatus = (event) => {
+    // console.log(company)
+    setStatus(event.target.value);
   };
 
   const useStyles = makeStyles(styles);
@@ -268,7 +274,7 @@ function CreateUser({ user: users }) {
             </CardHeader>
             <CardBody>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
+                <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="ชื่อผู้ใช้"
                     id="username"
@@ -284,6 +290,29 @@ function CreateUser({ user: users }) {
                     }}
                   />
                 </GridItem>
+
+                <FormControl className={classes.formControl} >
+                <InputLabel id="demo-simple-select-outlined-label1">
+                  Status
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label1"
+                  id="demo-simple-select-outlined"
+                  value={status ? status : ""}
+                  onChange={handleChangeStatus}
+                  label="Status"
+                >
+                  <MenuItem key="admin" value="admin">
+                    แอดมิน
+                  </MenuItem>
+                  <MenuItem
+                    key="normal"
+                    value="normal"
+                  >
+                    ธรรมดา
+                  </MenuItem>
+                </Select>
+              </FormControl>
               </GridContainer>
               <GridContainer>
                 {/*<GridItem xs={12} sm={12} md={5}>
@@ -423,12 +452,26 @@ function CreateUser({ user: users }) {
           </Card>
         </GridItem>
       </GridContainer>
+
+      <Box
+        className="no-print"
+        bgcolor="secondary.main"
+        color="secondary.contrastText"
+        p={2}
+      >
+        <h4>สถานะ</h4>
+        <ul>
+          <li>ธรรมดา : ไม่สามารถเข้าถึงหน้า ซื้อคูปอง และ การจัดการผู้ใช้ได้</li>
+          <li>แอดมิน : สามารถเข้าถึงได้ทุกหน้า</li>
+        </ul> 
+        
+      </Box>
     </div>
   );
 }
 
 CreateUser.layout = Admin;
 
-export { LicenseContext };
+// export { LicenseContext };
 
 export default CreateUser;

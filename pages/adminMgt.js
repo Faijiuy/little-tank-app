@@ -337,9 +337,15 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
         status: status_submit,
         groupId: groupId_submit,
       }), // body data type must match "Content-Type" header
+    }).then(function(response){
+      value == "add" ? alert("ลงทะเบียนสำเร็จ") : alert("แก้ไขสำเร็จ")
+
+      if(response){
+        router.reload()
+
+      }
     })
-      .then(value == "add" ? alert("ลงทะเบียนสำเร็จ") : alert("แก้ไขสำเร็จ"))
-      .then(router.reload());
+
   };
 
   const handleDelete = () => {
@@ -586,14 +592,16 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
         groupId: company.groupID,
         status: status,
       }), // body data type must match "Content-Type" header
-    }).then(router.reload())
+    }).then(function(response){
+      router.reload()
+    })
 
     
   };
 
   return (
     <div>
-      <Box style={boxStyle}>
+        <Box style={boxStyle}>
         
 
         <div style={{ width: "83%" }}>
@@ -846,6 +854,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
         <br />
         
       </Box>
+      
     </div>
   );
 }

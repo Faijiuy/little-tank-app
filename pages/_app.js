@@ -84,6 +84,7 @@ export default class MyApp extends App {
 
     return (
       <React.Fragment>
+        <AuthContextProvider>
         <Head>
           <meta
             name="viewport"
@@ -92,7 +93,6 @@ export default class MyApp extends App {
           <title>Little Tank App</title>
           {/* <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script> */}
         </Head>
-        <AuthContextProvider>
           <Layout>
             <Component {...pageProps} />
           </Layout>

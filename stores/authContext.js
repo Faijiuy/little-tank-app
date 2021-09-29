@@ -1,5 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import SignInOutContainer from "../containers/index";
+import ReactSession from 'react-client-session';
 
 
 const AuthContext = createContext({
@@ -13,11 +14,18 @@ export const AuthContextProvider = ({ children }) => {
 
     const [auth, setAuth] = useState(false)
 
-    const context = { user2, setUser2, auth, setAuth }
+    const [status, setStatus] = useState(null)
+
+    const context = { user2, setUser2, auth, setAuth, status, setStatus }
+
+   
+
+    // sessionStorage.getItem('auth')
+
 
     return (
         <AuthContext.Provider value={context}>
-            {auth ? (children) : <SignInOutContainer/>}
+           {children}  
         </AuthContext.Provider>
     )
 }

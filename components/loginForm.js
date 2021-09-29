@@ -49,9 +49,8 @@ const LoginForm = () => {
   //     console.log(data);
   //   });
   // console.log("user ====> ", users);;
-  const { user2, setUser2, auth, setAuth } = useContext(AuthContext)
+  const { user2, setUser2, setAuth, setStatus, status } = useContext(AuthContext)
 
-  console.log("this is user2: ", user2)
 
   const [username, setUsername] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
@@ -125,7 +124,6 @@ const LoginForm = () => {
     );
 
     filterUser.map((u) => {
-      console.log("u ===>  ", u.username, u.password, u._id);
       user._id = u._id;
       user.username = u.username;
       user.password = u.password;
@@ -135,6 +133,11 @@ const LoginForm = () => {
         setLoginStatus(true);
         setAuth(true)
         setUser2(username)
+        setStatus(u.status)
+
+        sessionStorage.setItem('user2', username)
+        sessionStorage.setItem('status', u.status)
+
         console.log("Login Successfully");
         user.loginStatus = true;
         // user.rememberStatus = checked;
@@ -146,8 +149,6 @@ const LoginForm = () => {
         // user.rememberStatus = checked;
       }
     });
-
-    console.log("user ===> ", user);
 
     // setTimeout(() => {
     fetch("/api/user/loginAPI", {

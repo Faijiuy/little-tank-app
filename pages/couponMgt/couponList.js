@@ -185,7 +185,9 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
         
         filtered_coupons.map(coupon => {
             let obj = {id: coupon._id, companyRef: "", amount: coupon.amount, generatedDate: coupon.generatedDate,
-                runningNo: coupon.runningNo, used: coupon.used, usedDateTime: coupon.usedDateTime, generatedBy: coupon.generatedBy}
+                      runningNo: coupon.runningNo, 
+                      used: (coupon.used === false ? "ยังไม่ถูกใช้" : coupon.used === true ? "ถูกใช้แล้ว" : "หาย"), 
+                      usedDateTime: coupon.usedDateTime, generatedBy: coupon.generatedBy}
 
             customers.map(customer => {
                 if(customer._id === coupon.companyRef){

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,6 +24,9 @@ import TextField from '@material-ui/core/TextField'
 
 import LicensePlate_List from "../../components/customer/list"
 import LicensePlate_modal from "../../components/customer/modal"
+
+import AuthContext from "../../stores/authContext";
+
 
 
 export async function getServerSideProps(props) {
@@ -117,12 +120,21 @@ const useStyles2 = makeStyles((theme) => ({
 }));
 
 
+
+
 const LicenseContext = React.createContext()
 
 
 function CreateCustomer({customer:customers}) {
+  
+  const { user2, status, auth, setAuth } = useContext(AuthContext)
 
-  console.log("customerers ===> ", customers);
+  useEffect(() => {
+    setAuth(true)
+  }, [])
+
+  // console.log(user2, status, auth)
+  // console.log("customerers ===> ", customers);
 
 
   const [company, setCompany] = useState()

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 // react plugin for creating charts
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,7 +13,12 @@ import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { Box, Grid } from "@material-ui/core";
 
+import AuthContext from "../stores/authContext";
+
+
 function Dashboard() {
+
+
   const useStyles = makeStyles(styles);
   const classes = useStyles();
 
