@@ -9,10 +9,11 @@ export default async (req, res) => {
       username,
       password,
       loginStatus,
+      loginTime
       // rememberStatus
     } = data
 
-    console.log(data)
+    console.log("this is data: ", data)
     const { db } = await connectToDatabase();
 
 
@@ -23,6 +24,7 @@ export default async (req, res) => {
         // _id: _id
         $set: {
           loginStatus: loginStatus,
+          loginTime: loginTime
           // rememberStatus: rememberStatus
         }
       },

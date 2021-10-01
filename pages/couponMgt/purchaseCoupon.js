@@ -298,7 +298,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
                           onClick={handleBack}
                           className={classes.button}
                         >
-                          Back
+                          กลับ
                         </Button>
                         {activeStep === steps.length - 1 ? (
                           <Button

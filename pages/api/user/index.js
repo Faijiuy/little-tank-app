@@ -46,7 +46,8 @@ export default async (req, res) => {
       _id,
       username,
       password,
-      loginStatus
+      loginStatus,
+      status
     } = data;
 
     // let _id = ObjectId(data._id)
@@ -63,7 +64,8 @@ export default async (req, res) => {
         // _id: _id
         $set: {
             username: username,
-            password: password
+            password: password,
+            status: status
         },
       },
       // callback

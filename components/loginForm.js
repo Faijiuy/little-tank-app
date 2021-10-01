@@ -16,15 +16,24 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useGridSelection } from "@material-ui/data-grid";
 import router from "next/router";
 import AuthContext from "../stores/authContext";
+
+import moment from 'moment';
+
+moment().format();
 // import UserProfile from './UserProfile';
 
 const LoginForm = () => {
+  const [loginTime, setLoginTime] = useState()
+
+
+
   let users = [];
   let user = {
     _id: "",
     username: "",
     password: "",
     loginStatus: false,
+    loginTime: loginTime
     // rememberStatus: false
   };
 
@@ -56,6 +65,7 @@ const LoginForm = () => {
   const [passwordUser, setPasswordUser] = useState("");
   // const [checked, setChecked] = useState(false);
   const [loginStatus, setLoginStatus] = useState(false);
+
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -130,16 +140,23 @@ const LoginForm = () => {
       // UserProfile.setName(u.username);
       // console.log("UserProfile.getName() ==> ",UserProfile.getName())
       if (username == u.username && passwordUser == u.password) {
+        let today = new Date()
+        let time = moment(today, "DD MM YYYY hh:mm:ss")
+
+        let split = time.format().split("T")
+
         setLoginStatus(true);
         setAuth(true)
         setUser2(username)
         setStatus(u.status)
+        setLoginTime(split[0] + " " + split[1].split("+")[0])
 
         sessionStorage.setItem('user2', username)
         sessionStorage.setItem('status', u.status)
 
         console.log("Login Successfully");
         user.loginStatus = true;
+        user.loginTime = split[0] + " " + split[1].split("+")[0]
         // user.rememberStatus = checked;
       } else {
         setLoginStatus(false);

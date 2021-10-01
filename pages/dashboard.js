@@ -28,29 +28,29 @@ function Dashboard() {
     });
     const chart = sdk.createChart({
       chartId: "b91605a3-b18c-4782-a755-bb0d6ae0cc27",
-      width: 480,
+      width: 600,
       height: 220,
       theme: "dark",
     });
 
-    const chart2 = sdk.createChart({
+    const couponsRemain = sdk.createChart({
       chartId: "eea67d55-e0a7-4cc7-9eba-77cc25a48a7b",
-      width: 360,
-      height: 660,
+      width: 630,
+      height: 380,
       theme: "dark",
     });
 
-    const chart3 = sdk.createChart({
+    const lineChart = sdk.createChart({
       chartId: "4c2a3639-147b-4532-b6a0-321ab9eec6fb",
-      width: 480,
-      height: 420,
+      width: 600,
+      height: 390,
       theme: "dark",
     });
 
-    const chart4 = sdk.createChart({
+    const oldestCoupon = sdk.createChart({
       chartId: "9188d9fb-81e8-49f2-b939-d724888136e7",
-      width: 406,
-      height: 660,
+      width: 630,
+      height: 390,
       theme: "dark",
     });
 
@@ -58,15 +58,15 @@ function Dashboard() {
       .render(document.getElementById("chart"))
       .catch(() => window.alert("Chart failed to initialise"));
 
-    chart2
+    couponsRemain
       .render(document.getElementById("chart2"))
       .catch(() => window.alert("Chart failed to initialise"));
 
-    chart3
+    lineChart
       .render(document.getElementById("chart3"))
       .catch(() => window.alert("Chart failed to initialise"));
 
-    chart4
+    oldestCoupon
       .render(document.getElementById("chart4"))
       .catch(() => window.alert("Chart failed to initialise"));
 
@@ -80,10 +80,20 @@ function Dashboard() {
   return (
     <div>
       {/*<h3 className="right">{UserProfile.getName()}</h3>*/}
+      <span>
       <Box className="left" id="chart3" />
-      <Box className="right" id="chart4" />
-      <Box className="right" id="chart2" />
+
+      <Box className="left" id="chart4" />
+      </span>
+      <span>
       <Box className="left" id="chart" />
+
+      <Box className="left" id="chart2" />
+      </span>
+      {/* <Box className="right" id="chart4" /> */}
+      {/* <span>
+
+      </span> */}
     </div>
   );
 }

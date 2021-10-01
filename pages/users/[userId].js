@@ -15,11 +15,18 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+
 
 import { connectToDatabase } from "../../util/mongodb";
 import { ObjectId } from "bson";
 import Modal from "@material-ui/core/Modal";
 import TextField from "@material-ui/core/TextField";
+import { Box } from "@material-ui/core";
+
 
 
 export async function getServerSideProps(props) {
@@ -73,6 +80,10 @@ const styles = {
   },
   button: {
     height: 40,
+  },
+  formControl: {
+    // margin: theme.spacing(1),
+    minWidth: 100,
   },
 };
 
@@ -164,6 +175,7 @@ function CreateUser({ user: users }) {
       setUsername(users.username);
       setPasswordUser(users.password);
       setLoginStatus(users.loginStatus);
+      setStatus(users.status)
     } else {
       setUsername(user1.username);
       setPasswordUser(user1.password);
@@ -204,6 +216,7 @@ function CreateUser({ user: users }) {
     username: username,
     password: passwordUser,
     loginStatus: loginStatus,
+    status: status
   };
 
   const onSubmit = (str) => {

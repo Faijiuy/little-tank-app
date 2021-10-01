@@ -160,16 +160,16 @@ function Users({ user: users }) {
       headerClassName: "super-app-theme--header",
       headerName: "ชื่อผู้ใช้",
       width: 180,
-      editable: true,
+      // editable: true,
     },
     // { field: 'password', headerClassName: 'super-app-theme--header', headerName: 'รหัสผ่าน', width: 180, editable: true },
-    // {
-    //   field: "loginStatus",
-    //   headerClassName: "super-app-theme--header",
-    //   headerName: "สถานะเข้าระบบ",
-    //   width: 180,
-    //   editable: true,
-    // },
+    {
+      field: "loginTime",
+      headerClassName: "super-app-theme--header",
+      headerName: "เวลาที่เข้าใช้",
+      width: 180,
+      // editable: true,
+    },
     {
       field: "edit",
       headerClassName: "super-app-theme--header",
@@ -239,7 +239,7 @@ function Users({ user: users }) {
             </Button>
           </Box>
           <br />
-          <div style={{ height: 400, width: "35%" }} className={classes.root}>
+          <div style={{ height: 400, width: "50%" }} className={classes.root}>
             <DataGrid
               rows={rowUser(users)}
               columns={columns}
@@ -304,6 +304,7 @@ const rowUser = (props) => {
       username: user.username,
       password: user.password,
       loginStatus: user.loginStatus,
+      loginTime: user.loginTime
     });
   });
 
