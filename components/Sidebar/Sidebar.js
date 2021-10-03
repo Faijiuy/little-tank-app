@@ -94,7 +94,7 @@ export default function Sidebar(props) {
                           <ExpandMore className={classNames(classes.itemIcon2, whiteFontClasses, {
                             [classes.itemIconRTL]: props.rtlActive,
                           })} />}
-                <ListItemText primary="การจัดการคูปอง" className={classNames(classes.itemText, whiteFontClasses, {
+                <ListItemText primary="คูปอง" className={classNames(classes.itemText, whiteFontClasses, {
                         [classes.itemTextRTL]: props.rtlActive,
                       })}
                       disableTypography={true} />

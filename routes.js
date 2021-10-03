@@ -40,28 +40,28 @@ const dashboardRoutes = [
 
   {
     path: "/customers",
-    name: "การจัดการลูกค้า",
+    name: "ลูกค้า",
     icon: PeopleAltIcon,
 
     // layout: "/admin",
   },
   {
     path: "/couponMgt",
-    name: "การจัดการคูปอง",
-    pathArr: [{path: "/couponMgt/couponList", name: "รายการคูปอง"}, {path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}, {path: "/coupon/printPage", name: "หน้าปริ้นคูปอง"}],
+    name: "คูปอง",
+    pathArr: [{path: "/couponMgt/couponList", name: "รายการคูปอง"}, {path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}, {path: "/couponMgt/deleteCoupon", name: "ลบคูปอง"}, {path: "/coupon/printPage", name: "หน้าปริ้นคูปอง"}],
     icon: Unarchive,
 
     // layout: "/admin",
   },
   {
     path: "/adminMgt",
-    name: "การจัดการแอดมิน",
+    name: "แอดมิน",
     icon: Person,
 
     // layout: "/admin",
   },{
     path: "/users",
-    name: "การจัดการผู้ใช้",
+    name: "ผู้ใช้",
     icon: AccountBoxIcon,
   }
  

@@ -258,7 +258,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
 
   return (
     <div style={boxStyle}>
-      {(sessionStorage.getItem('status') === "root" || sessionStorage.getItem('status') === "admin") ? (
+      {/* {(sessionStorage.getItem('status') === "root" || sessionStorage.getItem('status') === "admin") ? ( */}
       <StepperContext.Provider
         value={{
           company,
@@ -363,7 +363,8 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
             )}
           </div>
         </Grid>
-      </StepperContext.Provider>) : <h1>คุณไม่มีสิทธิในการเข้าถึงหน้านี้</h1>}
+      </StepperContext.Provider>
+      {/*  ) : <h1>คุณไม่มีสิทธิในการเข้าถึงหน้านี้</h1>} */}
     </div>
   );
 }

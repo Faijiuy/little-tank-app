@@ -76,7 +76,7 @@ function Customers({ customer: customers }) {
 
   const { user2, status, auth, setAuth } = React.useContext(AuthContext)
 
-  console.log(status)
+  console.log("user2: ", user2)
 
 
   const handleOpen = (params) => {
@@ -99,6 +99,9 @@ function Customers({ customer: customers }) {
   // const handleBlur = React.useCallback((params) => {
   //   console.log(params)
   // }, []);
+  const redirect = (path) => {
+    router.push(path)
+  }
 
   const handleDelete = () => {
     fetch("/api/customer", {
@@ -159,7 +162,8 @@ function Customers({ customer: customers }) {
         return (
           <div>
             <Button
-              href={"/customers/" + customers[params.row.id]._id}
+              // href={"/customers/" + customers[params.row.id]._id}
+              onClick={() => redirect("/customers/" + customers[params.row.id]._id)}
               variant="contained"
               color="primary"
               startIcon={<EditIcon />}
@@ -214,7 +218,7 @@ function Customers({ customer: customers }) {
           <h3>รายชื่อลูกค้า
           {/* <Box display="flex" > */}
             {/* <Button variant="contained" color="primary" href="customers/create" style={{position: "relative", left: 610, width: 200, height: 50}}> */}
-            <Button variant="contained" color="primary" href="customers/create" style={{float: "right", width: 200, height: 50}}> 
+            <Button variant="contained" color="primary" onClick={()=> redirect("/customers/create")} style={{float: "right", width: 200, height: 50}}> 
               <AddIcon />เพิ่มบริษัท
             </Button>
           {/* </Box> */}

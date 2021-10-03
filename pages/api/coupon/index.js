@@ -1,3 +1,4 @@
+import { ObjectId } from "bson";
 import { connectToDatabase } from "../../../util/mongodb";
 
 export default async (req, res) => {
@@ -91,6 +92,44 @@ export default async (req, res) => {
         }
       }
     );
+  }else if(req.method === "DELETE"){
+    let data = req.body;
+
+    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
+    let {
+      _id,
+      
+    } = data;
+
+    // let _id = ObjectId(data._id)
+    // delete data._id
+
+    console.log("data ==> ", data)
+    // console.log(data)
+    const { db } = await connectToDatabase();
+
+
+    await db.collection("coupons").deleteOne(
+      { _id: ObjectId(_id)},
+      // { company: company},
+
+      // callback
+      // (err, result) => {
+      //   if (err) {
+      //     console.log(err);
+      //     res.json(err);
+      //   } else if(result){
+      //     console.log("result: ", result)
+      //     res.json({
+      //       message: "coupon updated",
+      //     });
+      //   }
+      // }
+      res.json({ delete: true, message: 'Delete data', data: {} })
+
+      
+    )
+
   }else if (req.method === "GET") {
     const { db } = await connectToDatabase();
     const coupons = await db

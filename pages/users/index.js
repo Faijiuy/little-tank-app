@@ -231,7 +231,7 @@ function Users({ user: users }) {
   ];
   return (
     <div style={{ width: "100%" }}>
-      {(sessionStorage.getItem('status') === "root" || sessionStorage.getItem('status') === "admin") ? (
+      {/* {(sessionStorage.getItem('status') === "root" || sessionStorage.getItem('status') === "admin") ? ( */}
         <Box style={boxStyle}>
           <Box display="flex">
             <Button variant="contained" color="primary" href="users/create">
@@ -290,7 +290,7 @@ function Users({ user: users }) {
           </Box>
         </Box>
 
-      ) : <div>ขออภัย คุณไม่มีสิทธิในการเข้าถึงหน้านี้</div> }
+      {/* ) : <div>ขออภัย คุณไม่มีสิทธิในการเข้าถึงหน้านี้</div> } */}
     </div>
   );
 }

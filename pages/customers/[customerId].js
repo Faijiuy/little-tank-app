@@ -129,9 +129,11 @@ function CreateCustomer({customer:customers}) {
   
   const { user2, status, auth, setAuth } = useContext(AuthContext)
 
-  useEffect(() => {
-    setAuth(true)
-  }, [])
+  console.log("user2: ", user2)
+
+  // useEffect(() => {
+  //   console.log("user2: ", user2)
+  // }, [])
 
   // console.log(user2, status, auth)
   // console.log("customerers ===> ", customers);

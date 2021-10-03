@@ -182,12 +182,14 @@ const LoginForm = () => {
       body: JSON.stringify(user), // body data type must match "Content-Type" header
     })
       .then((response) => response.json())
+      .then(router.push("/dashboard"))
       // .then((data) => {
       //   alert("Update Login Status:\nResponse from server " + data.message);
       //   console.log(data);
       // })
       ;
     // }, 2000);
+    // loginStatus ?  : null
   };
 
   return (
@@ -238,7 +240,7 @@ const LoginForm = () => {
             variant="contained"
             onClick={
               () => {
-                handleOpen();
+                // handleOpen();
                 handleSubmit();
               }
               // () => onSubmit()

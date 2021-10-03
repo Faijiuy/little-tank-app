@@ -18,6 +18,9 @@ import AuthContext from "../stores/authContext";
 
 function Dashboard() {
 
+  const { user2 } = useContext(AuthContext)
+  console.log("user2: ", user2)
+
 
   const useStyles = makeStyles(styles);
   const classes = useStyles();
