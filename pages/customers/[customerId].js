@@ -351,7 +351,7 @@ function CreateCustomer({customer:customers}) {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
-                    labelText="บริษัทของคุณ"
+                    labelText="ชื่อบริษัทลูกค้า"
                     id="company"
                     formControlProps={{
                       fullWidth: true,
@@ -420,7 +420,7 @@ function CreateCustomer({customer:customers}) {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={5}>
                   <CustomInput
-                    labelText="ชื่อผู้ติดต่อประสานงาน"
+                    labelText="ชื่อผู้ประสานงาน"
                     id="contact_name"
                     formControlProps={{
                       fullWidth: true,

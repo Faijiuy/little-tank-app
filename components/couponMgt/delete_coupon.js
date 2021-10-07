@@ -39,6 +39,7 @@ import {
 const styles = {
   root: {
     marginLeft: "9px",
+    marginTop: "10px"
   },
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -57,7 +58,7 @@ const styles = {
     textDecoration: "none",
   },
   list: {
-    width: 220,
+    width: 500,
     height: 230,
     overflow: "auto",
   },
@@ -279,7 +280,7 @@ function DeleteCoupon({ customers, coupons }) {
               </ListItemIcon>
               <ListItemText
                 id={labelId}
-                primary={`${value.generatedDate}-${value.amount}-${value.runningNo}`}
+                primary={`${value.generatedDate} | ราคา: ${value.amount} | ลำดับที่: ${value.runningNo}`}
               />
             </ListItem>
           );
@@ -517,7 +518,9 @@ function DeleteCoupon({ customers, coupons }) {
             </MuiPickersUtilsProvider>
           </FormControl>
 
-          <div style={{marginTop: "10px"}}>
+          {/* <div> */}
+
+          {/* <div style={{marginTop: "10px"}}> */}
             <Grid
               container
               spacing={2}
@@ -525,7 +528,7 @@ function DeleteCoupon({ customers, coupons }) {
               alignItems="center"
               className={classes.root}
             >
-              <Grid item>{customList("คูปองคงเหลือ", couponList)}</Grid>
+              <Grid item>{customList("รายการคูปอง", couponList)}</Grid>
               {/* <Grid item>
                 <Grid container direction="column" alignItems="center">
                   <Button
@@ -552,9 +555,11 @@ function DeleteCoupon({ customers, coupons }) {
               </Grid>
               <Grid item>{customList("คูปองสูญหาย", right)}</Grid> */}
             </Grid>
-          </div>
+          {/* </div> */}
+
+          {/* </div> */}
         </GridContainer>
-      </div>
+
       <br />
 
       <Button
@@ -564,6 +569,8 @@ function DeleteCoupon({ customers, coupons }) {
       >
         ยืนยัน
       </Button>
+
+      </div>
       <ConfirmModal />
     </div>
   );

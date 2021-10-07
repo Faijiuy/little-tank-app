@@ -55,7 +55,7 @@ const styles = {
     textDecoration: "none",
   },
   list: {
-    width: 220,
+    width: 300,
     height: 230,
     overflow: "auto",
   },
@@ -260,7 +260,7 @@ function MissingCoupon({ customers, coupons }) {
               </ListItemIcon>
               <ListItemText
                 id={labelId}
-                primary={`${value.generatedDate}-${value.amount}-${value.runningNo}`}
+                primary={`${value.generatedDate} | ราคา: ${value.amount} | ลำดับที่: ${value.runningNo}`}
               />
             </ListItem>
           );
@@ -352,7 +352,7 @@ function MissingCoupon({ customers, coupons }) {
         <h4>วิธีการใช้</h4>
         <ol>
           <li>เลือก บริษัท ราคา และวันที่ เพื่อแสดงคูปองคงเหลือ</li>
-          <li>รูปแบบคูปอง {'=>'} "(วันที่ซื้อ) - (ราคา) - (ลำดับเลข)" เช่น "25/09/2021-1000-3" หมายถึง คูปองราคา 1000 บาท ลำดับเลขที่ 3 ซื้อเมื่อ 25/09/2021</li>
+          <li>รูปแบบคูปอง {'=>'} "(วันที่ซื้อ) | (ราคา) | (ลำดับเลข)" เช่น "25/09/2021 | ราคา: 1000 | ลำดับที่: 3" หมายถึง คูปองราคา 1000 บาท ลำดับเลขที่ 3 ซื้อเมื่อ 25/09/2021</li>
           <li>คลิกเลือกลำดับคูปองที่หายไป </li>
           <li>กดปุ่ม {'>'} ที่อยู่ข้างกล่อง เพื่อย้ายคูปองไปสู่กล่อง "คูปองสูญหาย"</li>
           <li>เมื่อเลือกเสร็จหมดแล้ว กดปุ่ม "ยืนยัน" ด้านล่าง</li>
@@ -458,16 +458,16 @@ function MissingCoupon({ customers, coupons }) {
             </Grid>
           </div>
         </GridContainer>
-      </div>
-      <br />
+        <br />
 
-      <Button
-        className={classes2.button}
-        onClick={() => onSubmit_missing_coupon()}
-        color="primary"
-      >
-        ยืนยัน
-      </Button>
+        <Button
+          className={classes2.button}
+          onClick={() => onSubmit_missing_coupon()}
+          color="primary"
+        >
+          ยืนยัน
+        </Button>
+      </div>
     </div>
   );
 }

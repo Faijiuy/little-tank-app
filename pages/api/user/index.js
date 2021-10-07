@@ -12,17 +12,18 @@ export default async (req, res) => {
     let data = req.body;
 
     //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
-    let { username, password, loginStatus, status} = data;
+    let { username, id, password, loginStatus} = data;
 
     const { db } = await connectToDatabase();
     await db.collection("user").insertOne(
       {
         // _id: ObjectId(_id)
         // _id: _id
+        id: id,
         username: username,
         password: password,
         loginStatus: loginStatus,
-        status: status
+        // status: status
       },
       // callback
       (err, result) => {
@@ -47,7 +48,7 @@ export default async (req, res) => {
       username,
       password,
       loginStatus,
-      status
+      // status
     } = data;
 
     // let _id = ObjectId(data._id)
@@ -65,7 +66,7 @@ export default async (req, res) => {
         $set: {
             username: username,
             password: password,
-            status: status
+            // status: status
         },
       },
       // callback

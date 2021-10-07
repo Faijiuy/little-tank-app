@@ -156,8 +156,8 @@ export default function Choose_Company() {
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>ราคาคูปอง</TableCell>
                 <TableCell>วันที่ซื้อ</TableCell>
+                <TableCell>ราคาคูปองต่อใบ</TableCell>
                 <TableCell >จำนวนที่เหลือ</TableCell>
                 <TableCell >รวม</TableCell>
               </TableRow>
@@ -165,10 +165,10 @@ export default function Choose_Company() {
             <TableBody>
               {rows.map((row) => (
                 <TableRow key={row.key}>
+                  <TableCell>{row.date}</TableCell>
                   <TableCell component="th" scope="row">
                     {row.price}
                   </TableCell>
-                  <TableCell>{row.date}</TableCell>
                   <TableCell >{row.qty}</TableCell>
                   <TableCell >{thousands_separators(row.price * row.qty)}</TableCell>
                 </TableRow>       

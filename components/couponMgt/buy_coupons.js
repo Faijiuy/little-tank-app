@@ -84,7 +84,7 @@ export default function Buy_Coupons() {
       {text_rows.map((row, index) => {
         return (
         <div key={index}>
-          <TextField required name="price" type="number" label="ราคา" value={row.price} onChange={(e) => handleChangeText(index, e)}/>
+          <TextField required name="price" type="number" label="ราคาต่อใบ" value={row.price} onChange={(e) => handleChangeText(index, e)}/>
           <TextField required name="qty" type="number" label="จำนวน" value={row.qty} onChange={(e) => handleChangeText(index, e)} />
           <TextField
             name="total"

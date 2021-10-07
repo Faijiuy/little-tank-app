@@ -565,39 +565,39 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
     },
   ];
 
-  const getPassword = () => {
-    let str = randomString(20);
+  // const getPassword = () => {
+  //   let str = randomString(20);
 
-    // if (status == "แคชเชียร์") {
-    //   setPassword(str);
-    // } else if (status == "เจ้าของ หรือ ผู้ช่วย") {
-    //   setPasswordSO(str);
-    // } else {
-    //   setPasswordEN(str);
-    // }
+  //   // if (status == "แคชเชียร์") {
+  //   //   setPassword(str);
+  //   // } else if (status == "เจ้าของ หรือ ผู้ช่วย") {
+  //   //   setPasswordSO(str);
+  //   // } else {
+  //   //   setPasswordEN(str);
+  //   // }
 
-    fetch("/api/admin/password", {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify({
-        password: str,
-        groupId: company.groupID,
-        status: status,
-      }), // body data type must match "Content-Type" header
-    }).then(function(response){
-      router.reload()
-    })
+  //   fetch("/api/admin/password", {
+  //     method: "POST", // *GET, POST, PUT, DELETE, etc.
+  //     mode: "cors", // no-cors, *cors, same-origin
+  //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+  //     credentials: "same-origin", // include, *same-origin, omit
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       // 'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+  //     redirect: "follow", // manual, *follow, error
+  //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  //     body: JSON.stringify({
+  //       password: str,
+  //       groupId: company.groupID,
+  //       status: status,
+  //     }), // body data type must match "Content-Type" header
+  //   }).then(function(response){
+  //     router.reload()
+  //   })
 
     
-  };
+  // };
 
   return (
     <div>
@@ -712,15 +712,15 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
           </div>
         </Modal> &emsp;
 
-        <Button
+        {/* <Button
           onClick={() => handleOpen("password")}
           color="primary"
           variant="contained"
           className={classes.toRight}
         >
           รับ password
-        </Button>
-        <Modal
+        </Button> */}
+        {/* <Modal
           open={open == "password" ? true : false}
           onClose={handleClose}
           aria-labelledby="simple-modal-title"
@@ -800,7 +800,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
               ยกเลิก
             </Button>
           </div>
-        </Modal>
+        </Modal> */}
         
           </h3>
           
@@ -817,7 +817,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
         </div>
         <br />
 
-        {passwords[0] !== undefined ? (
+        {/* {passwords[0] !== undefined ? (
           <div className={classes.div}>
             <h4>รหัสผ่านสำหรับเป็น admin</h4>
             {passwords.map((password, index) => {
@@ -845,7 +845,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
               );
             })}
           </div>
-        ) : null}
+        ) : null} */}
 
         {/* <AdminContext.Provider value={{}}> */}
         {/* <NewAdmin_Form /> */}

@@ -7,6 +7,7 @@ export default async (req, res) => {
     let {
       _id,
       username,
+      id,
       password,
       loginStatus,
       loginTime

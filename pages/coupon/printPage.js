@@ -86,7 +86,7 @@ function PrintPage() {
     <div style={modalStyle} className={classes.paper}>
       {/* <h2 id="simple-modal-title"></h2> */}
       <p id="simple-modal-description">
-        หากกดยืนยันแล้ว จะไม่สามารถกลับไปปริ้นได้อีก หากคุณยังไม่ได้ปริ้น ปิดแล้วกด Ctrl + P เพื่อปริ้น
+        หากท่านทำการปริ้นท์แล้ว กรุณากดปุ่มยืนยัน หากยังไม่ได้ปริ้น กรุณากดปุ่มยกเลิก
       </p>
       <Button variant="contained" color="primary" onClick={() => handleClick()}>
         ยืนยัน
@@ -99,36 +99,38 @@ function PrintPage() {
 
   const handleClick = () => {
 
-    printList.map((coupon) => {
-      coupon.printed = true;
-      fetch("/api/coupon/print", {
-        method: "PUT", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(coupon), // body data type must match "Content-Type" header
+    async function toSubmit(){
+      printList.map((coupon) => {
+        coupon.printed = true;
+        fetch("/api/coupon/print", {
+          method: "PUT", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(coupon), // body data type must match "Content-Type" header
+        })
       })
-    })
+    }
 
-    alert("ปริ้นสำเร็จ")
-    router.push('/couponMgt')
-
-    
-    
-
-
+    toSubmit().then(router.push('/couponMgt/couponList'))
   };
 
   return (
     <div>
-      <Button variant="contained" color="primary" className="no-print" onClick={handleOpen}>
-        ปริ้นสำเร็จ
+      <Button variant="contained" color="secondary" className="no-print" onClick={() => router.push('/couponMgt/purchaseCoupon')}>
+        ย้อนกลับ
+      </Button>
+      <Button variant="contained" color="primary" className="no-print" onClick={() => {
+        window.print()
+        setOpen(true)}}
+      >
+        ปริ้นคูปอง
       </Button>
       <Modal
         open={open}
@@ -138,9 +140,7 @@ function PrintPage() {
       >
         {body}
       </Modal>
-      <Button variant="contained" color="secondary" className="no-print" onClick={() => router.push('/couponMgt/purchaseCoupon')}>
-        ย้อนกลับ ยังไม่พิมพ์
-      </Button>
+      
 
       <Box className="no-print" bgcolor="secondary.main" color="secondary.contrastText" p={2}>
         กด ctrl + P เพื่อปริ้น หลังจากนั้นกดปุ่มยืนยันด้านบน หากรูปแสดงตัวอย่างตกขอบ กดปุ่ม Refresh หรือ F5

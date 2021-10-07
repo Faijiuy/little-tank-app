@@ -20,9 +20,10 @@ const SignUpForm = () => {
   let users = [];
   let user = {
     username: "",
+    id: "",
     password: "",
     loginStatus: false,
-    status: "normal"
+    // status: "normal"
     // rememberStatus: false,
   };
 
@@ -49,6 +50,8 @@ const SignUpForm = () => {
   // console.log("user ====> ", users);;
 
   const [username, setUsername] = useState("");
+  const [id, setId] = useState("");
+
   const [passwordUser, setPasswordUser] = useState("");
   const [dulplicateUser, setDulplicateUser] = useState(false);
 
@@ -91,10 +94,14 @@ const SignUpForm = () => {
     setPasswordUser(event.target.value);
   };
 
+  const handleChangeTelephone_email = (event) => {
+    setId(event.target.value);
+  };
+
   const handleSubmit = () => {
     console.log("Click\nผู้ใช้: " + username + "\nรหัสผ่าน: " + passwordUser);
 
-    let filterUser = users.filter((u) => username === u.username);
+    let filterUser = users.filter((u) => id === u.id);
 
     console.log("filterUser ===> ", filterUser);
 
@@ -102,6 +109,7 @@ const SignUpForm = () => {
       setDulplicateUser(false);
       user.username = username;
       user.password = passwordUser;
+      user.id = id
       console.log("user ===> ", user)
     } else {
       setDulplicateUser(true);
@@ -155,6 +163,16 @@ const SignUpForm = () => {
           />
           <br />
           <TextField
+            label="เบอร์โทรศัพท์หรืออีเมล"
+            placeholder="ใส่เบอร์โทรศัพท์หรืออีเมล"
+            // type="password"
+            id="telephoneNumber_email"
+            onChange={handleChangeTelephone_email}
+            fullWidth
+            required
+          />
+          <br />
+          <TextField
             label="รหัสผ่าน"
             placeholder="ใส่รหัสผ่าน"
             type="password"
@@ -164,6 +182,7 @@ const SignUpForm = () => {
             required
           />
           <br />
+
           {/*<FormControlLabel
             control={
               <Checkbox

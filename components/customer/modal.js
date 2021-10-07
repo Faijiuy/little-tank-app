@@ -132,7 +132,7 @@ export default function LicensePlate_modal() {
   return (
     <div>
       <button type="button" onClick={handleOpen}>
-        เพิ่มป้ายทะเบียน
+        {licensePlate[0] !== undefined ? "แก้ไขเลขทะเบียนรถ" : "แก้ไข/เพิ่มเลขทะเบียนรถ"} 
       </button>
       <Modal
         open={open}

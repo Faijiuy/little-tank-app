@@ -31,6 +31,7 @@ const LoginForm = () => {
   let user = {
     _id: "",
     username: "",
+    id: "",
     password: "",
     loginStatus: false,
     loginTime: loginTime
@@ -62,6 +63,7 @@ const LoginForm = () => {
 
 
   const [username, setUsername] = useState("");
+  const [id, setId] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
   // const [checked, setChecked] = useState(false);
   const [loginStatus, setLoginStatus] = useState(false);
@@ -98,8 +100,8 @@ const LoginForm = () => {
     p: 4,
   };
 
-  const handleChangeUsername = (event) => {
-    setUsername(event.target.value);
+  const handleChangeId = (event) => {
+    setId(event.target.value);
   };
 
   const handleChangePasswordUser = (event) => {
@@ -130,16 +132,16 @@ const LoginForm = () => {
     );
 
     let filterUser = users.filter(
-      (u) => username === u.username && passwordUser === u.password
+      (u) => id === u.id && passwordUser === u.password
     );
 
     filterUser.map((u) => {
       user._id = u._id;
-      user.username = u.username;
+      user.id = u.id;
       user.password = u.password;
       // UserProfile.setName(u.username);
       // console.log("UserProfile.getName() ==> ",UserProfile.getName())
-      if (username == u.username && passwordUser == u.password) {
+      if (id == u.id && passwordUser == u.password) {
         let today = new Date()
         let time = moment(today, "DD MM YYYY hh:mm:ss")
 
@@ -147,11 +149,11 @@ const LoginForm = () => {
 
         setLoginStatus(true);
         setAuth(true)
-        setUser2(username)
-        setStatus(u.status)
+        setUser2(u.username)
+        // setStatus(u.status)
         setLoginTime(split[0] + " " + split[1].split("+")[0])
 
-        sessionStorage.setItem('user2', username)
+        sessionStorage.setItem('user2', u.username)
         sessionStorage.setItem('status', u.status)
 
         console.log("Login Successfully");
@@ -205,10 +207,10 @@ const LoginForm = () => {
         </Grid>
         <FormControl style={formStyle}>
           <TextField
-            label="ชื่อผู้ใช้"
-            placeholder="ใส่ชื่อผู้ใช้"
+            label="เบอร์โทรศัพท์หรืออีเมล"
+            placeholder="ใส่เบอร์โทรศัพท์หรืออีเมล"
             // id="username"
-            onChange={handleChangeUsername}
+            onChange={handleChangeId}
             fullWidth
             required
           />

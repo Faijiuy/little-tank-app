@@ -127,7 +127,7 @@ function CreateUser({ user: users }) {
   //   const [contact_name, setContact_name] = useState()
   //   const [contact_tel, setContact_tel] = useState()
   //   const [contact_email, setContact_email] = useState()
-  const [status, setStatus] = useState();
+  // const [status, setStatus] = useState();
 
   const [usernameError, setUsernameError] = useState(false);
   const [passwordUserError, setPasswordError] = useState(false);
@@ -175,7 +175,7 @@ function CreateUser({ user: users }) {
       setUsername(users.username);
       setPasswordUser(users.password);
       setLoginStatus(users.loginStatus);
-      setStatus(users.status)
+      // setStatus(users.status)
     } else {
       setUsername(user1.username);
       setPasswordUser(user1.password);
@@ -194,10 +194,10 @@ function CreateUser({ user: users }) {
     // console.log(passwordUser);
   };
 
-  const handleChangeStatus = (event) => {
-    // console.log(company)
-    setStatus(event.target.value);
-  };
+  // const handleChangeStatus = (event) => {
+  //   // console.log(company)
+  //   setStatus(event.target.value);
+  // };
 
   const useStyles = makeStyles(styles);
 
@@ -216,7 +216,7 @@ function CreateUser({ user: users }) {
     username: username,
     password: passwordUser,
     loginStatus: loginStatus,
-    status: status
+    // status: status
   };
 
   const onSubmit = (str) => {
@@ -304,7 +304,7 @@ function CreateUser({ user: users }) {
                   />
                 </GridItem>
 
-                <FormControl className={classes.formControl} >
+                {/* <FormControl className={classes.formControl} >
                 <InputLabel id="demo-simple-select-outlined-label1">
                   Status
                 </InputLabel>
@@ -325,7 +325,7 @@ function CreateUser({ user: users }) {
                     ธรรมดา
                   </MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
               </GridContainer>
               <GridContainer>
                 {/*<GridItem xs={12} sm={12} md={5}>
@@ -466,7 +466,7 @@ function CreateUser({ user: users }) {
         </GridItem>
       </GridContainer>
 
-      <Box
+      {/* <Box
         className="no-print"
         bgcolor="secondary.main"
         color="secondary.contrastText"
@@ -478,7 +478,7 @@ function CreateUser({ user: users }) {
           <li>แอดมิน : สามารถเข้าถึงได้ทุกหน้า</li>
         </ul> 
         
-      </Box>
+      </Box> */}
     </div>
   );
 }

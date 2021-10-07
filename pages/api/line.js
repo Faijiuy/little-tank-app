@@ -95,10 +95,10 @@ export default async function test(req, res) {
         })
     }
 
-  } else if (event.message.text == "ไอดีของฉัน") {
-    reply(reply_token, "ID ของคุณคือ " + id)
+  } else if (event.message.text == "สอบถามไอดี") {
+    reply(reply_token, "ไอดีของคุณคือ " + id)
   }
-  else if (event.message.text == "สอบถาม groupid") {
+  else if (event.message.text == "สอบถามรหัสไลน์กลุ่ม") {
     let customers = await fetch(process.env.API + "/customer", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
     }).then((response) => response.json());
@@ -106,7 +106,7 @@ export default async function test(req, res) {
     let customer = customers.filter((customer) => customer.groupID === GID);
 
     if (customer[0] === undefined) {
-      let replyCheckGroupID = "GroupID คือ " + GID;
+      let replyCheckGroupID = "รหัสไลน์กลุ่ม คือ " + GID;
       reply(reply_token, replyCheckGroupID);
     } else {
       let replyCheckGroupID = "ไลน์กลุ่มนี้มีในระบบแล้ว และจะไม่สามารถใช้คำสั่งนี้ได้อีก";
@@ -237,7 +237,7 @@ export default async function test(req, res) {
     );
 
     if (admin[0].status == "แคชเชียร์" || admin[0].status == "เจ้าของ หรือ ผู้ช่วย" || admin[0].status == "ลูกค้า"){
-      let replyCommand = "ป้ายทะเบียนรถ: "
+      let replyCommand = "ทะเบียนรถ: "
 
       let customer = await customers.filter((customer) => customer.groupID === GID);
 
@@ -319,8 +319,8 @@ export default async function test(req, res) {
             qr.callback = function (err, value) {
               if (value) {
                 let today = new Date()
-                let recordDate = format(today, "yyyy-MM-dd"); 
-                let recordDate2 = format(today, "MM-dd"); 
+                let recordDate = format(today, "dd-MM-yyyy"); 
+                let recordDate2 = format(today, "dd-MM"); 
 
             
 
@@ -389,7 +389,7 @@ export default async function test(req, res) {
                     body: JSON.stringify({
                       code: value.result,
                       used: true,
-                      usedDateTime: today.getFullYear() >= 2564 ? (today.getFullYear() - 543) + "-" + recordDate2 : recordDate,
+                      usedDateTime: today.getFullYear() >= 2564 ? recordDate2 + "-" + (today.getFullYear() - 543) : recordDate,
                       recordedBy: {
                         userID: id,
                         name: recordby,

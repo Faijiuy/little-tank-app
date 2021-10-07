@@ -15,6 +15,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Choose_Company from "../../components/couponMgt/choose_company";
 import Buy_Coupons from "../../components/couponMgt/buy_coupons";
 import Confirm from "../../components/couponMgt/confirm";
+import Modal from '@material-ui/core/Modal';
 
 import { useRouter } from "next/router";
 
@@ -23,6 +24,7 @@ import AuthContext from "../../stores/authContext";
 
 
 import { ObjectId } from "bson";
+import { object } from "prop-types";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -74,12 +76,36 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 const boxStyle = {
   padding: 30,
   margin: "50px",
 };
+
+function getModalStyle() {
+  const top = 50 ;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+
 
 // Stepper
 function getSteps() {
@@ -88,6 +114,7 @@ function getSteps() {
 
 function checkText_Rows(text_rows) {
   if(text_rows[0] === undefined) return true
+  if(Object.keys(groupByKey(text_rows, "price")).length !== text_rows.length) return true
   return text_rows.some(
     (row) =>
       Number(row.price) < 500 ||
@@ -123,6 +150,9 @@ function getStepContent(step) {
 const StepperContext = React.createContext();
 
 function PurchaseCoupon({ customer: customers, coupon: coupons }) {
+
+  const [modalStyle] = React.useState(getModalStyle);
+
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
@@ -130,6 +160,9 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
   const [company, setCompany] = useState("");
   const [rows, setRows] = useState([]);
   const [tableState, setTableState] = useState(false);
+
+  const [open, setOpen] = useState(false);
+
   const [total_table, setTotal_table] = useState();
   const [total_coupons, setTotal_coupons] = useState();
   const [text_rows, setText_rows] = useState([
@@ -138,9 +171,22 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
   const [date, setDate] = useState();
   const router = useRouter();
 
+
+
   const [ordered_company, setOrdered_company] = useState([]);
 
   const { user2 } = useContext(AuthContext)
+
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      {/* <h2 id="simple-modal-title"></h2> */}
+      {/* <p id="simple-modal-description">
+        หากท่านทำการปริ้นท์แล้ว กรุณากดปุ่มยืนยัน หากยังไม่ได้ปริ้น กรุณากดปุ่มยกเลิก
+      </p> */}
+      Loading
+      
+    </div>
+  );
 
 
   
@@ -164,85 +210,97 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
 
   const handleNext = () => {
     if (activeStep == 2) {
-      text_rows.map((row) => {
-        if (Object.keys(ordered_company).includes(row.price.toString())) {
-          let runNo = ordered_company[row.price.toString()].length;
+      setOpen(true)
 
-          for (let i = 1; i <= Number(row.qty); i++) {
-            fetch("/api/coupon", {
-              method: "POST", // *GET, POST, PUT, DELETE, etc.
-              mode: "cors", // no-cors, *cors, same-origin
-              cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-              credentials: "same-origin", // include, *same-origin, omit
-              headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              redirect: "follow", // manual, *follow, error
-              referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-              body: JSON.stringify({
-                code:
-                  company._id +
-                  "-" +
-                  date +
-                  "-" +
-                  row.price +
-                  "-" +
-                  (runNo + i),
-                companyRef: company._id,
-                generatedDate: date,
-                amount: Number(row.price),
-                runningNo: runNo + i,
-                used: false,
-                usedDateTime: "",
-                recordedBy: "",
-                printed: false,
-                generatedBy: sessionStorage.getItem('user2')
-              }), // body data type must match "Content-Type" header
-            });
-            if (i == Number(row.qty)) {
-              alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
+      async function toSubmit(){
+        text_rows.map((row) => {
+          if (Object.keys(ordered_company).includes(row.price.toString())) {
+            let runNo = ordered_company[row.price.toString()].length;
+  
+            for (let i = 1; i <= Number(row.qty); i++) {
+              fetch("/api/coupon", {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                  "Content-Type": "application/json",
+                  // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({
+                  code:
+                    company._id +
+                    "-" +
+                    date +
+                    "-" +
+                    row.price +
+                    "-" +
+                    (runNo + i),
+                  companyRef: company._id,
+                  generatedDate: date,
+                  amount: Number(row.price),
+                  runningNo: runNo + i,
+                  used: false,
+                  usedDateTime: "",
+                  recordedBy: "",
+                  printed: false,
+                  generatedBy: sessionStorage.getItem('user2')
+                }), // body data type must match "Content-Type" header
+              }).then(console.log(i))
+              // if (i == Number(row.qty)) {
+              //   alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
+              // }
+            }
+          } else {
+            for (let i = 1; i <= Number(row.qty); i++) {
+              fetch("/api/coupon", {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                  "Content-Type": "application/json",
+                  // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({
+                  code: company._id + "-" + date + "-" + row.price + "-" + i,
+                  companyRef: company._id,
+                  generatedDate: date,
+                  amount: Number(row.price),
+                  runningNo: i,
+                  used: false,
+                  usedDateTime: "",
+                  recordedBy: "",
+                  printed: false,
+                  generatedBy: user2
+  
+                }), // body data type must match "Content-Type" header
+              }).then(console.log(i))
+              // if (i == Number(row.qty)) {
+              //   alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
+              // }
             }
           }
-        } else {
-          for (let i = 1; i <= Number(row.qty); i++) {
-            fetch("/api/coupon", {
-              method: "POST", // *GET, POST, PUT, DELETE, etc.
-              mode: "cors", // no-cors, *cors, same-origin
-              cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-              credentials: "same-origin", // include, *same-origin, omit
-              headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              redirect: "follow", // manual, *follow, error
-              referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-              body: JSON.stringify({
-                code: company._id + "-" + date + "-" + row.price + "-" + i,
-                companyRef: company._id,
-                generatedDate: date,
-                amount: Number(row.price),
-                runningNo: i,
-                used: false,
-                usedDateTime: "",
-                recordedBy: "",
-                printed: false,
-                generatedBy: user2
+        });
+        
+      }
 
-              }), // body data type must match "Content-Type" header
-            });
-            if (i == Number(row.qty)) {
-              alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
-            }
-          }
-        }
-      });
+      toSubmit().then(setOpen(false))
+
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+  
+  const handleClose = () => {
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -348,20 +406,30 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
             {activeStep === steps.length && (
               <Paper square elevation={0} className={classes.resetContainer}>
                 <Typography>
-                  All steps completed - you&apos;re finished
+                  คุณได้ทำการซื้อคูปองเรียบร้อยแล้ว
                 </Typography>
                 <Button
                   onClick={() => router.reload()}
                   className={classes.button}
                 >
-                  Reset
+                  ซื้อเพิ่ม
                 </Button>
-                <Button href="/coupon/printPage" className={classes.button}>
-                  หน้าปริ้น
+                <Button variant="contained" color="primary" href="/coupon/printPage" className={classes.button}>
+                  ปริ้นคูปอง
                 </Button>
               </Paper>
             )}
           </div>
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          {body}
+        </Modal>
+          
         </Grid>
       </StepperContext.Provider>
       {/*  ) : <h1>คุณไม่มีสิทธิในการเข้าถึงหน้านี้</h1>} */}
