@@ -12,26 +12,26 @@ const AuthContext = createContext({
 
 export const AuthContextProvider = ({ children }) => {
 
-    const [user2, setUser2] = useState(null)
+    const [user_id, setUser_id] = useState(null)
 
     const [auth, setAuth] = useState(false)
 
     const [status, setStatus] = useState(null)
 
-    const context = { user2, setUser2, auth, setAuth, status, setStatus }
+    const context = { user_id, setUser_id, auth, setAuth, status, setStatus }
 
     useEffect(() => {
         if (sessionStorage.getItem('auth')) {
            setAuth(sessionStorage.getItem('auth'));
-           setUser2(sessionStorage.getItem('user2'))
-           setStatus(sessionStorage.getItem('status'))
+           setUser_id(sessionStorage.getItem('user_id'))
+        //    setStatus(sessionStorage.getItem('status'))
            }
         }, []);
     
      useEffect(() => {
         sessionStorage.setItem('auth', auth);
-        sessionStorage.setItem('user2', user2);
-        sessionStorage.setItem('status', status);
+        sessionStorage.setItem('user_id', user_id);
+        // sessionStorage.setItem('status', status);
         
      }, [auth]);
 

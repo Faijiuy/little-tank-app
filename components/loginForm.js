@@ -59,7 +59,7 @@ const LoginForm = () => {
   //     console.log(data);
   //   });
   // console.log("user ====> ", users);;
-  const { user2, setUser2, setAuth, setStatus, status } = useContext(AuthContext)
+  const { setUser_id, setAuth, setStatus, status } = useContext(AuthContext)
 
 
   const [username, setUsername] = useState("");
@@ -149,12 +149,12 @@ const LoginForm = () => {
 
         setLoginStatus(true);
         setAuth(true)
-        setUser2(u.username)
+        setUser_id(u._id)
         // setStatus(u.status)
         setLoginTime(split[0] + " " + split[1].split("+")[0])
 
-        sessionStorage.setItem('user2', u.username)
-        sessionStorage.setItem('status', u.status)
+        sessionStorage.setItem('user_id', u._id)
+        // sessionStorage.setItem('status', u.status)
 
         console.log("Login Successfully");
         user.loginStatus = true;

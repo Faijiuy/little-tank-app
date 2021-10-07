@@ -175,7 +175,8 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
 
   const [ordered_company, setOrdered_company] = useState([]);
 
-  const { user2 } = useContext(AuthContext)
+  const { user_id } = useContext(AuthContext)
+  console.log("user_id: ", user_id)
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
@@ -246,7 +247,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
                   usedDateTime: "",
                   recordedBy: "",
                   printed: false,
-                  generatedBy: sessionStorage.getItem('user2')
+                  generatedBy: user_id
                 }), // body data type must match "Content-Type" header
               }).then(console.log(i))
               // if (i == Number(row.qty)) {
@@ -276,7 +277,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
                   usedDateTime: "",
                   recordedBy: "",
                   printed: false,
-                  generatedBy: user2
+                  generatedBy: user_id
   
                 }), // body data type must match "Content-Type" header
               }).then(console.log(i))

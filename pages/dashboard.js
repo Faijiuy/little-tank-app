@@ -13,13 +13,13 @@ import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { Box, Grid } from "@material-ui/core";
 
-import AuthContext from "../stores/authContext";
+// import AuthContext from "../stores/authContext";
 
 
 function Dashboard() {
 
-  const { user2 } = useContext(AuthContext)
-  console.log("user2: ", user2)
+  // const { user2 } = useContext(AuthContext)
+  // console.log("user2: ", user2)
 
 
   const useStyles = makeStyles(styles);

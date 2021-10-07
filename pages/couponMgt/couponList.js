@@ -181,19 +181,25 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
                                                         (type  ? coupon.amount === Number(type) : true) && 
                                                         (selectedDate  ? coupon.generatedDate.includes(selectedDate) : true) &&
                                                         (status !== "" ? coupon.used === status : true) && 
-                                                        (user ? coupon.generatedBy === user : true))
+                                                        (user ? coupon.generatedBy === user._id : true))
         
         filtered_coupons.map(coupon => {
             let obj = {id: coupon._id, companyRef: "", amount: coupon.amount, generatedDate: coupon.generatedDate,
                       runningNo: coupon.runningNo, 
                       used: (coupon.used === false ? "ยังไม่ถูกใช้" : coupon.used === true ? "ถูกใช้แล้ว" : "หาย"), 
-                      usedDateTime: coupon.usedDateTime, generatedBy: coupon.generatedBy}
+                      usedDateTime: coupon.usedDateTime, generatedBy: ""}
 
             customers.map(customer => {
                 if(customer._id === coupon.companyRef){
                     obj.companyRef = customer.company
                 }
             })
+
+            users.map(user => {
+              if(user._id === coupon.generatedBy){
+                  obj.generatedBy = user.username
+              }
+          })
 
             init_rows.push(obj)
         })
@@ -326,7 +332,7 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
             >
               {users.map((user) => {
                 return (
-                  <MenuItem key={user.username} value={user.username}>
+                  <MenuItem key={user.username} value={user}>
                     {user.username}
                   </MenuItem>
                 );
