@@ -119,7 +119,8 @@ const useStyles2 = makeStyles((theme) => ({
 // const LicenseContext = React.createContext();
 
 function CreateUser({ user: users }) {
-  // console.log("users ===> ", users);
+  console.log("users ===> ", users);
+
   const [username, setUsername] = useState();
   const [passwordUser, setPasswordUser] = useState();
   const [loginStatus, setLoginStatus] = useState(false);
@@ -127,7 +128,8 @@ function CreateUser({ user: users }) {
   //   const [contact_name, setContact_name] = useState()
   //   const [contact_tel, setContact_tel] = useState()
   //   const [contact_email, setContact_email] = useState()
-  // const [status, setStatus] = useState();
+  const [id, setId] = useState("")
+  const [status, setStatus] = useState("");
 
   const [usernameError, setUsernameError] = useState(false);
   const [passwordUserError, setPasswordError] = useState(false);
@@ -166,20 +168,25 @@ function CreateUser({ user: users }) {
 
   useEffect(() => {
     const user1 = {
-      username: "username",
-      password: "password",
+      username: "",
+      id: "",
+      password: "",
       loginStatus: false,
+      status: ""
     };
 
     if (users !== null) {
       setUsername(users.username);
+      setId(users.id)
       setPasswordUser(users.password);
       setLoginStatus(users.loginStatus);
-      // setStatus(users.status)
+      setStatus(users.status)
     } else {
       setUsername(user1.username);
+      setId(user1.id)
       setPasswordUser(user1.password);
       setLoginStatus(user1.loginStatus);
+      setStatus(user1.status)
     }
   }, []);
 
@@ -194,10 +201,10 @@ function CreateUser({ user: users }) {
     // console.log(passwordUser);
   };
 
-  // const handleChangeStatus = (event) => {
-  //   // console.log(company)
-  //   setStatus(event.target.value);
-  // };
+  const handleChangeStatus = (event) => {
+    // console.log(company)
+    setStatus(event.target.value);
+  };
 
   const useStyles = makeStyles(styles);
 
@@ -205,7 +212,10 @@ function CreateUser({ user: users }) {
     if (event.target.id === "username") {
       setUsername(event.target.value);
     } else if (event.target.id === "password") {
+      console.log(event.target.value)
       setPasswordUser(event.target.value);
+    } else if (event.target.id === "id") {
+      setId(event.target.value);
     } 
     // else if (event.target.id === "groupID") {
     //   setGroupID(event.target.value);
@@ -214,9 +224,10 @@ function CreateUser({ user: users }) {
 
   const info = {
     username: username,
+    id: id,
     password: passwordUser,
     loginStatus: loginStatus,
-    // status: status
+    status: status
   };
 
   const onSubmit = (str) => {
@@ -304,7 +315,7 @@ function CreateUser({ user: users }) {
                   />
                 </GridItem>
 
-                {/* <FormControl className={classes.formControl} >
+                <FormControl className={classes.formControl} >
                 <InputLabel id="demo-simple-select-outlined-label1">
                   Status
                 </InputLabel>
@@ -325,25 +336,27 @@ function CreateUser({ user: users }) {
                     ธรรมดา
                   </MenuItem>
                 </Select>
-              </FormControl> */}
+              </FormControl>
               </GridContainer>
               <GridContainer>
-                {/*<GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={5}>
                   <CustomInput
-                    labelText="รหัสผ่าน"
-                    id="password"
+                    labelText="เบอร์โทรศัพท์หรืออีเมล"
+                    id="id"
                     formControlProps={{
                       fullWidth: true,
                       required: true,
                       error: passwordUserError,
                     }}
                     inputProps={{
-                      // onChange: handleChange,
-                      defaultValue: users !== null ? users.password : null,
+                      disabled: users ? true : false,
+                      defaultValue: users !== null ? users.id : null,
+                      // value: passwordUser,
                       onBlur: handleSetState,
                     }}
                   />
-                </GridItem>*/}
+                </GridItem>
+
                 <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="รหัสผ่าน"
@@ -355,7 +368,7 @@ function CreateUser({ user: users }) {
                       // onChange: handleChange,
                       disabled: users ? true : false,
                       defaultValue: users !== null ? users.password : null,
-                      value: passwordUser,
+                      // value: passwordUser,
                       onBlur: handleSetState,
                     }}
                   />

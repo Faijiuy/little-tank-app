@@ -122,7 +122,7 @@ function PrintPage() {
   };
 
   return (
-    <div>
+    <div key="test">
       <Button variant="contained" color="secondary" className="no-print" onClick={() => router.push('/couponMgt/purchaseCoupon')}>
         ย้อนกลับ
       </Button>
@@ -140,13 +140,8 @@ function PrintPage() {
       >
         {body}
       </Modal>
-      
 
-      <Box className="no-print" bgcolor="secondary.main" color="secondary.contrastText" p={2}>
-        กด ctrl + P เพื่อปริ้น หลังจากนั้นกดปุ่มยืนยันด้านบน หากรูปแสดงตัวอย่างตกขอบ กดปุ่ม Refresh หรือ F5
-      </Box>
-
-      <Grid>
+      <Grid className="full-height-div">
         {printList.map((coupon, index) => {
           return (
             <>

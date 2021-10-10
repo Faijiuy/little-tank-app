@@ -147,6 +147,90 @@ function getStepContent(step) {
   }
 }
 
+async function toSubmit(user_id, date, company, ordered_company, array){
+  if (Object.keys(ordered_company).includes(array.price.toString())) {
+    let runNo = ordered_company[array.price.toString()].length;
+
+    for (let i = 1; i <= Number(array.qty); i++) {
+      const promise_fetch = await new Promise(async (resolve) => {
+        fetch("/api/coupon", {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify({
+            code:
+              company._id +
+              "-" +
+              date +
+              "-" +
+              array.price +
+              "-" +
+              (runNo + i),
+            companyRef: company._id,
+            generatedDate: date,
+            amount: Number(array.price),
+            runningNo: runNo + i,
+            used: false,
+            usedDateTime: "",
+            recordedBy: "",
+            printed: false,
+            generatedBy: user_id
+          }), // body data type must match "Content-Type" header
+        }).then(function(response){
+          resolve(response)
+        })
+      })
+      
+      Promise.all([promise_fetch]).then(value => {
+        console.log(i, value)
+      })
+    }
+  } else {
+    for (let i = 1; i <= Number(array.qty); i++) {
+      const promise_fetch = await new Promise(async (resolve) => {
+        fetch("/api/coupon", {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify({
+            code: company._id + "-" + date + "-" + array.price + "-" + i,
+            companyRef: company._id,
+            generatedDate: date,
+            amount: Number(array.price),
+            runningNo: i,
+            used: false,
+            usedDateTime: "",
+            recordedBy: "",
+            printed: false,
+            generatedBy: user_id
+  
+          }), // body data type must match "Content-Type" header
+        }).then(function(response){
+          resolve(response)
+        })
+
+      })
+      Promise.all([promise_fetch]).then(value => {
+        console.log(i, value)
+      })
+    }
+  }
+}
+
 const StepperContext = React.createContext();
 
 function PurchaseCoupon({ customer: customers, coupon: coupons }) {
@@ -213,84 +297,84 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
     if (activeStep == 2) {
       setOpen(true)
 
-      async function toSubmit(){
-        text_rows.map((row) => {
-          if (Object.keys(ordered_company).includes(row.price.toString())) {
-            let runNo = ordered_company[row.price.toString()].length;
-  
-            for (let i = 1; i <= Number(row.qty); i++) {
-              fetch("/api/coupon", {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                  "Content-Type": "application/json",
-                  // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({
-                  code:
-                    company._id +
-                    "-" +
-                    date +
-                    "-" +
-                    row.price +
-                    "-" +
-                    (runNo + i),
-                  companyRef: company._id,
-                  generatedDate: date,
-                  amount: Number(row.price),
-                  runningNo: runNo + i,
-                  used: false,
-                  usedDateTime: "",
-                  recordedBy: "",
-                  printed: false,
-                  generatedBy: user_id
-                }), // body data type must match "Content-Type" header
-              }).then(console.log(i))
-              // if (i == Number(row.qty)) {
-              //   alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
-              // }
-            }
-          } else {
-            for (let i = 1; i <= Number(row.qty); i++) {
-              fetch("/api/coupon", {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                  "Content-Type": "application/json",
-                  // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({
-                  code: company._id + "-" + date + "-" + row.price + "-" + i,
-                  companyRef: company._id,
-                  generatedDate: date,
-                  amount: Number(row.price),
-                  runningNo: i,
-                  used: false,
-                  usedDateTime: "",
-                  recordedBy: "",
-                  printed: false,
-                  generatedBy: user_id
-  
-                }), // body data type must match "Content-Type" header
-              }).then(console.log(i))
-              // if (i == Number(row.qty)) {
-              //   alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
-              // }
-            }
-          }
-        });
-        
-      }
+      text_rows.map((row) => {
+        toSubmit(user_id, date, company, ordered_company, row)
+        // if (Object.keys(ordered_company).includes(row.price.toString())) {
+        //   let runNo = ordered_company[row.price.toString()].length;
 
-      toSubmit().then(setOpen(false))
+        //   for (let i = 1; i <= Number(row.qty); i++) {
+        //     fetch("/api/coupon", {
+        //       method: "POST", // *GET, POST, PUT, DELETE, etc.
+        //       mode: "cors", // no-cors, *cors, same-origin
+        //       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //       credentials: "same-origin", // include, *same-origin, omit
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //         // 'Content-Type': 'application/x-www-form-urlencoded',
+        //       },
+        //       redirect: "follow", // manual, *follow, error
+        //       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //       body: JSON.stringify({
+        //         code:
+        //           company._id +
+        //           "-" +
+        //           date +
+        //           "-" +
+        //           row.price +
+        //           "-" +
+        //           (runNo + i),
+        //         companyRef: company._id,
+        //         generatedDate: date,
+        //         amount: Number(row.price),
+        //         runningNo: runNo + i,
+        //         used: false,
+        //         usedDateTime: "",
+        //         recordedBy: "",
+        //         printed: false,
+        //         generatedBy: user_id
+        //       }), // body data type must match "Content-Type" header
+        //     }).then(console.log(i))
+        //     // if (i == Number(row.qty)) {
+        //     //   alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
+        //     // }
+        //   }
+        // } else {
+        //   for (let i = 1; i <= Number(row.qty); i++) {
+        //     fetch("/api/coupon", {
+        //       method: "POST", // *GET, POST, PUT, DELETE, etc.
+        //       mode: "cors", // no-cors, *cors, same-origin
+        //       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //       credentials: "same-origin", // include, *same-origin, omit
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //         // 'Content-Type': 'application/x-www-form-urlencoded',
+        //       },
+        //       redirect: "follow", // manual, *follow, error
+        //       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //       body: JSON.stringify({
+        //         code: company._id + "-" + date + "-" + row.price + "-" + i,
+        //         companyRef: company._id,
+        //         generatedDate: date,
+        //         amount: Number(row.price),
+        //         runningNo: i,
+        //         used: false,
+        //         usedDateTime: "",
+        //         recordedBy: "",
+        //         printed: false,
+        //         generatedBy: user_id
+
+        //       }), // body data type must match "Content-Type" header
+        //     }).then(console.log(i))
+        //     // if (i == Number(row.qty)) {
+        //     //   alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
+        //     // }
+        //   }
+        // }
+      });
+        
+      
+
+      setOpen(false)
 
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

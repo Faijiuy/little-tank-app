@@ -21,8 +21,14 @@ import Person from "@material-ui/icons/Person";
 import Unarchive from "@material-ui/icons/Unarchive";
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import AuthContext from "../little-tank-app/stores/authContext";
+// import React, { useState, useEffect, useContext } from "react";
 
-const dashboardRoutes = [
+
+// const { status } = useContext(AuthContext)
+
+
+export const dashboardRoutes = [
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -59,10 +65,53 @@ const dashboardRoutes = [
     icon: Person,
 
     // layout: "/admin",
-  },{
+  },
+  {
     path: "/users",
     name: "ผู้ใช้",
     icon: AccountBoxIcon,
+  } 
+ 
+  
+];
+
+export const dashboardRoutes_normal = [
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: Dashboard,
+
+    // layout: "/admin",
+  },
+  // {
+  //   collapse: true, 
+  //   name: "Name of the collapse group", 
+  //   icon: "Icon of the collapse group", 
+  //   state: "string", 
+  //   views: [arrayOfRoutes]
+  // },
+
+  {
+    path: "/customers",
+    name: "ลูกค้า",
+    icon: PeopleAltIcon,
+
+    // layout: "/admin",
+  },
+  {
+    path: "/couponMgt",
+    name: "คูปอง",
+    pathArr: [{path: "/couponMgt/couponList", name: "รายการคูปอง"}, {path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}, {path: "/couponMgt/deleteCoupon", name: "ลบคูปอง"}, {path: "/coupon/printPage", name: "หน้าปริ้นคูปอง"}],
+    icon: Unarchive,
+
+    // layout: "/admin",
+  },
+  {
+    path: "/adminMgt",
+    name: "แอดมิน LINE",
+    icon: Person,
+
+    // layout: "/admin",
   }
  
   

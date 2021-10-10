@@ -18,6 +18,10 @@ import { useContext, useEffect, useState } from "react";
 
 import AuthContext from '../../stores/authContext'
 
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import HelpIcon from '@mui/icons-material/Help';
+
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
@@ -118,6 +122,13 @@ const columns = [
         headerClassName: "super-app-theme--header",
         headerName: "สถานะ",
         width: 120,
+        renderCell: function used(params){
+          return (
+            params.value === "ยังไม่ถูกใช้" ? <span style={{color: "green"}}>{params.value}<CheckIcon /></span> : 
+            params.value === "ถูกใช้แล้ว" ? <span style={{color: "red"}}>{params.value}<CloseIcon /></span> :
+            <span style={{color: "grey"}}>{params.value}<HelpIcon /></span>
+          )
+        }
 
         
         
@@ -234,7 +245,7 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
   };
 
     return (
-    <div>
+    <div style={{marginLeft: "15px", marginRight: "15px"}}>
         <br />
         <Paper
         component="form"
@@ -352,7 +363,7 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
     </div>);
 }
 
-CouponList.layout = Admin;
+// CouponList.layout = Admin;
 
 
 export default CouponList;

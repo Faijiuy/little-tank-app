@@ -60,4 +60,8 @@
   .full-height-div {
     height: 100%;
   }
+
+  .footer {
+    page-break-before: always;
+  }
 }

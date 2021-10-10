@@ -13,7 +13,7 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
-import {dashboardRoutes} from "routes.js";
+import {dashboardRoutes_normal} from "routes.js";
 
 import styles from "assets/jss/nextjs-material-dashboard/layouts/adminStyle.js";
 
@@ -22,7 +22,7 @@ import logo from "assets/img/reactlogo.png";
 
 let ps;
 
-export default function Admin({ children, ...rest }) {
+export default function Normal({ children, ...rest }) {
   // used for checking current route
   const router = useRouter();
   // styles
@@ -80,7 +80,7 @@ export default function Admin({ children, ...rest }) {
   return (
     <div className={classes.wrapper}>
       <Sidebar
-        routes={dashboardRoutes}
+        routes={dashboardRoutes_normal}
         logoText={"Little Tank Coupon Management"}
         logo={logo}
         image={image}
@@ -98,7 +98,7 @@ export default function Admin({ children, ...rest }) {
         {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
         {getRoute() ? (
           <div className={classes.content}>
-            <div className={`${classes.container} print-only`}>{children}</div>
+            <div className={classes.container}>{children}</div>
           </div>
         ) : (
           null

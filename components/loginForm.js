@@ -33,6 +33,7 @@ const LoginForm = () => {
     username: "",
     id: "",
     password: "",
+    status: "",
     loginStatus: false,
     loginTime: loginTime
     // rememberStatus: false
@@ -150,11 +151,11 @@ const LoginForm = () => {
         setLoginStatus(true);
         setAuth(true)
         setUser_id(u._id)
-        // setStatus(u.status)
+        setStatus(u.status)
         setLoginTime(split[0] + " " + split[1].split("+")[0])
 
         sessionStorage.setItem('user_id', u._id)
-        // sessionStorage.setItem('status', u.status)
+        sessionStorage.setItem('status', u.status)
 
         console.log("Login Successfully");
         user.loginStatus = true;

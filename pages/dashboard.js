@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 // layout for this page
 import Admin from "layouts/Admin.js";
+import Normal from "../layouts/Normal";
 // core components
 import GridContainer from "components/Grid/GridContainer.js";
 import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
@@ -13,19 +14,22 @@ import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { Box, Grid } from "@material-ui/core";
 
-// import AuthContext from "../stores/authContext";
+import AuthContext from "../stores/authContext";
 
+// var thisStatus = ""
 
 function Dashboard() {
-
-  // const { user2 } = useContext(AuthContext)
-  // console.log("user2: ", user2)
+  
+  var { status } = useContext(AuthContext)
+  var status2 = status
+  console.log("status: ", status)
 
 
   const useStyles = makeStyles(styles);
   const classes = useStyles();
 
   useEffect(() => {
+
     const sdk = new ChartsEmbedSDK({
       baseUrl: "https://charts.mongodb.com/charts-little-tank-jnblp",
     });
@@ -101,6 +105,6 @@ function Dashboard() {
   );
 }
 
-Dashboard.layout = Admin;
+Dashboard.layout = Admin
 
 export default Dashboard;

@@ -507,7 +507,7 @@ function DeleteCoupon({ customers, coupons }) {
                 format="dd/MM/yyyy"
                 margin="normal"
                 id="date-picker-inline"
-                label="เลือกวันที่ที่ต้องการ"
+                label="วันที่ผลิต"
                 onChange={handleDateChange}
                 // defaultValue={date}
                 value={selectedDate}
