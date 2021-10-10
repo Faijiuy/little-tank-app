@@ -353,10 +353,10 @@ function DeleteCoupon({ customers, coupons }) {
   const onSubmit_delete = () => {
     setLoading(true)
     
-      
+    async function syncLoop (array) {
 
-      async function syncLoop (array) {
-        for (let i = 0; i < array.length; i++) {
+      for (let i = 0; i < array.length; i++) {
+        const promise_fetch = await new Promise(async (resolve) => {
           // console.log(array[i].code)
           fetch("/api/coupon", {
             method: "DELETE", // *GET, POST, PUT, DELETE, etc.
@@ -371,17 +371,20 @@ function DeleteCoupon({ customers, coupons }) {
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             body: JSON.stringify(
               {_id: array[i]._id}), // body data type must match "Content-Type" header
-          })
-          // .then(response => response.json())
-            
-          // .then((data) => {
-          //   alert(data.message);
-          // });
-        }
-        // setOpenModal(false)
-        // setLoading(false)
-        router.reload()
+          }).then(response => resolve(response))
+        })
+        
+        Promise.all([promise_fetch]).then(value => {
+          console.log(i, value)
+        })
       }
+      
+      
+      console.log("done")
+      router.reload()
+      // setOpenModal(false)
+      
+    }
 
       syncLoop(checked)
 

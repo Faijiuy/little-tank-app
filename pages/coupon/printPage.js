@@ -98,35 +98,43 @@ function PrintPage() {
   );
 
   const handleClick = () => {
-
     async function toSubmit(){
-      printList.map((coupon) => {
-        coupon.printed = true;
-        fetch("/api/coupon/print", {
-          method: "PUT", // *GET, POST, PUT, DELETE, etc.
-          mode: "cors", // no-cors, *cors, same-origin
-          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: "same-origin", // include, *same-origin, omit
-          headers: {
-            "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          redirect: "follow", // manual, *follow, error
-          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          body: JSON.stringify(coupon), // body data type must match "Content-Type" header
+      for(let i = 0; i < printList.length; i++){
+        const promise_fetch = await new Promise(async (resolve) => {
+          printList[i].printed = true;
+          fetch("/api/coupon/print", {
+            method: "PUT", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(printList[i]), // body data type must match "Content-Type" header
+          }).then(response => resolve(response))
+
         })
-      })
+
+        Promise.all([promise_fetch]).then(value => {
+          console.log(i, value)
+        })
+
+      }
+      router.push('/couponMgt/couponList')
     }
 
-    toSubmit().then(router.push('/couponMgt/couponList'))
+    toSubmit()
   };
 
   return (
-    <div key="test">
-      <Button variant="contained" color="secondary" className="no-print" onClick={() => router.push('/couponMgt/purchaseCoupon')}>
+    <div>
+      <Button variant="contained" color="secondary" className="no-print button-left sticky" onClick={() => router.push('/couponMgt/purchaseCoupon')}>
         ย้อนกลับ
       </Button>
-      <Button variant="contained" color="primary" className="no-print" onClick={() => {
+      <Button variant="contained" color="primary" className="no-print button-right sticky" onClick={() => {
         window.print()
         setOpen(true)}}
       >
@@ -140,6 +148,8 @@ function PrintPage() {
       >
         {body}
       </Modal>
+      <br className="no-print" />
+      <br className="no-print" />
 
       <Grid className="full-height-div">
         {printList.map((coupon, index) => {

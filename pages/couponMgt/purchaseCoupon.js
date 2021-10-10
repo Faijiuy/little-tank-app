@@ -185,11 +185,12 @@ async function toSubmit(user_id, date, company, ordered_company, array){
           }), // body data type must match "Content-Type" header
         }).then(function(response){
           resolve(response)
+
         })
-      })
-      
+      })   
       Promise.all([promise_fetch]).then(value => {
         console.log(i, value)
+        
       })
     }
   } else {
@@ -226,9 +227,11 @@ async function toSubmit(user_id, date, company, ordered_company, array){
       })
       Promise.all([promise_fetch]).then(value => {
         console.log(i, value)
+        
       })
     }
   }
+  return "done"
 }
 
 const StepperContext = React.createContext();
@@ -255,6 +258,8 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
   const [date, setDate] = useState();
   const router = useRouter();
 
+  const [complete, setComplete] = useState(false)
+
 
 
   const [ordered_company, setOrdered_company] = useState([]);
@@ -268,7 +273,21 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
       {/* <p id="simple-modal-description">
         หากท่านทำการปริ้นท์แล้ว กรุณากดปุ่มยืนยัน หากยังไม่ได้ปริ้น กรุณากดปุ่มยกเลิก
       </p> */}
-      Loading
+      {complete ? 
+      <div>
+        <p>ระบบทำการสร้างคูปองเรียบร้อยแล้ว สามารถไปที่หน้าปริ้นท์คูปองเพื่อทำการพิมพ์</p>
+        <Button variant="contained" color="primary" href="/coupon/printPage" className={classes.button}>
+          ปริ้นคูปอง
+        </Button>
+        <Button variant="contained" color="secondary" className={classes.button} onClick={() => handleClose()}>
+          ปิด
+        </Button>
+
+      </div> : 
+      <p>
+        ระบบกำลังทำการสร้างคูปอง กรุณารอสักครู่
+      </p>}
+
       
     </div>
   );
@@ -297,84 +316,25 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
     if (activeStep == 2) {
       setOpen(true)
 
-      text_rows.map((row) => {
-        toSubmit(user_id, date, company, ordered_company, row)
-        // if (Object.keys(ordered_company).includes(row.price.toString())) {
-        //   let runNo = ordered_company[row.price.toString()].length;
+      async function submit_one_per_couponType(array){
+        for(let i = 0; i < array.length; i++){
+          const text_rows_promise = await new Promise(async (resolve) => { 
+            toSubmit(user_id, date, company, ordered_company, array[i])
+            .then(function(response){
+              console.log(response)
+              resolve(response)
+            })
+          })
+  
+          Promise.all([text_rows_promise]).then(value => {
+            console.log("this is value: ", i, value)
+           
+          })
+        }
+        setComplete(true)
+      }
 
-        //   for (let i = 1; i <= Number(row.qty); i++) {
-        //     fetch("/api/coupon", {
-        //       method: "POST", // *GET, POST, PUT, DELETE, etc.
-        //       mode: "cors", // no-cors, *cors, same-origin
-        //       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        //       credentials: "same-origin", // include, *same-origin, omit
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //         // 'Content-Type': 'application/x-www-form-urlencoded',
-        //       },
-        //       redirect: "follow", // manual, *follow, error
-        //       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //       body: JSON.stringify({
-        //         code:
-        //           company._id +
-        //           "-" +
-        //           date +
-        //           "-" +
-        //           row.price +
-        //           "-" +
-        //           (runNo + i),
-        //         companyRef: company._id,
-        //         generatedDate: date,
-        //         amount: Number(row.price),
-        //         runningNo: runNo + i,
-        //         used: false,
-        //         usedDateTime: "",
-        //         recordedBy: "",
-        //         printed: false,
-        //         generatedBy: user_id
-        //       }), // body data type must match "Content-Type" header
-        //     }).then(console.log(i))
-        //     // if (i == Number(row.qty)) {
-        //     //   alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
-        //     // }
-        //   }
-        // } else {
-        //   for (let i = 1; i <= Number(row.qty); i++) {
-        //     fetch("/api/coupon", {
-        //       method: "POST", // *GET, POST, PUT, DELETE, etc.
-        //       mode: "cors", // no-cors, *cors, same-origin
-        //       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        //       credentials: "same-origin", // include, *same-origin, omit
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //         // 'Content-Type': 'application/x-www-form-urlencoded',
-        //       },
-        //       redirect: "follow", // manual, *follow, error
-        //       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //       body: JSON.stringify({
-        //         code: company._id + "-" + date + "-" + row.price + "-" + i,
-        //         companyRef: company._id,
-        //         generatedDate: date,
-        //         amount: Number(row.price),
-        //         runningNo: i,
-        //         used: false,
-        //         usedDateTime: "",
-        //         recordedBy: "",
-        //         printed: false,
-        //         generatedBy: user_id
-
-        //       }), // body data type must match "Content-Type" header
-        //     }).then(console.log(i))
-        //     // if (i == Number(row.qty)) {
-        //     //   alert("สร้างคูปอง " + row.price + " บาท สำเร็จ");
-        //     // }
-        //   }
-        // }
-      });
-        
-      
-
-      setOpen(false)
+      submit_one_per_couponType(text_rows)
 
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -386,6 +346,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
   
   const handleClose = () => {
     setOpen(false);
+    setComplete(false)
   };
 
   useEffect(() => {
