@@ -137,7 +137,17 @@ export default async (req, res) => {
       // { company: company},
 
       // callback
-      
+      (err, result) => {
+        if (err) {
+          console.log("Update Error", err);
+          res.json(err);
+        } else {
+          //   console.log("Newly Updated");
+          res.json({
+            message: "delete complete",
+          });
+        }
+      }
     )
 
   }

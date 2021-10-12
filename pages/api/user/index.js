@@ -98,10 +98,21 @@ export default async (req, res) => {
     const { db } = await connectToDatabase();
 
     await db.collection("user").deleteOne(
-      { _id: ObjectId(_id) }
+      { _id: ObjectId(_id) },
       // { company: company},
 
       // callback
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.json(err);
+        } else {
+          // console.log("Newly inserted ID", result.insertedId);
+          res.json({
+            message: "delete complete",
+          });
+        }
+      }
     );
   } else if (req.method === "GET") {
     const { db } = await connectToDatabase();

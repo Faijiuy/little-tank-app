@@ -189,6 +189,10 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
   const [status_edit, setStatus_edit] = useState();
   const [checked, setChecked] = React.useState([]);
 
+  const [loading, setLoading] = useState(false)
+  const [deleteComplete, setDeleteComplate] = useState(false)
+  const [submitComplete, setSubmitComplete] = useState(false)
+
   useEffect(() => {
     const newChecked = [];
 
@@ -300,9 +304,9 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
 
   const classes2 = useStyles2();
 
-  
+  const submit = async (value) => {
+    setLoading(true)
 
-  const submit = (value) => {
     let username_submit = username
     let userId_submit = userId
     let status_submit = status
@@ -320,7 +324,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
       groupId_submit = newArray
     }
     
-    fetch("/api/admin", {
+    await fetch("/api/admin", {
       method: "PUT", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -338,18 +342,19 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
         groupId: groupId_submit,
       }), // body data type must match "Content-Type" header
     }).then(function(response){
-      value == "add" ? alert("ลงทะเบียนสำเร็จ") : alert("แก้ไขสำเร็จ")
+      // value == "add" ? alert("ลงทะเบียนสำเร็จ") : alert("แก้ไขสำเร็จ")
+      setSubmitComplete(true)
+      router.reload()
 
-      if(response){
-        router.reload()
-
-      }
+      
     })
 
   };
 
-  const handleDelete = () => {
-    fetch("/api/admin", {
+  const handleDelete = async () => {
+    setLoading(true)
+
+    await fetch("/api/admin", {
       method: "DELETE", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -363,9 +368,13 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
       body: JSON.stringify({
         userId: admin.userId,
       }), // body data type must match "Content-Type" header
-    })
-      .then(alert("ลบสำเร็จ"))
-      .then(router.reload());
+    }).then(function(response){
+      console.log("response: ", response)
+      setDeleteComplate(true)
+
+      router.reload()
+    }) 
+      
   };
 
   const columns = [
@@ -421,107 +430,114 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
               aria-describedby="simple-modal-description"
             >
               <div style={modalStyle} className={classes.paper}>
-                <h2 id="simple-modal-title">แก้ไขข้อมูล</h2>
-                <p id="simple-modal-description">กรอกข้อมูลด้านล่าง</p>
+                {submitComplete ? <h2 style={{alignContent: "center"}}>แก้ไขสำเร็จ</h2> :
+                  loading ? <h2 style={{alignContent: "center"}}>Loading</h2> :
+                  <div>
+                    <h2 id="simple-modal-title">แก้ไขข้อมูล</h2>
+                    <p id="simple-modal-description">กรอกข้อมูลด้านล่าง</p>
 
-                <TextField
-                  className={classes.TextField1}
-                  required
-                  name="name"
-                  label="ชื่อผู้ใช้"
-                  value={username_edit}
-                  onChange={(e) => handleEdit(e)}
-                />
-                <TextField
-                  className={classes.TextField}
-                  disable
-                  required
-                  name="USER_ID"
-                  label="USER ID"
-                  value={userId_edit}
-                  onChange={(e) => handleEdit(e)}
-                />
+                    <TextField
+                      className={classes.TextField1}
+                      required
+                      name="name"
+                      label="ชื่อผู้ใช้"
+                      value={username_edit}
+                      onChange={(e) => handleEdit(e)}
+                    />
+                    <TextField
+                      className={classes.TextField}
+                      disable
+                      required
+                      name="USER_ID"
+                      label="USER ID"
+                      value={userId_edit}
+                      onChange={(e) => handleEdit(e)}
+                    />
 
-                <div>
-                  <List
-                    subheader={<ListSubheader>รายชื่อลูกค้า</ListSubheader>}
-                    className={classes.List}
-                  >
-                    {customers.map((customer) => {
-                      const labelId = `checkbox-list-label-${customer.company}`;
-
-                      return (
-                        <ListItem
-                          key={customer.company}
-                          role={undefined}
-                          dense
-                          button
-                          onClick={handleToggle(customer)}
-                        >
-                          <ListItemIcon>
-                            <Checkbox
-                              edge="start"
-                              checked={checked.indexOf(customer) !== -1}
-                              tabIndex={-1}
-                              disableRipple
-                              inputProps={{ "aria-labelledby": labelId }}
-                            />
-                          </ListItemIcon>
-                          <ListItemText
-                            id={labelId}
-                            primary={customer.company}
-                          />
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-
-                  <FormControl
-                    className={classes.formControl}
-                    error={companyError}
-                  >
-                    <InputLabel id="demo-simple-select-outlined-label1">
-                      Status
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-outlined-label1"
-                      id="demo-simple-select-outlined"
-                      value={status_edit ? status_edit : ""}
-                      onChange={handleChangeStatus_edit}
-                      label="Status"
-                    >
-                      <MenuItem key="แคชเชียร์" value="แคชเชียร์">
-                        แคชเชียร์
-                      </MenuItem>
-                      <MenuItem
-                        key="เจ้าของ หรือ ผู้ช่วย"
-                        value="เจ้าของ หรือ ผู้ช่วย"
+                    <div>
+                      <List
+                        subheader={<ListSubheader>รายชื่อลูกค้า</ListSubheader>}
+                        className={classes.List}
                       >
-                        เจ้าของ หรือ ผู้ช่วย
-                      </MenuItem>
-                      <MenuItem key="ลูกค้า" value="ลูกค้า">
-                        ลูกค้า
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
+                        {customers.map((customer) => {
+                          const labelId = `checkbox-list-label-${customer.company}`;
 
-                <Button
-                  className={classes.button}
-                  onClick={() => submit(params)}
-                  variant="contained"
-                  color="primary"
-                >
-                  ยืนยัน
-                </Button>
-                <Button
-                  className={classes.button}
-                  onClick={handleClose}
-                  variant="contained"
-                  color="secondary"
-                >
-                  ยกเลิก
-                </Button>
+                          return (
+                            <ListItem
+                              key={customer.company}
+                              role={undefined}
+                              dense
+                              button
+                              onClick={handleToggle(customer)}
+                            >
+                              <ListItemIcon>
+                                <Checkbox
+                                  edge="start"
+                                  checked={checked.indexOf(customer) !== -1}
+                                  tabIndex={-1}
+                                  disableRipple
+                                  inputProps={{ "aria-labelledby": labelId }}
+                                />
+                              </ListItemIcon>
+                              <ListItemText
+                                id={labelId}
+                                primary={customer.company}
+                              />
+                            </ListItem>
+                          );
+                        })}
+                      </List>
+
+                      <FormControl
+                        className={classes.formControl}
+                        error={companyError}
+                      >
+                        <InputLabel id="demo-simple-select-outlined-label1">
+                          Status
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-outlined-label1"
+                          id="demo-simple-select-outlined"
+                          value={status_edit ? status_edit : ""}
+                          onChange={handleChangeStatus_edit}
+                          label="Status"
+                        >
+                          <MenuItem key="แคชเชียร์" value="แคชเชียร์">
+                            แคชเชียร์
+                          </MenuItem>
+                          <MenuItem
+                            key="เจ้าของ หรือ ผู้ช่วย"
+                            value="เจ้าของ หรือ ผู้ช่วย"
+                          >
+                            เจ้าของ หรือ ผู้ช่วย
+                          </MenuItem>
+                          <MenuItem key="ลูกค้า" value="ลูกค้า">
+                            ลูกค้า
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+
+                    <Button
+                      className={classes.button}
+                      onClick={() => submit(params)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      ยืนยัน
+                    </Button>
+                    <Button
+                      className={classes.button}
+                      onClick={handleClose}
+                      variant="contained"
+                      color="secondary"
+                    >
+                      ยกเลิก
+                    </Button>
+
+                  </div>
+                }
+
               </div>
             </Modal>
             <Button
@@ -537,67 +553,47 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
               aria-labelledby="simple-modal-title"
               aria-describedby="simple-modal-description"
             >
-              <div style={modalStyle} className={classes.paper}>
-                <h2 id="simple-modal-title">ยืนยันการลบ</h2>
-                <p id="simple-modal-description">
-                  ท่านต้องการลบ {admin.username} ใช่ไหม
-                </p>
 
-                <Button
-                  onClick={() => handleDelete()}
-                  variant="contained"
-                  color="primary"
-                >
-                  ยืนยัน
-                </Button>
-                <Button
-                  onClick={handleClose}
-                  variant="contained"
-                  color="secondary"
-                >
-                  ยกเลิก
-                </Button>
-              </div>
+
+                <div style={modalStyle} className={classes.paper}>
+
+              {deleteComplete ? 
+                <h2 style={{alignContent: "center"}}>ลบสำเร็จ</h2> :
+                
+                loading ? <h2 style={{alignContent: "center"}}>Loading</h2> :
+
+                <div>
+                  <h2 id="simple-modal-title">ยืนยันการลบ</h2>
+                  <p id="simple-modal-description">
+                    ท่านต้องการลบ {admin.username} ใช่ไหม
+                  </p>
+
+                  <Button
+                    onClick={() => handleDelete()}
+                    variant="contained"
+                    color="primary"
+                  >
+                    ยืนยัน
+                  </Button>
+                  <Button
+                    onClick={handleClose}
+                    variant="contained"
+                    color="secondary"
+                  >
+                    ยกเลิก
+                  </Button>
+                </div>
+
+                }
+
+                </div> 
+              
             </Modal>
           </div>
         );
       },
     },
   ];
-
-  // const getPassword = () => {
-  //   let str = randomString(20);
-
-  //   // if (status == "แคชเชียร์") {
-  //   //   setPassword(str);
-  //   // } else if (status == "เจ้าของ หรือ ผู้ช่วย") {
-  //   //   setPasswordSO(str);
-  //   // } else {
-  //   //   setPasswordEN(str);
-  //   // }
-
-  //   fetch("/api/admin/password", {
-  //     method: "POST", // *GET, POST, PUT, DELETE, etc.
-  //     mode: "cors", // no-cors, *cors, same-origin
-  //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-  //     credentials: "same-origin", // include, *same-origin, omit
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       // 'Content-Type': 'application/x-www-form-urlencoded',
-  //     },
-  //     redirect: "follow", // manual, *follow, error
-  //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-  //     body: JSON.stringify({
-  //       password: str,
-  //       groupId: company.groupID,
-  //       status: status,
-  //     }), // body data type must match "Content-Type" header
-  //   }).then(function(response){
-  //     router.reload()
-  //   })
-
-    
-  // };
 
   return (
     <div>
@@ -622,185 +618,103 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
           aria-describedby="simple-modal-description"
         >
           <div style={modalStyle} className={classes.paper}>
-            <h2 id="simple-modal-title">เพิ่ม Admin</h2>
-            <p id="simple-modal-description">กรอกข้อมูลด้านล่าง</p>
+            {submitComplete ? <h2 style={{alignContent: "center"}}>เพิ่มแอดมินสำเร็จ</h2> :
+                  loading ? <h2 style={{alignContent: "center"}}>Loading</h2> : 
+                  <div>
+                    <h2 id="simple-modal-title">เพิ่ม Admin</h2>
+                    <p id="simple-modal-description">กรอกข้อมูลด้านล่าง</p>
 
-            <TextField
-              className={classes.TextField1}
-              required
-              name="name"
-              label="ชื่อผู้ใช้"
-              onChange={(e) => handleChangeText(e)}
-            />
-            <TextField
-              className={classes.TextField}
-              required
-              name="USER_ID"
-              label="USER ID"
-              onChange={(e) => handleChangeText(e)}
-            />
+                    <TextField
+                      className={classes.TextField1}
+                      required
+                      name="name"
+                      label="ชื่อผู้ใช้"
+                      onChange={(e) => handleChangeText(e)}
+                    />
+                    <TextField
+                      className={classes.TextField}
+                      required
+                      name="USER_ID"
+                      label="USER ID"
+                      onChange={(e) => handleChangeText(e)}
+                    />
 
-            <div>
-              <FormControl
-                // variant="outlined"
-                className={classes.formControl}
-                error={companyError}
-              >
-                <InputLabel id="demo-simple-select-outlined-label1">
-                  ชื่อลูกค้า
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label1"
-                  id="demo-simple-select-outlined"
-                  value={company ? company : ""}
-                  onChange={handleChangeCompany}
-                  label="Company"
-                >
-                  {customers.map((company) => {
-                    return (
-                      <MenuItem key={company.company} value={company}>
-                        {company.company}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
+                    <div>
+                      <FormControl
+                        // variant="outlined"
+                        className={classes.formControl}
+                        error={companyError}
+                      >
+                        <InputLabel id="demo-simple-select-outlined-label1">
+                          ชื่อลูกค้า
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-outlined-label1"
+                          id="demo-simple-select-outlined"
+                          value={company ? company : ""}
+                          onChange={handleChangeCompany}
+                          label="Company"
+                        >
+                          {customers.map((company) => {
+                            return (
+                              <MenuItem key={company.company} value={company}>
+                                {company.company}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
 
-              <FormControl className={classes.formControl} error={companyError}>
-                <InputLabel id="demo-simple-select-outlined-label1">
-                  Status
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label1"
-                  id="demo-simple-select-outlined"
-                  value={status ? status : ""}
-                  onChange={handleChangeStatus}
-                  label="Status"
-                >
-                  <MenuItem key="แคชเชียร์" value="แคชเชียร์">
-                    แคชเชียร์
-                  </MenuItem>
-                  <MenuItem
-                    key="เจ้าของ หรือ ผู้ช่วย"
-                    value="เจ้าของ หรือ ผู้ช่วย"
-                  >
-                    เจ้าของ หรือ ผู้ช่วย
-                  </MenuItem>
-                  <MenuItem key="ลูกค้า" value="ลูกค้า">
-                    ลูกค้า
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </div>
+                      <FormControl className={classes.formControl} error={companyError}>
+                        <InputLabel id="demo-simple-select-outlined-label1">
+                          Status
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-outlined-label1"
+                          id="demo-simple-select-outlined"
+                          value={status ? status : ""}
+                          onChange={handleChangeStatus}
+                          label="Status"
+                        >
+                          <MenuItem key="แคชเชียร์" value="แคชเชียร์">
+                            แคชเชียร์
+                          </MenuItem>
+                          <MenuItem
+                            key="เจ้าของ หรือ ผู้ช่วย"
+                            value="เจ้าของ หรือ ผู้ช่วย"
+                          >
+                            เจ้าของ หรือ ผู้ช่วย
+                          </MenuItem>
+                          <MenuItem key="ลูกค้า" value="ลูกค้า">
+                            ลูกค้า
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
 
-            <Button
-              className={classes.button}
-              onClick={() => submit("add")}
-              variant="contained"
-              color="primary"
-            >
-              ยืนยัน
-            </Button>
-            <Button
-              className={classes.button}
-              onClick={handleClose}
-              variant="contained"
-              color="secondary"
-            >
-              ยกเลิก
-            </Button>
+                    <Button
+                      className={classes.button}
+                      onClick={() => submit("add")}
+                      variant="contained"
+                      color="primary"
+                    >
+                      ยืนยัน
+                    </Button>
+                    <Button
+                      className={classes.button}
+                      onClick={handleClose}
+                      variant="contained"
+                      color="secondary"
+                    >
+                      ยกเลิก
+                    </Button>
+
+                  </div>
+                  }
           </div>
         </Modal> &emsp;
 
-        {/* <Button
-          onClick={() => handleOpen("password")}
-          color="primary"
-          variant="contained"
-          className={classes.toRight}
-        >
-          รับ password
-        </Button> */}
-        {/* <Modal
-          open={open == "password" ? true : false}
-          onClose={handleClose}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-        >
-          <div style={modalStyle} className={classes.paper}>
-            <h2 id="simple-modal-title">รับ password</h2>
-            <p id="simple-modal-description">ระบุข้อมูลด้านล่าง</p>
-
-            <div>
-              <FormControl
-                // variant="outlined"
-                className={classes.formControl}
-                error={companyError}
-              >
-                <InputLabel id="demo-simple-select-outlined-label1">
-                  ชื่อลูกค้า
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label1"
-                  id="demo-simple-select-outlined"
-                  value={company ? company : ""}
-                  onChange={handleChangeCompany}
-                  label="Company"
-                >
-                  {customers.map((company) => {
-                    return (
-                      <MenuItem key={company.company} value={company}>
-                        {company.company}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-
-              <FormControl className={classes.formControl} error={companyError}>
-                <InputLabel id="demo-simple-select-outlined-label1">
-                  Status
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label1"
-                  id="demo-simple-select-outlined"
-                  value={status ? status : ""}
-                  onChange={handleChangeStatus}
-                  label="Status"
-                >
-                  <MenuItem key="แคชเชียร์" value="แคชเชียร์">
-                    แคชเชียร์
-                  </MenuItem>
-                  <MenuItem
-                    key="เจ้าของ หรือ ผู้ช่วย"
-                    value="เจ้าของ หรือ ผู้ช่วย"
-                  >
-                    เจ้าของ หรือ ผู้ช่วย
-                  </MenuItem>
-                  <MenuItem key="ลูกค้า" value="ลูกค้า">
-                    ลูกค้า
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-
-            <Button
-              className={classes.button}
-              onClick={() => getPassword()}
-              variant="contained"
-              color="primary"
-            >
-              ยืนยัน
-            </Button>
-            <Button
-              className={classes.button}
-              onClick={handleClose}
-              variant="contained"
-              color="secondary"
-            >
-              ยกเลิก
-            </Button>
-          </div>
-        </Modal> */}
+        
         
           </h3>
           
@@ -817,40 +731,7 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
         </div>
         <br />
 
-        {/* {passwords[0] !== undefined ? (
-          <div className={classes.div}>
-            <h4>รหัสผ่านสำหรับเป็น admin</h4>
-            {passwords.map((password, index) => {
-              return (
-                <div key={index}>
-                  <TextField
-                    className={classes.TextField}
-                    label="รหัสผ่าน"
-                    value={password.password}
-                    InputProps={{ readOnly: true }}
-                  />
-                  <TextField
-                    className={classes.TextField}
-                    label="สถานะ"
-                    value={password.status}
-                    InputProps={{ readOnly: true }}
-                  />
-                  <TextField
-                    className={classes.TextField}
-                    label="บริษัท"
-                    value={group[password.groupId.toString()][0].company}
-                    InputProps={{ readOnly: true }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        ) : null} */}
-
-        {/* <AdminContext.Provider value={{}}> */}
-        {/* <NewAdmin_Form /> */}
-
-        {/* </AdminContext.Provider> */}
+        
         <br />
         
       </Box>

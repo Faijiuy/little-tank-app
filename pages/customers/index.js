@@ -73,6 +73,9 @@ function Customers({ customer: customers }) {
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const [company, setCompany] = React.useState("");
+  const [deleteComplete, setDeleteComplate] = React.useState(false)
+
+  const [loading, setLoading] = React.useState(false)
 
   const { user2, status, auth, setAuth } = React.useContext(AuthContext)
 
@@ -103,8 +106,10 @@ function Customers({ customer: customers }) {
     router.push(path)
   }
 
-  const handleDelete = () => {
-    fetch("/api/customer", {
+  const handleDelete = async () => {
+    setLoading(true)
+
+    await fetch("/api/customer", {
       method: "DELETE", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -117,8 +122,11 @@ function Customers({ customer: customers }) {
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(company), // body data type must match "Content-Type" header
     })
-      .then((response) => response.json())
-      .then(router.reload());
+      .then(function(response){
+        setDeleteComplate(true)
+        router.reload()
+
+      })
   };
 
   const columns = [
@@ -243,6 +251,27 @@ function Customers({ customer: customers }) {
           </div>
 
         </Box>
+
+        <Modal
+          open={loading}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+
+
+            <div style={modalStyle} className={classes.paper}>
+
+          {deleteComplete ? 
+            <h2 style={{alignContent: "center"}}>ลบสำเร็จ</h2> :
+            
+            loading ? <h2 style={{alignContent: "center"}}>Loading</h2> : null
+
+            }
+
+            </div> 
+          
+        </Modal>
     </div>
   );
 }

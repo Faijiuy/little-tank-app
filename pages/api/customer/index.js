@@ -139,7 +139,17 @@ export default async (req, res) => {
       // { company: company},
 
       // callback
-      
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.json(err);
+        } else {
+          // console.log("Newly inserted ID", result.insertedId);
+          res.json({
+            message: "customer delete",
+          });
+        }
+      }
     )
 
 

@@ -108,7 +108,7 @@ const useStyles2 = makeStyles((theme) => ({
   },
   paper2: {
     position: 'absolute',
-    width: 200,
+    width: 400,
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
@@ -167,6 +167,11 @@ function CreateCustomer({customer:customers}) {
 
   const [open, setOpen] = React.useState(false);
   const [open_new, setOpen_new] = React.useState(false);
+
+  const [loading, setLoading] = useState(false)
+  const [loading_update, setLoading_update] = useState(false)
+
+  const [registerComplete, setRegisterComplete] = useState(false)
 
 
 
@@ -288,6 +293,8 @@ function CreateCustomer({customer:customers}) {
   const onSubmit = (str) => {
 
     if(str === 'add'){
+      setLoading(true)
+
 
       fetch('/api/customer', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -302,15 +309,15 @@ function CreateCustomer({customer:customers}) {
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify(info) // body data type must match "Content-Type" header
       })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          alert("ลงทะเบียนสำเร็จ")
-        })
-        .then(router.push('/customers'))
+        .then(function(response){
+          setRegisterComplete(true)
+          router.push("/customers")
+        }) 
+        
       }else if(str === 'update'){
         // console.log(customer._id)
         // let id = ObjectId(customer._id)
+        setLoading_update(true)
         
         info["_id"] = customers._id
 
@@ -328,9 +335,10 @@ function CreateCustomer({customer:customers}) {
           referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(info) // body data type must match "Content-Type" header
         })
-          .then(response => response.json())
-          .then(alert("อัพเดทสำเร็จ"))
-          .then(router.push('/customers'))
+        .then(function(response){
+          setRegisterComplete(true)
+          router.push("/customers")
+        }) 
       }
   }
 
@@ -611,6 +619,40 @@ function CreateCustomer({customer:customers}) {
         </GridItem>
         
       </GridContainer>
+
+      <Modal
+        open={loading}
+        onClose={handleClose_pass}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div
+          style={modalStyle}
+          className={classes2.paper2}
+        >
+          {registerComplete ? <h2 style={{alignContent: "center"}}>ลงทะเบียนสำเร็จ</h2> :
+              loading ? <h2 style={{alignContent: "center"}}>Loading</h2> : null
+          }
+          
+        </div>
+      </Modal>
+
+      <Modal
+        open={loading_update}
+        onClose={handleClose_pass}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div
+          style={modalStyle}
+          className={classes2.paper2}
+        >
+          {registerComplete ? <h2 style={{alignContent: "center"}}>อัพเดทสำเร็จ</h2> :
+              loading_update ? <h2 style={{alignContent: "center"}}>Loading</h2> : null
+          }
+          
+        </div>
+      </Modal>
       </div>
   );
 }

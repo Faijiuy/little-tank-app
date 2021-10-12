@@ -82,7 +82,7 @@ const styles = {
     height: 40,
   },
   formControl: {
-    // margin: theme.spacing(1),
+    marginTop: 27,
     minWidth: 100,
   },
 };
@@ -106,7 +106,7 @@ const useStyles2 = makeStyles((theme) => ({
   },
   paper2: {
     position: "absolute",
-    width: 200,
+    width: 400,
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
@@ -149,6 +149,10 @@ function CreateUser({ user: users }) {
 
   const [open, setOpen] = React.useState(false);
   const [open_new, setOpen_new] = React.useState(false);
+  const [loading, setLoading] = useState(false)
+  const [loading_update, setLoading_update] = useState(false)
+
+  const [registerComplete, setRegisterComplete] = useState(false)
 
   const handleOpen = () => {
     setOpen(true);
@@ -230,9 +234,12 @@ function CreateUser({ user: users }) {
     status: status
   };
 
-  const onSubmit = (str) => {
+
+  const onSubmit = async (str) => {
     if (str === "add") {
-      fetch("/api/user", {
+      setLoading(true)
+
+      await fetch("/api/user", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -245,20 +252,20 @@ function CreateUser({ user: users }) {
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify(info), // body data type must match "Content-Type" header
       })
-        .then((response) => response.json())
-        .then((data) => {
-          // console.log(data);
-          alert("ลงทะเบียนสำเร็จ");
-        })
-        .then(router.push("/users"));
+        .then(function(response){
+          setRegisterComplete(true)
+          router.push("/users")
+        })  
+
     } else if (str === "update") {
       // console.log(customer._id)
       // let id = ObjectId(customer._id)
+      setLoading_update(true)
 
       info["_id"] = users._id;
 
       // console.log(id)
-      fetch("/api/user", {
+      await fetch("/api/user", {
         method: "PUT", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -271,9 +278,10 @@ function CreateUser({ user: users }) {
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify(info), // body data type must match "Content-Type" header
       })
-        .then((response) => response.json())
-        .then(alert("อัพเดทสำเร็จ"))
-        .then(router.push("/users"));
+      .then(function(response){
+        setRegisterComplete(true)
+        router.push("/users")
+      }) 
     }
   };
 
@@ -339,7 +347,7 @@ function CreateUser({ user: users }) {
               </FormControl>
               </GridContainer>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={3}>
                   <CustomInput
                     labelText="เบอร์โทรศัพท์หรืออีเมล"
                     id="id"
@@ -357,7 +365,7 @@ function CreateUser({ user: users }) {
                   />
                 </GridItem>
 
-                <GridItem xs={12} sm={12} md={6}>
+                <GridItem xs={12} sm={12} md={3}>
                   <CustomInput
                     labelText="รหัสผ่าน"
                     id="password"
@@ -478,6 +486,40 @@ function CreateUser({ user: users }) {
           </Card>
         </GridItem>
       </GridContainer>
+
+      <Modal
+        open={loading}
+        onClose={handleClose_pass}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div
+          style={modalStyle}
+          className={classes2.paper2}
+        >
+          {registerComplete ? <h2 style={{alignContent: "center"}}>ลงทะเบียนสำเร็จ</h2> :
+              loading ? <h2 style={{alignContent: "center"}}>Loading</h2> : null
+          }
+          
+        </div>
+      </Modal>
+
+      <Modal
+        open={loading_update}
+        onClose={handleClose_pass}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div
+          style={modalStyle}
+          className={classes2.paper2}
+        >
+          {registerComplete ? <h2 style={{alignContent: "center"}}>อัพเดทสำเร็จ</h2> :
+              loading_update ? <h2 style={{alignContent: "center"}}>Loading</h2> : null
+          }
+          
+        </div>
+      </Modal>
 
       {/* <Box
         className="no-print"
