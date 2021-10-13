@@ -23,9 +23,13 @@ export const AuthContextProvider = ({ children }) => {
 
     const [status, setStatus] = useState(null)
 
-    const context = { user_id, setUser_id, auth, setAuth, status, setStatus }
+    const [loading, setLoading] = useState(true)
+
+    const context = { user_id, setUser_id, auth, setAuth, status, setStatus, setLoading }
 
     useEffect(() => {
+        
+
         if (sessionStorage.getItem('auth')) {
            setAuth(sessionStorage.getItem('auth'));
            setUser_id(sessionStorage.getItem('user_id'))
@@ -34,6 +38,13 @@ export const AuthContextProvider = ({ children }) => {
         }, []);
     
      useEffect(() => {
+        // setLoading(true)
+
+        setTimeout(() => {
+            setLoading(false)
+        }, 1000);
+
+
         sessionStorage.setItem('auth', auth);
         sessionStorage.setItem('user_id', user_id);
         sessionStorage.setItem('status', status);
@@ -53,7 +64,7 @@ export const AuthContextProvider = ({ children }) => {
             </Layout>  : 
             children
            
-           : <LoginForm />}  
+           : loading ? <h1>Loading</h1> : <LoginForm />}  
            {/* {children}   */}
                       {/* {user2 ? (children) : <SignInOutContainer />}   */}
 

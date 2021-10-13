@@ -60,7 +60,7 @@ const LoginForm = () => {
   //     console.log(data);
   //   });
   // console.log("user ====> ", users);;
-  const { setUser_id, setAuth, setStatus, status } = useContext(AuthContext)
+  const { setUser_id, setAuth, setStatus, status, setLoading } = useContext(AuthContext)
 
 
   const [username, setUsername] = useState("");
@@ -153,6 +153,7 @@ const LoginForm = () => {
         setUser_id(u._id)
         setStatus(u.status)
         setLoginTime(split[0] + " " + split[1].split("+")[0])
+        setLoading(true)
 
         sessionStorage.setItem('user_id', u._id)
         sessionStorage.setItem('status', u.status)
