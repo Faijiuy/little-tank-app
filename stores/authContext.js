@@ -15,9 +15,10 @@ const AuthContext = createContext({
 
 export const AuthContextProvider = ({ children }) => {
 
-    console.log("children: ", children.type.name)
-    console.log("children: ", children.type)
-    console.log("children: ", children)
+    // console.log("children: ", children.type.name)
+    // console.log("children: ", children.type)
+    console.log("children: ", children._owner.pendingProps.router.asPath)
+
 
     const [user_id, setUser_id] = useState(null)
 
@@ -60,7 +61,7 @@ export const AuthContextProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={context}>
            {auth ?
-           children.type.name !== "PrintPage" ? 
+           children._owner.pendingProps.router.asPath !== "/coupon/printPage" ? 
             <Layout>
                 {children} 
             </Layout>  : 
