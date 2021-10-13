@@ -21,7 +21,7 @@ import Person from "@material-ui/icons/Person";
 import Unarchive from "@material-ui/icons/Unarchive";
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import AuthContext from "../little-tank-app/stores/authContext";
+// import AuthContext from "../little-tank-app/stores/authContext";
 // import React, { useState, useEffect, useContext } from "react";
 
 
