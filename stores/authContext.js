@@ -14,6 +14,7 @@ const AuthContext = createContext({
 export const AuthContextProvider = ({ children }) => {
     
     console.log("children: ", children.type)
+    console.log("children: ", children)
 
     // let test = children.type.toString().replace(/\/\*[\s\S]*?\*\//g, '')
     //             .replace(/\/\/(.)*/g, '')        
