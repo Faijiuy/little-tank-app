@@ -52,7 +52,7 @@
 
 .button-right {
   float: left;
-  left: 82px;
+  left: 400px;
 }
 
 .sticky {
@@ -76,5 +76,19 @@
 
   .footer {
     page-break-before: always;
+  }
+
+  .printElement {
+  }
+  /* body * {
+    visibility: hidden;
+  } */
+  #section-to-print, #section-to-print * {
+    visibility: visible;
+  }
+  #section-to-print {
+    position: absolute;
+    left: 0;
+    top: 0;
   }
 }
