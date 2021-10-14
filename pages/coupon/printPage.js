@@ -6,9 +6,6 @@ import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from "next/router";
-import ReactToPrint from 'react-to-print';
-
-// import { ComponentToPrint } from './ComponentToPrint';
 
 const divStyle = {
   fontSize: "15px",
@@ -143,52 +140,6 @@ function PrintPage() {
       >
         ปริ้นคูปอง
       </Button>
-
-      <ReactToPrint 
-        trigger={() => {
-          // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
-          // to the root node of the returned component as it will be overwritten.
-          <Grid >
-            {printList.map((coupon, index) => {
-              return (
-                <>
-                  <div className="box" style={divStyle}>
-                    <p>บริษัท: {customers.map(customer => {if(coupon.companyRef === customer._id){return customer.company}})}</p>
-                    <p>ลำดับ: {coupon.runningNo}</p>
-                    <p>ราคา: {coupon.amount}</p>
-                    <p>วันที่ผลิต: {coupon.generatedDate}</p>
-                  </div>
-                  <div className="box">
-                    <div className="child left">
-                      <p>บริษัท: {customers.map(customer => {if(coupon.companyRef === customer._id){return customer.company}})}</p>
-                      <p>ลำดับ: {coupon.runningNo}</p>
-                      <p>ราคา: {coupon.amount}</p>
-                      <p>วันที่ผลิต: {coupon.generatedDate}</p>
-                    </div>
-                    <span className="center" >
-                      <p>.......................................</p>
-                      <p>อนุมัติโดย</p>
-                      
-                      <p>.......................................</p>
-                      <p>เลขทะเบียนรถ</p>
-                    </span>
-                    <span className="right">
-                      <QRCode value={coupon.code} size="150" />
-                      <p style={pStyle}>{coupon._id}</p>
-                    </span>
-                    
-                  </div>
-                </>
-              );
-            })}
-          </Grid>
-
-          return <a href="#">Print this out!</a>;
-        }}
-        // content={() => {
-          
-        // }}
-      />
       <Modal
         open={open}
         onClose={handleClose}

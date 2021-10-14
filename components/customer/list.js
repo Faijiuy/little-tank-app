@@ -7,7 +7,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import { LicenseContext } from '../../pages/customers/[customerId]';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  list: {
     width: '100%',
     maxWidth: 200,
     backgroundColor: 'rgba(242, 246, 245, 1)',
@@ -30,18 +30,14 @@ export default function LicensePlate_List() {
   const { licensePlate, setLicensePlate } = useContext(LicenseContext)
 
   return (
-    <List className={classes.root} subheader={<li />}>
+    <List className={classes.list} subheader={<li />}>
         <ListSubheader>เลขทะเบียนรถ</ListSubheader>
         {licensePlate.map((row, index) => (
             <ListItem key={index}>
             <ListItemText primary={row} />
             </ListItem>
 
-        ))}
-      
-              
-              
-         
+        ))} 
     </List>
   );
 }

@@ -21,6 +21,11 @@ import { ObjectId } from 'bson';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField'
 
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+
 
 import LicensePlate_List from "../../components/customer/list"
 import LicensePlate_modal from "../../components/customer/modal"
@@ -85,7 +90,24 @@ const styles = {
   },
   button: {
     height: 40
-  }
+  },
+  list: {
+    marginTop: "10px",
+    marginLeft: "10px",
+    width: '100%',
+    maxWidth: 200,
+    backgroundColor: 'rgba(242, 246, 245, 1)',
+    position: 'relative',
+    overflow: 'auto',
+    maxHeight: 300,
+  },
+  listSection: {
+    backgroundColor: 'inherit',
+  },
+  ul: {
+    backgroundColor: 'inherit',
+    padding: 0,
+  },
 };
 
 const useStyles2 = makeStyles((theme) => ({
@@ -126,10 +148,14 @@ const LicenseContext = React.createContext()
 
 
 function CreateCustomer({customer:customers}) {
-  
-  const { user2, status, auth, setAuth } = useContext(AuthContext)
+  const useStyles = makeStyles(styles);
 
-  console.log("user2: ", user2)
+  const classes = useStyles();
+  const classes2 = useStyles2();
+  
+  // const { user2, status, auth, setAuth } = useContext(AuthContext)
+
+  // console.log("user2: ", user2)
 
   // useEffect(() => {
   //   console.log("user2: ", user2)
@@ -150,6 +176,7 @@ function CreateCustomer({customer:customers}) {
   const [companyError, setCompanyError] = useState(false)
   const [ownerError, setOwnerError] = useState(false)
   const [owner_telError, setOwner_telError] = useState(false)
+  const [tin_error, setTin_error] = useState(false)
 
   const [licensePlate, setLicensePlate] = useState([]);
   const [row, setRow] = useState([]);
@@ -167,17 +194,93 @@ function CreateCustomer({customer:customers}) {
 
   const [open, setOpen] = React.useState(false);
   const [open_new, setOpen_new] = React.useState(false);
+  const [openLicensePlateModal, setOpenLicensePlateModal] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [loading_update, setLoading_update] = useState(false)
 
   const [registerComplete, setRegisterComplete] = useState(false)
 
+  const handleChangeText = (index, e) => {
+    let newRow = [...licensePlate];
+
+    newRow[index] = e.target.value
+    setLicensePlate(newRow)
+  }
+
+  const handleAddRow = () => {
+      setLicensePlate((prevRows) => {
+          return ([...prevRows, ""])
+      })
+  }
+
+  const handleDeleteRow = (index) => {
+    let newArray = [...licensePlate]
+    
+    newArray.splice(index, 1)
+
+    setLicensePlate(newArray)   
+  };
+
+  const handleOpenLicensePlate = () => {
+    setOpenLicensePlateModal(true);
+  };
+  
+
+  const handleCloseLicensePlate = () => {
+    setOpenLicensePlateModal(false);
+  };
+
+  const body = (
+    <div style={modalStyle} className={classes2.paper}>
+      <h2 id="simple-modal-title">ป้ายทะเบียนรถ</h2>
+      <p id="simple-modal-description">
+        กรอกเลขทะเบียนรถด้านล่าง กดปุ่ม "เพิ่ม" เพื่อเพิ่มช่อง
+      </p>
+  
+      <form className={classes.root} noValidate autoComplete="off">
+      {licensePlate.map((row, index) => {
+        return (
+        <div key={index}>
+          <TextField required name="price" label="เลขทะเบียนรถ" value={row} onChange={(e) => handleChangeText(index, e)} />
+          
+          <Button variant="contained" color="secondary" onClick={() => handleDeleteRow(index)} className={classes.button_text_rows}>
+            ลบ
+          </Button>
+  
+        </div>
+        )
+  
+      })}
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleAddRow()}
+            className={classes.button}
+          >
+            เพิ่ม
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleCloseLicensePlate}
+            className={classes.button}
+          >
+            สำเร็จ
+          </Button>
+        </div>
+    </form>
+  
+    </div>
+  );
+
 
 
   const handleOpen = () => {
     setOpen(true);
   };
+  
 
   const handleClose = () => {
     setOpen(false);
@@ -192,22 +295,7 @@ function CreateCustomer({customer:customers}) {
   };
 
   useEffect(() => {
-    const customer1 = {
-      company: "company",
-      owner: "owner",
-      owner_tel: "0969641234",
-      owner_email: "customer1@gmail.com",
-      contact_name: "Contact 1",
-      contact_tel: "0969641234",
-      contact_email: "customer1@gmail.com",
-      address: "address1, address2, Bangkok",
-      TIN: "1234567890123",
-      groupID: "",
-      licensePlate: []
-    }
-
     if (customers !== null) {
-
       setCompany(customers.company)
       setOwner(customers.owner)
       setOwner_tel(customers.owner_tel)
@@ -219,21 +307,6 @@ function CreateCustomer({customer:customers}) {
       setTIN(customers.TIN)
       setGroupID(customers.groupID)
       setLicensePlate(customers.licensePlate)
-
-    }else{
-      setCompany(customer1.company)
-      setOwner(customer1.owner)
-      setOwner_tel(customer1.owner_tel)
-      setOwner_email(customer1.owner_email)
-      setContact_name(customer1.contact_name)
-      setContact_tel(customer1.contact_tel)
-      setContact_email(customer1.contact_email)
-      setAddress(customer1.address)
-      setTIN(customer1.TIN)
-      setGroupID(customer1.groupID)
-      setLicensePlate(customer1.licensePlate)
-
-      
     }
   },[])
 
@@ -249,15 +322,22 @@ function CreateCustomer({customer:customers}) {
   }
 
 
-  const useStyles = makeStyles(styles);
+  
 
   const handleSetState = (event) => {
     if (event.target.id === 'company') {
+      setCompanyError(false)
       setCompany(event.target.value)
     } else if (event.target.id === 'owner') {
+      setOwnerError(false)
       setOwner(event.target.value)
     } else if (event.target.id === 'owner_tel') {
-      setOwner_tel(event.target.value)
+      if(isNaN(event.target.value) || event.target.value.length !== 10){
+        setOwner_telError(true)
+      }else{
+        setOwner_telError(false)
+        setOwner_tel(event.target.value)
+      }
     } else if (event.target.id === 'owner_email') {
       setOwner_email(event.target.value)
     } else if (event.target.id === 'contact_name') {
@@ -269,7 +349,13 @@ function CreateCustomer({customer:customers}) {
     } else if (event.target.id === 'address') {
       setAddress(event.target.value)
     } else if (event.target.id === 'TIN') {
-      setTIN(event.target.value)
+      if(isNaN(event.target.value)){
+        setTin_error(true)
+      }else{
+        setTin_error(false)
+        setTIN(event.target.value)
+
+      }
     } else if (event.target.id === 'groupID') {
       setGroupID(event.target.value)
     }
@@ -290,40 +376,32 @@ function CreateCustomer({customer:customers}) {
     licensePlate: licensePlate
   }
 
+  function error_detect(){
+    let error = []
+    if(!company || companyError){
+      error.push("error")
+      setCompanyError(true)
+    }
+
+    if(!owner || ownerError){
+      error.push("error")
+      setOwnerError(true)
+    }
+
+    if(error[0] !== undefined) return true
+    return false
+  }
+
   const onSubmit = (str) => {
+    if(error_detect()){
 
-    if(str === 'add'){
-      setLoading(true)
-
-
-      fetch('/api/customer', {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-          'Content-Type': 'application/json'
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(info) // body data type must match "Content-Type" header
-      })
-        .then(function(response){
-          setRegisterComplete(true)
-          router.push("/customers")
-        }) 
-        
-      }else if(str === 'update'){
-        // console.log(customer._id)
-        // let id = ObjectId(customer._id)
-        setLoading_update(true)
-        
-        info["_id"] = customers._id
-
-        // console.log(id)
+    }else{
+      if(str === 'add'){
+        setLoading(true)
+  
+  
         fetch('/api/customer', {
-          method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin', // include, *same-origin, omit
@@ -335,15 +413,45 @@ function CreateCustomer({customer:customers}) {
           referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(info) // body data type must match "Content-Type" header
         })
-        .then(function(response){
-          setRegisterComplete(true)
-          router.push("/customers")
-        }) 
-      }
+          .then(function(response){
+            setRegisterComplete(true)
+            router.push("/customers")
+          }) 
+          
+        }else if(str === 'update'){
+          // console.log(customer._id)
+          // let id = ObjectId(customer._id)
+          setLoading_update(true)
+          
+          info["_id"] = customers._id
+  
+          // console.log(id)
+          fetch('/api/customer', {
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+              'Content-Type': 'application/json'
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(info) // body data type must match "Content-Type" header
+          })
+          .then(function(response){
+            setRegisterComplete(true)
+            router.push("/customers")
+          }) 
+        }
+
+    }
+
+
+
   }
 
-  const classes = useStyles();
-  const classes2 = useStyles2();
+  
 
   return (
     // <form onSubmit={handleSubmit(onSubmit)}>
@@ -399,7 +507,7 @@ function CreateCustomer({customer:customers}) {
                     id="owner_tel"
                     formControlProps={{
                       fullWidth: true,
-                      required: true,
+                      // required: true,
                       error: owner_telError
                     }}
                     inputProps={{
@@ -496,6 +604,7 @@ function CreateCustomer({customer:customers}) {
                     id="TIN"
                     formControlProps={{
                       fullWidth: true,
+                      error: tin_error
                     }}
                     inputProps={{
                       // onChange: handleChange,
@@ -597,15 +706,42 @@ function CreateCustomer({customer:customers}) {
 
               </GridContainer>
 
+              <GridContainer>
+
                 <br />
 
-              <LicenseContext.Provider value={{ licensePlate, setLicensePlate }}>
+              {/* <LicenseContext.Provider value={{ licensePlate, setLicensePlate }}> */}
                 
-                <LicensePlate_List />
+                {/* <span> */}
+                  <List className={classes.list} subheader={<li />}>
+                    <ListSubheader>เลขทะเบียนรถ</ListSubheader>
+                      {licensePlate.map((row, index) => (
+                          <ListItem key={index}>
+                          <ListItemText primary={row} />
+                          </ListItem>
 
+                      ))} 
+                  </List>
+                {/* </span> */}
+                {/* <span>
                 <LicensePlate_modal />
-                
-              </LicenseContext.Provider>
+                </span> */}
+
+                {/* <span> */}
+                  <Button style={{marginTop: 10, marginLeft: 10, height: 40}} onClick={() => setOpenLicensePlateModal(true)}>
+                    {licensePlate[0] !== undefined ? "แก้ไขเลขทะเบียนรถ" : "แก้ไข/เพิ่มเลขทะเบียนรถ"} 
+                  </Button>
+                  <Modal
+                    open={openLicensePlateModal}
+                    onClose={handleCloseLicensePlate}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                  >
+                    {body}
+                  </Modal>
+                {/* </span> */}
+                </GridContainer>
+              {/* </LicenseContext.Provider> */}
             </CardBody>
             <CardFooter>
               <div>

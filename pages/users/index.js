@@ -257,42 +257,7 @@ function Users({ user: users }) {
             />
           </div>
           <br />
-          <Box display="flex">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleOpenLogout}
-            >
-              ออกจากระบบ
-            </Button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            >
-              <div style={modalStyle} className={classes.paper}>
-                <h2 id="simple-modal-title">ยืนยันการออกจากระบบ</h2>
-                <p id="simple-modal-description">ท่านต้องการออกจากระบบใช่ไหม</p>
-
-                <Button
-                  onClick={() => signOut()}
-                  variant="contained"
-                  color="primary"
-                  href="/login"
-                >
-                  ยืนยัน
-                </Button>
-                <Button
-                  onClick={handleClose}
-                  variant="contained"
-                  color="secondary"
-                >
-                  ยกเลิก
-                </Button>
-              </div>
-            </Modal>
-          </Box>
+          
         </Box>
 
         <Modal
