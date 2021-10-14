@@ -85,7 +85,7 @@ export const AuthContextProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={context}>
            {auth ?
-           (children.type.name !== "" && children.type.length !== 0) ? 
+           (children.type.name !== "" ) ? 
             <Layout>
                 {children} 
             </Layout>  
