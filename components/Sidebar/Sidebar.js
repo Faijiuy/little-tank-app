@@ -50,6 +50,12 @@ export default function Sidebar(props) {
     return router.route.indexOf(routeName) > -1 ? true : false;
   }
   const { color, logo, image, logoText, routes } = props;
+
+  var activeItems = (path) => {
+    if(router.route !== path) return false
+    return true 
+  }
+
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
@@ -59,7 +65,7 @@ export default function Sidebar(props) {
         listItemClasses = classNames({
           // [" " + classes[color]]: activeRoute(prop.layout + prop.path),
 
-          [" " + classes[color]]: activeRoute(prop.path),
+          [" " + classes[color]]: activeItems(prop.path),
 
         });
         
@@ -75,7 +81,7 @@ export default function Sidebar(props) {
           <div key={key}>
             {prop.path === "/couponMgt" ? (
               <div>
-              <ListItem button className={classes.itemLink + listItemClasses} onClick={handleClick}>
+              <ListItem button className={classes.itemLink } onClick={handleClick}>
               {typeof prop.icon === "string" ? (
                       <Icon
                         className={classNames(classes.itemIcon, whiteFontClasses, {
@@ -91,9 +97,11 @@ export default function Sidebar(props) {
                         })}
                       />
                     )}
-                  {open ? <ExpandLess className={classNames(classes.itemIcon2, whiteFontClasses, {
+                  {open ? <ExpandLess 
+                  className={classNames(classes.itemIcon2, whiteFontClasses, {
                             [classes.itemIconRTL]: props.rtlActive,
-                          })} /> : 
+                          })} 
+                          /> : 
                           <ExpandMore className={classNames(classes.itemIcon2, whiteFontClasses, {
                             [classes.itemIconRTL]: props.rtlActive,
                           })} />}
@@ -105,7 +113,10 @@ export default function Sidebar(props) {
               </ListItem>
               <Collapse in={open} timeout="auto" unmountOnExit>
                 {prop.pathArr.map((obj, key) => {
-                  return (<Link href={obj.path} key={key}>
+                  return (
+                    <a className={activePro + classes.item}>
+
+                  <Link href={obj.path} key={key}>
                     {/* <List component="div" disablePadding>
                       <ListItem button className={classes.itemLink2 + listItemClasses}>
                         
@@ -118,7 +129,7 @@ export default function Sidebar(props) {
 
                     {/* <a className={activePro + classes.item} disablePadding> */}
                     <List component="div" disablePadding>
-                      <ListItem button  className={classes.itemLink2} >
+                      <ListItem button  className={`${classes.itemLink2} ${router.route === obj.path ? classes[color] : ''}`} >
                         
                         <ListItemText
                           primary={obj.name}
@@ -130,7 +141,8 @@ export default function Sidebar(props) {
                       </ListItem>
                       </List>
                     {/* </a> */}
-                  </Link>)
+                  </Link>
+                  </a>)
 
                 })}
                 

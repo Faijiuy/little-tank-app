@@ -334,6 +334,9 @@ const sidebarStyle = (theme) => ({
     "& $itemIcon": {
       color: "rgba(" + hexToRgb(grayColor[8]) + ", 0.8)",
     },
+    "& $itemIcon2": {
+      color: "rgba(" + hexToRgb(grayColor[8]) + ", 0.8)",
+    },
   },
   sidebarWrapper: {
     position: "relative",

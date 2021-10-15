@@ -133,6 +133,10 @@ function CreateUser({ user: users }) {
 
   const [usernameError, setUsernameError] = useState(false);
   const [passwordUserError, setPasswordError] = useState(false);
+  const [statusError, setStatusError] = useState(false)
+
+  const [id_error, setId_error] = useState(false)
+
   //   const [owner_telError, setOwner_telError] = useState(false)
 
   //   const [licensePlate, setLicensePlate] = useState([]);
@@ -208,18 +212,28 @@ function CreateUser({ user: users }) {
   const handleChangeStatus = (event) => {
     // console.log(company)
     setStatus(event.target.value);
+    setStatusError(false)
   };
 
   const useStyles = makeStyles(styles);
 
   const handleSetState = (event) => {
     if (event.target.id === "username") {
+      setUsernameError(false)
       setUsername(event.target.value);
     } else if (event.target.id === "password") {
-      console.log(event.target.value)
+      setPasswordError(false)
       setPasswordUser(event.target.value);
     } else if (event.target.id === "id") {
-      setId(event.target.value);
+      if(!isNaN(event.target.value) && event.target.value.length === 10){
+        setId(event.target.value);
+        setId_error(false)
+      }else if(event.target.value.includes('@') && event.target.value.includes('.com')){
+        setId(event.target.value);
+        setId_error(false)
+      }else{
+        setId_error(true)
+      }
     } 
     // else if (event.target.id === "groupID") {
     //   setGroupID(event.target.value);
@@ -234,55 +248,118 @@ function CreateUser({ user: users }) {
     status: status
   };
 
+  async function error_detect(){
+    let error = []
+    if(!username || usernameError){
+      error.push("error")
+      setUsernameError(true)
+    }
+
+    if(!passwordUser || passwordUserError){
+      error.push("error")
+      setPasswordError(true)
+    }
+
+    if(!status || statusError){
+      error.push("error")
+      setStatusError(true)
+    }
+
+    if(!id || id_error){
+      error.push("error")
+      setId_error(true)
+    }
+
+    // users.map(user => {
+    if(users === null){
+      let allUsers = await fetch("/api/user", {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+      }).then((response) => response.json());
+  
+      allUsers.map(user => {
+        if(user.id === id){
+          error.push("error")
+          setId_error(true)
+        }
+      })
+    }else{
+      let allUsers = await fetch("/api/user", {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+      }).then((response) => response.json());
+  
+      allUsers.map(user => {
+        if(user.id === id && user._id !== users._id){
+          error.push("error")
+          setId_error(true)
+        }
+      })
+    }
+
+    // })
+    
+    if(error[0] !== undefined){
+      console.log(error[0])
+      return true
+    } 
+    return false
+  }
+
 
   const onSubmit = async (str) => {
-    if (str === "add") {
-      setLoading(true)
-
-      await fetch("/api/user", {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(info), // body data type must match "Content-Type" header
-      })
+    if(await error_detect() === true){
+      
+      // console.log("yes")
+    }else{
+      if (str === "add") {
+        setLoading(true)
+  
+        await fetch("/api/user", {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(info), // body data type must match "Content-Type" header
+        })
+          .then(function(response){
+            setRegisterComplete(true)
+            router.push("/users")
+          })  
+  
+      } else if (str === "update") {
+        // console.log(customer._id)
+        // let id = ObjectId(customer._id)
+        setLoading_update(true)
+  
+        info["_id"] = users._id;
+  
+        // console.log(id)
+        await fetch("/api/user", {
+          method: "PUT", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(info), // body data type must match "Content-Type" header
+        })
         .then(function(response){
           setRegisterComplete(true)
           router.push("/users")
-        })  
+        }) 
+      }
 
-    } else if (str === "update") {
-      // console.log(customer._id)
-      // let id = ObjectId(customer._id)
-      setLoading_update(true)
-
-      info["_id"] = users._id;
-
-      // console.log(id)
-      await fetch("/api/user", {
-        method: "PUT", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(info), // body data type must match "Content-Type" header
-      })
-      .then(function(response){
-        setRegisterComplete(true)
-        router.push("/users")
-      }) 
     }
+
   };
 
   const classes = useStyles();
@@ -333,6 +410,7 @@ function CreateUser({ user: users }) {
                   value={status ? status : ""}
                   onChange={handleChangeStatus}
                   label="Status"
+                  error={statusError}
                 >
                   <MenuItem key="admin" value="admin">
                     แอดมิน
@@ -354,7 +432,7 @@ function CreateUser({ user: users }) {
                     formControlProps={{
                       fullWidth: true,
                       required: true,
-                      error: passwordUserError,
+                      error: id_error,
                     }}
                     inputProps={{
                       disabled: users ? true : false,
@@ -371,6 +449,7 @@ function CreateUser({ user: users }) {
                     id="password"
                     formControlProps={{
                       fullWidth: true,
+                      error: passwordUserError
                     }}
                     inputProps={{
                       // onChange: handleChange,

@@ -177,6 +177,7 @@ function CreateCustomer({customer:customers}) {
   const [ownerError, setOwnerError] = useState(false)
   const [owner_telError, setOwner_telError] = useState(false)
   const [tin_error, setTin_error] = useState(false)
+  const [contact_tel_Error, setContact_tel_Error] = useState(false)
 
   const [licensePlate, setLicensePlate] = useState([]);
   const [row, setRow] = useState([]);
@@ -343,7 +344,12 @@ function CreateCustomer({customer:customers}) {
     } else if (event.target.id === 'contact_name') {
       setContact_name(event.target.value)
     } else if (event.target.id === 'contact_tel') {
-      setContact_tel(event.target.value)
+      if(isNaN(event.target.value) || event.target.value.length !== 10){
+        setContact_tel_Error(true)
+      }else{
+        setContact_tel(event.target.value)
+
+      }
     } else if (event.target.id === 'contact_email') {
       setContact_email(event.target.value)
     } else if (event.target.id === 'address') {
@@ -393,7 +399,7 @@ function CreateCustomer({customer:customers}) {
   }
 
   const onSubmit = (str) => {
-    if(error_detect()){
+    if(error_detect() === true){
 
     }else{
       if(str === 'add'){
@@ -555,6 +561,7 @@ function CreateCustomer({customer:customers}) {
                     id="contact_tel"
                     formControlProps={{
                       fullWidth: true,
+                      error: contact_tel_Error
                     }}
                     inputProps={{
                       // onChange: handleChange,

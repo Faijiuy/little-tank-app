@@ -13,37 +13,6 @@ const AuthContext = createContext({
 
 export const AuthContextProvider = ({ children }) => {
     
-    console.log("children: ", children.type)
-    console.log("children: ", children)
-
-    // let test = children.type.toString().replace(/\/\*[\s\S]*?\*\//g, '')
-    //             .replace(/\/\/(.)*/g, '')        
-    //             .replace(/{[\s\S]*}/, '')
-    //             .replace(/=>/g, '')
-    //             .trim();
-
-    // console.log("test: ", test)
-
-    // var start = test.indexOf("(") + 1;
- 
-    // // End parameter names is just before last ')'
-    // var end = test.length - 1;
- 
-    // var result = test.substring(start, end).split(", ");
- 
-    // var params = [];
- 
-    // result.forEach(element => {
-         
-    //     // Removing any default value
-    //     element = element.replace(/=[\s\S]*/g, '').trim();
- 
-    //     if(element.length > 0)
-    //         params.push(element);
-    // });
-
-    // console.log("params: ", params)
-
 
     const [user_id, setUser_id] = useState(null)
 
@@ -54,32 +23,25 @@ export const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
 
     const context = { user_id, setUser_id, auth, setAuth, status, setStatus, setLoading }
-
-    useEffect(() => {
-        
-
-        if (sessionStorage.getItem('auth')) {
-           setAuth(sessionStorage.getItem('auth'));
-           setUser_id(sessionStorage.getItem('user_id'))
-           setStatus(sessionStorage.getItem('status'))
-           }
-        }, []);
     
-     useEffect(() => {
-        // setLoading(true)
-
+    useEffect(() => {
         setTimeout(() => {
             setLoading(false)
         }, 1000);
-
-
-        sessionStorage.setItem('auth', auth);
-        sessionStorage.setItem('user_id', user_id);
-        sessionStorage.setItem('status', status);
         
-     }, [auth]);
+        console.log(sessionStorage.getItem('auth'))
+        if (sessionStorage.getItem('auth') === 'true') {
+            console.log('should work')
 
-    // sessionStorage.getItem('auth')
+            setAuth(true);
+            setUser_id(sessionStorage.getItem('user_id'))
+            setStatus(sessionStorage.getItem('status'))
+
+            sessionStorage.setItem('auth', true);
+            sessionStorage.setItem('user_id', user_id);
+            sessionStorage.setItem('status', status);
+        }
+    }, []);
     
     const Layout = status === "admin" ? Admin : Normal
 
@@ -93,10 +55,11 @@ export const AuthContextProvider = ({ children }) => {
                 {children} 
             </Layout>  
            
-           : loading ? <h1>Loading</h1> : <LoginForm />}  
-           {/* {children}   */}
-                      {/* {user2 ? (children) : <SignInOutContainer />}   */}
-
+           : loading ? <h1>Loading</h1> : 
+            <div>
+                <h2 style={{alignContent: 'center', justifyContent: 'center', display: 'flex', fontWeight: 'bold'}}>Little-Tank Coupon Management</h2>
+                <LoginForm />
+            </div>}  
 
         </AuthContext.Provider>
     )
