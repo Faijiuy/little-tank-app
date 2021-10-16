@@ -326,7 +326,7 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
           </FormControl>
 
           <FormControl style={{width: 200, marginRight: 10}}>
-            <TextField label="วัน/เดือน/ปี" value={selectedDate} onChange={(e) => handleDateChange(e)}/>
+            <TextField label="วัน/เดือน/ปีที่ผลิต" value={selectedDate} onChange={(e) => handleDateChange(e)}/>
 
           </FormControl>
 
@@ -352,11 +352,12 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
           </FormControl>
           
 
-        <div style={{ height: 500, width: "100%" }} className={classes.root}>
+        <div style={{ height: 600, width: "100%" }} className={classes.root}>
         <br />
             <DataGrid
               rows={rows}
               columns={columns}
+              pageSize={10}
             //   hideFooterPagination={true}
             />
           </div>

@@ -11,6 +11,8 @@ import Admin from "layouts/Admin.js";
 import { useRouter } from "next/router";
 import Modal from "@material-ui/core/Modal";
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 import AuthContext from "../../stores/authContext";
 
@@ -182,7 +184,7 @@ function Customers({ customer: customers }) {
               onClick={() => handleOpen(params)}
               variant="contained"
               color="secondary"
-              startIcon={<EditIcon />}
+              startIcon={<DeleteIcon />}
             >
               ลบ
             </Button>

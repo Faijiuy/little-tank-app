@@ -22,6 +22,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "components/CustomButtons/Button.js";
 import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField'
 
 
 import Grid from "@material-ui/core/Grid";
@@ -174,7 +175,7 @@ function DeleteCoupon({ customers, coupons }) {
       (coupon) =>
         coupon.companyRef === company._id &&
         !coupon.used &&
-        coupon.generatedDate === date &&
+        (date  ? coupon.generatedDate.includes(date) : true) &&
         (type ? coupon.amount === Number(type) : true)
     );
    
@@ -189,6 +190,10 @@ function DeleteCoupon({ customers, coupons }) {
       });
     }, {});
   }
+
+  const handleDateChange = (e) => {
+    setDate(e.target.value)
+  };
 
   const handleChangeCompany = (event) => {
     setCompany(event.target.value);
@@ -333,22 +338,22 @@ function DeleteCoupon({ customers, coupons }) {
     setOpenModal(false)
   };
 
-  const handleDateChange = (selectedDate) => {
-    let todayDate = format(selectedDate, "dd/MM/yyyy");
+  // const handleDateChange = (selectedDate) => {
+  //   let todayDate = format(selectedDate, "dd/MM/yyyy");
 
-    if (selectedDate.getFullYear() >= 2564) {
-      let thaiDate = format(selectedDate, "dd/MM");
-      let mountDate = format(selectedDate, "MM/dd");
+  //   if (selectedDate.getFullYear() >= 2564) {
+  //     let thaiDate = format(selectedDate, "dd/MM");
+  //     let mountDate = format(selectedDate, "MM/dd");
 
-      setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543));
-      setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543));
-    } else {
-      let mountDate = format(selectedDate, "MM/dd/yyyy");
+  //     setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543));
+  //     setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543));
+  //   } else {
+  //     let mountDate = format(selectedDate, "MM/dd/yyyy");
 
-      setDate(todayDate);
-      setSelectedDate(mountDate);
-    }
-  };
+  //     setDate(todayDate);
+  //     setSelectedDate(mountDate);
+  //   }
+  // };
 
   const onSubmit_delete = () => {
     setLoading(true)
@@ -502,7 +507,7 @@ function DeleteCoupon({ customers, coupons }) {
             </Select>
           </FormControl>
 
-          <FormControl className={classes2.formControl}>
+          {/* <FormControl className={classes2.formControl}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
                 disableToolbar
@@ -519,6 +524,11 @@ function DeleteCoupon({ customers, coupons }) {
                 }}
               />
             </MuiPickersUtilsProvider>
+          </FormControl> */}
+
+          <FormControl className={classes2.formControl1}>
+            <TextField label="วัน/เดือน/ปีที่ผลิต" value={date} onChange={(e) => handleDateChange(e)}/>
+
           </FormControl>
 
           {/* <div> */}

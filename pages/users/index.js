@@ -10,7 +10,8 @@ import { connectToDatabase } from "../../util/mongodb";
 import Admin from "layouts/Admin.js";
 import { useRouter } from "next/router";
 import Modal from "@material-ui/core/Modal";
-import AuthContext from "../../stores/authContext";
+
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // import UserProfile from "components/UserProfile";
 
@@ -74,13 +75,13 @@ function Users({ user: users }) {
 
   const [loading, setLoading] = React.useState(false)
 
-  
+  console.log('session: ', sessionStorage.getItem('user_id'))
 
-  // const handleOpen = (params) => {
-  //   // console.log(params)
-  //   setUser(params.row);
-  //   setOpen(true);
-  // };
+  const handleOpen = (params) => {
+    console.log(params.row)
+    setUser(params.row);
+    setOpen(true);
+  };
 
   // const handleOpenLogout = () => setOpen(true);
 
@@ -98,28 +99,28 @@ function Users({ user: users }) {
   //   console.log(params)
   // }, []);
 
-  // const handleDelete = async () => {
-  //   setLoading(true)
+  const handleDelete = async () => {
+    setLoading(true)
 
-  //   await fetch("/api/user", {
-  //     method: "DELETE", // *GET, POST, PUT, DELETE, etc.
-  //     mode: "cors", // no-cors, *cors, same-origin
-  //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-  //     credentials: "same-origin", // include, *same-origin, omit
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       // 'Content-Type': 'application/x-www-form-urlencoded',
-  //     },
-  //     redirect: "follow", // manual, *follow, error
-  //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-  //     body: JSON.stringify(user), // body data type must match "Content-Type" header
-  //   })
-  //     .then(function(response){
-  //       setDeleteComplate(true)
-  //       router.reload()
+    await fetch("/api/user", {
+      method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(user), // body data type must match "Content-Type" header
+    })
+      .then(function(response){
+        setDeleteComplate(true)
+        router.reload()
 
-  //     })
-  // };
+      })
+  };
 
   // const signOut = () => {
   //   let signOutUser = {
@@ -180,7 +181,7 @@ function Users({ user: users }) {
       headerClassName: "super-app-theme--header",
       headerName: "แก้ไขข้อมูล",
       sortable: false,
-      width: 150,
+      width: 200,
       disableClickEventBubbling: true,
       renderCell: function edit(params) {
         return (
@@ -193,42 +194,47 @@ function Users({ user: users }) {
             >
               แก้ไข
             </Button>
-            {/* <Button
-              onClick={() => handleOpen(params)}
-              variant="contained"
-              color="secondary"
-              startIcon={<EditIcon />}
-            >
-              ลบ
-            </Button>
-            <Modal
-              open={user.username == params.row.username ? open : false}
-              onClose={handleClose}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            >
-              <div style={modalStyle} className={classes.paper}>
-                <h2 id="simple-modal-title">ยืนยันการลบ</h2>
-                <p id="simple-modal-description">
-                  ท่านต้องการลบผู้ใช้ {user.username} ใช่ไหม
-                </p>
 
-                <Button
-                  onClick={() => handleDelete()}
-                  variant="contained"
-                  color="primary"
-                >
-                  ยืนยัน
-                </Button>
-                <Button
-                  onClick={handleClose}
-                  variant="contained"
-                  color="secondary"
-                >
-                  ยกเลิก
-                </Button>
-              </div>
-            </Modal> */}
+            {sessionStorage.getItem('user_id') !== params.row._id ? 
+                <>
+                  <Button
+                    onClick={() => handleOpen(params)}
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<DeleteIcon />}
+                  >
+                    ลบ
+                  </Button>
+                  <Modal
+                    open={user.username == params.row.username ? open : false}
+                    onClose={handleClose}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                  >
+                    <div style={modalStyle} className={classes.paper}>
+                      <h2 id="simple-modal-title">ยืนยันการลบ</h2>
+                      <p id="simple-modal-description">
+                        ท่านต้องการลบผู้ใช้ {user.username} ใช่ไหม
+                      </p>
+
+                      <Button
+                        onClick={() => handleDelete()}
+                        variant="contained"
+                        color="primary"
+                      >
+                        ยืนยัน
+                      </Button>
+                      <Button
+                        onClick={handleClose}
+                        variant="contained"
+                        color="secondary"
+                      >
+                        ยกเลิก
+                      </Button>
+                    </div>
+                  </Modal>
+                </> : null
+            }
           </div>
         );
       },
@@ -244,7 +250,7 @@ function Users({ user: users }) {
             </Button>
           </Box>
           <br />
-          <div style={{ height: 400, width: "47%" }} className={classes.root}>
+          <div style={{ height: 400, width: "50%" }} className={classes.root}>
             <DataGrid
               rows={rowUser(users)}
               columns={columns}

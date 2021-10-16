@@ -22,6 +22,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "components/CustomButtons/Button.js";
 
+import TextField from '@material-ui/core/TextField'
+
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -114,7 +116,7 @@ function MissingCoupon({ customers, coupons }) {
   const [typeList, setTypeList] = useState([]);
 
   const [couponList, setCouponList] = useState([]);
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  // const [selectedDate, setSelectedDate] = React.useState('');
   const [date, setDate] = useState();
 
   useEffect(() => {
@@ -123,8 +125,11 @@ function MissingCoupon({ customers, coupons }) {
     if (new Date().getFullYear() >= 2564) {
       let thaiDate = format(new Date(), "dd/MM");
       setDate(thaiDate + "/" + (new Date().getFullYear() - 543));
+      // setSelectedDate(thaiDate + "/" + (new Date().getFullYear() - 543))
     } else {
       setDate(todayDate);
+      // setSelectedDate(todayDate)
+
     }
   }, []);
 
@@ -142,14 +147,14 @@ function MissingCoupon({ customers, coupons }) {
       (coupon) =>
         coupon.companyRef === company._id &&
         !coupon.used &&
-        coupon.generatedDate === date &&
+        (date  ? coupon.generatedDate.includes(date) : true) &&
         (type ? coupon.amount === Number(type) : true)
     );
     let missingList = coupons.filter(
       (coupon) =>
         coupon.companyRef === company._id &&
         coupon.used === "missing" &&
-        coupon.generatedDate === date &&
+        (date  ? coupon.generatedDate.includes(date) : true) &&
         (type ? coupon.amount === Number(type) : true)
     );
 
@@ -270,21 +275,26 @@ function MissingCoupon({ customers, coupons }) {
     </Card>
   );
 
-  const handleDateChange = (selectedDate) => {
-    let todayDate = format(selectedDate, "dd/MM/yyyy");
+  // const handleDateChange = (selectedDate) => {
+  //   let todayDate = format(selectedDate, "dd/MM/yyyy");
 
-    if (selectedDate.getFullYear() >= 2564) {
-      let thaiDate = format(selectedDate, "dd/MM");
-      let mountDate = format(selectedDate, "MM/dd");
+  //   if (selectedDate.getFullYear() >= 2564) {
+  //     let thaiDate = format(selectedDate, "dd/MM");
+  //     let mountDate = format(selectedDate, "MM/dd");
 
-      setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543));
-      setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543));
-    } else {
-      let mountDate = format(selectedDate, "MM/dd/yyyy");
+  //     setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543));
+  //     setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543));
+  //   } else {
+  //     let mountDate = format(selectedDate, "MM/dd/yyyy");
 
-      setDate(todayDate);
-      setSelectedDate(mountDate);
-    }
+  //     setDate(todayDate);
+  //     setSelectedDate(mountDate);
+  //   }
+  // };
+
+  
+  const handleDateChange = (e) => {
+    setDate(e.target.value)
   };
 
   const onSubmit_missing_coupon = (e) => {
@@ -402,7 +412,7 @@ function MissingCoupon({ customers, coupons }) {
             </Select>
           </FormControl>
 
-          <FormControl className={classes2.formControl}>
+          {/* <FormControl className={classes2.formControl}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
                 disableToolbar
@@ -419,6 +429,11 @@ function MissingCoupon({ customers, coupons }) {
                 }}
               />
             </MuiPickersUtilsProvider>
+          </FormControl> */}
+
+          <FormControl className={classes2.formControl1}>
+            <TextField label="วัน/เดือน/ปีที่ผลิต" value={date} onChange={(e) => handleDateChange(e)}/>
+
           </FormControl>
 
           <div style={{marginTop: "10px"}}>

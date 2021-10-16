@@ -21,6 +21,7 @@ import Person from "@material-ui/icons/Person";
 import Unarchive from "@material-ui/icons/Unarchive";
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 // import AuthContext from "../little-tank-app/stores/authContext";
 // import React, { useState, useEffect, useContext } from "react";
 
@@ -55,7 +56,7 @@ export const dashboardRoutes = [
     path: "/couponMgt",
     name: "คูปอง",
     pathArr: [{path: "/couponMgt/couponList", name: "รายการคูปอง"}, {path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}, {path: "/couponMgt/deleteCoupon", name: "ลบคูปอง"}, {path: "/coupon/printPage", name: "หน้าปริ้นคูปอง"}],
-    icon: Unarchive,
+    icon: AccountBalanceWalletIcon,
 
     // layout: "/admin",
   },
@@ -102,7 +103,7 @@ export const dashboardRoutes_normal = [
     path: "/couponMgt",
     name: "คูปอง",
     pathArr: [{path: "/couponMgt/couponList", name: "รายการคูปอง"}, {path: "/couponMgt/purchaseCoupon", name: "ซื้อคูปอง"}, {path: "/couponMgt/loseCoupon", name: "คูปองหาย"}, {path: "/couponMgt/deleteCoupon", name: "ลบคูปอง"}, {path: "/coupon/printPage", name: "หน้าปริ้นคูปอง"}],
-    icon: Unarchive,
+    icon: AccountBalanceWalletIcon,
 
     // layout: "/admin",
   },

@@ -12,6 +12,7 @@ const AuthContext = createContext({
 })
 
 export const AuthContextProvider = ({ children }) => {
+    console.log(children.type.name)
     
 
     const [user_id, setUser_id] = useState(null)
@@ -38,8 +39,8 @@ export const AuthContextProvider = ({ children }) => {
             setStatus(sessionStorage.getItem('status'))
 
             sessionStorage.setItem('auth', true);
-            sessionStorage.setItem('user_id', user_id);
-            sessionStorage.setItem('status', status);
+            sessionStorage.setItem('user_id', sessionStorage.getItem('user_id'));
+            sessionStorage.setItem('status', sessionStorage.getItem('status'));
         }
     }, []);
     
@@ -49,6 +50,8 @@ export const AuthContextProvider = ({ children }) => {
         <AuthContext.Provider value={context}>
            {auth ?
            (children.type.name == "" && children.type.length == 0 ) ? 
+            // children.type.name == 'PrintPage' ? 
+
            children
             : 
             <Layout>

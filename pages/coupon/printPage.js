@@ -130,7 +130,7 @@ function PrintPage() {
   };
 
   return (
-    <div >
+    <div>
       <Button variant="contained" color="secondary" className="no-print button-left sticky" onClick={() => router.push('/couponMgt/purchaseCoupon')}>
         ย้อนกลับ
       </Button>

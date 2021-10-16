@@ -136,6 +136,7 @@ function CreateUser({ user: users }) {
   const [statusError, setStatusError] = useState(false)
 
   const [id_error, setId_error] = useState(false)
+  const [id_duplicate, setId_duplicate] = useState(false)
 
   //   const [owner_telError, setOwner_telError] = useState(false)
 
@@ -172,6 +173,10 @@ function CreateUser({ user: users }) {
 
   const handleClose_pass = () => {
     setOpen_new(false);
+  };
+
+  const handleClose_id_duplicate = () => {
+    setId_duplicate(false);
   };
 
   useEffect(() => {
@@ -279,6 +284,7 @@ function CreateUser({ user: users }) {
       allUsers.map(user => {
         if(user.id === id){
           error.push("error")
+          setId_duplicate(true)
           setId_error(true)
         }
       })
@@ -290,6 +296,7 @@ function CreateUser({ user: users }) {
       allUsers.map(user => {
         if(user.id === id && user._id !== users._id){
           error.push("error")
+          setId_duplicate(true)
           setId_error(true)
         }
       })
@@ -435,7 +442,6 @@ function CreateUser({ user: users }) {
                       error: id_error,
                     }}
                     inputProps={{
-                      disabled: users ? true : false,
                       defaultValue: users !== null ? users.id : null,
                       // value: passwordUser,
                       onBlur: handleSetState,
@@ -596,6 +602,21 @@ function CreateUser({ user: users }) {
           {registerComplete ? <h2 style={{alignContent: "center"}}>อัพเดทสำเร็จ</h2> :
               loading_update ? <h2 style={{alignContent: "center"}}>Loading</h2> : null
           }
+          
+        </div>
+      </Modal>
+
+      <Modal
+        open={id_duplicate}
+        onClose={handleClose_id_duplicate}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div
+          style={modalStyle}
+          className={classes2.paper2}
+        >
+          <h2>ขออภัย เบอร์โทรศัพท์หรืออีเมลนี้ถูกใช้แล้ว</h2>
           
         </div>
       </Modal>

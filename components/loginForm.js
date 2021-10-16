@@ -16,6 +16,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useGridSelection } from "@material-ui/data-grid";
 import router from "next/router";
 import AuthContext from "../stores/authContext";
+import { format } from "date-fns";
 
 import moment from 'moment';
 
@@ -144,15 +145,22 @@ const LoginForm = () => {
       // console.log("UserProfile.getName() ==> ",UserProfile.getName())
       if (id == u.id && passwordUser == u.password) {
         let today = new Date()
-        let time = moment(today, "DD MM YYYY hh:mm:ss")
-
+        let time = moment(today, "DD/MM/YYYY hh:mm:ss")
         let split = time.format().split("T")
+
+        let todayDate = format(today, "dd/MM/yyyy");
+
+        if (today.getFullYear() >= 2564) {
+          let thaiDate = format(today, "dd/MM");
+          todayDate = thaiDate + "/" + (new Date().getFullYear() - 543);
+        } 
+     
 
         setLoginStatus(true);
         setAuth(true)
         setUser_id(u._id)
         setStatus(u.status)
-        setLoginTime(split[0] + " " + split[1].split("+")[0])
+        setLoginTime(todayDate + " " + split[1].split("+")[0])
         setLoading(true)
 
         sessionStorage.setItem('auth', true)
@@ -161,7 +169,7 @@ const LoginForm = () => {
 
         console.log("Login Successfully");
         user.loginStatus = true;
-        user.loginTime = split[0] + " " + split[1].split("+")[0]
+        user.loginTime = todayDate + " " + split[1].split("+")[0]
         // user.rememberStatus = checked;
       } else {
         setLoginStatus(false);
