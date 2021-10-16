@@ -76,13 +76,13 @@ function Users({ user: users }) {
 
   
 
-  const handleOpen = (params) => {
-    // console.log(params)
-    setUser(params.row);
-    setOpen(true);
-  };
+  // const handleOpen = (params) => {
+  //   // console.log(params)
+  //   setUser(params.row);
+  //   setOpen(true);
+  // };
 
-  const handleOpenLogout = () => setOpen(true);
+  // const handleOpenLogout = () => setOpen(true);
 
   const handleClose = () => {
     setOpen(false);
@@ -98,66 +98,66 @@ function Users({ user: users }) {
   //   console.log(params)
   // }, []);
 
-  const handleDelete = async () => {
-    setLoading(true)
+  // const handleDelete = async () => {
+  //   setLoading(true)
 
-    await fetch("/api/user", {
-      method: "DELETE", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(user), // body data type must match "Content-Type" header
-    })
-      .then(function(response){
-        setDeleteComplate(true)
-        router.reload()
+  //   await fetch("/api/user", {
+  //     method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+  //     mode: "cors", // no-cors, *cors, same-origin
+  //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+  //     credentials: "same-origin", // include, *same-origin, omit
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       // 'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+  //     redirect: "follow", // manual, *follow, error
+  //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  //     body: JSON.stringify(user), // body data type must match "Content-Type" header
+  //   })
+  //     .then(function(response){
+  //       setDeleteComplate(true)
+  //       router.reload()
 
-      })
-  };
+  //     })
+  // };
 
-  const signOut = () => {
-    let signOutUser = {
-      _id: "",
-      username: "",
-      password: "",
-      loginStatus: "",
-    };
-    // let locateUser = users.filter((u) => value == u.username);
-    users.map((u) => {
-      if (u.loginStatus == true) {
-        signOutUser._id = u._id;
-        signOutUser.username = u.username;
-        signOutUser.password = u.password;
-        signOutUser.loginStatus = loginStatus;
-      }
-    });
-    console.log("signOutUser ===> ", signOutUser);
-    fetch("/api/user/loginAPI", {
-      method: "PUT", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(signOutUser), // body data type must match "Content-Type" header
-    })
-      .then((response) => response.json())
-      // .then((data) => {
-      //   alert("Update Login Status:\nResponse from server " + data.message);
-      //   console.log(data);
-      // })
-      .then(router.reload());
-  };
+  // const signOut = () => {
+  //   let signOutUser = {
+  //     _id: "",
+  //     username: "",
+  //     password: "",
+  //     loginStatus: "",
+  //   };
+  //   // let locateUser = users.filter((u) => value == u.username);
+  //   users.map((u) => {
+  //     if (u.loginStatus == true) {
+  //       signOutUser._id = u._id;
+  //       signOutUser.username = u.username;
+  //       signOutUser.password = u.password;
+  //       signOutUser.loginStatus = loginStatus;
+  //     }
+  //   });
+  //   console.log("signOutUser ===> ", signOutUser);
+  //   fetch("/api/user/loginAPI", {
+  //     method: "PUT", // *GET, POST, PUT, DELETE, etc.
+  //     mode: "cors", // no-cors, *cors, same-origin
+  //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+  //     credentials: "same-origin", // include, *same-origin, omit
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       // 'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+  //     redirect: "follow", // manual, *follow, error
+  //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  //     body: JSON.stringify(signOutUser), // body data type must match "Content-Type" header
+  //   })
+  //     .then((response) => response.json())
+  //     // .then((data) => {
+  //     //   alert("Update Login Status:\nResponse from server " + data.message);
+  //     //   console.log(data);
+  //     // })
+  //     .then(router.reload());
+  // };
 
   const columns = [
     {
@@ -180,7 +180,7 @@ function Users({ user: users }) {
       headerClassName: "super-app-theme--header",
       headerName: "แก้ไขข้อมูล",
       sortable: false,
-      width: 200,
+      width: 150,
       disableClickEventBubbling: true,
       renderCell: function edit(params) {
         return (
@@ -193,7 +193,7 @@ function Users({ user: users }) {
             >
               แก้ไข
             </Button>
-            <Button
+            {/* <Button
               onClick={() => handleOpen(params)}
               variant="contained"
               color="secondary"
@@ -228,7 +228,7 @@ function Users({ user: users }) {
                   ยกเลิก
                 </Button>
               </div>
-            </Modal>
+            </Modal> */}
           </div>
         );
       },
@@ -244,7 +244,7 @@ function Users({ user: users }) {
             </Button>
           </Box>
           <br />
-          <div style={{ height: 400, width: "50%" }} className={classes.root}>
+          <div style={{ height: 400, width: "47%" }} className={classes.root}>
             <DataGrid
               rows={rowUser(users)}
               columns={columns}
