@@ -124,18 +124,14 @@ export default async function test(req, res) {
     let admin = await admins.filter(
       (admin) => admin.userId === id && admin.groupId.includes(GID)
     );
-    
-    // console.log("admins ", admins);
-    // console.log("admin ", admin);
-    // console.log(GID);
 
     let today = new Date()
     let todayDate = ""
 
     if(today.getFullYear >= 2564){
-      todayDate = (today.getFullYear() - 543) + "-" + format(today, "MM-dd"); 
+      todayDate = format(today, "dd/MM") + "/" + (today.getFullYear() - 543); 
     }else{
-      todayDate = format(today, "yyyy-MM-dd"); 
+      todayDate = format(today, "dd/MM/yyyy"); 
     }
 
     if (
@@ -162,6 +158,8 @@ export default async function test(req, res) {
                                                           coupon.used === true &&
                                                           coupon.usedDateTime === todayDate
                                                       );
+
+      console.log('couponToday: ', couponToday)
 
       let group2 = groupByKey(couponToday, "amount");
 
@@ -319,8 +317,8 @@ export default async function test(req, res) {
             qr.callback = function (err, value) {
               if (value) {
                 let today = new Date()
-                let recordDate = format(today, "dd-MM-yyyy"); 
-                let recordDate2 = format(today, "dd-MM"); 
+                let recordDate = format(today, "dd/MM/yyyy"); 
+                let recordDate2 = format(today, "dd/MM"); 
 
             
 
@@ -389,7 +387,7 @@ export default async function test(req, res) {
                     body: JSON.stringify({
                       code: value.result,
                       used: true,
-                      usedDateTime: today.getFullYear() >= 2564 ? recordDate2 + "-" + (today.getFullYear() - 543) : recordDate,
+                      usedDateTime: today.getFullYear() >= 2564 ? recordDate2 + "/" + (today.getFullYear() - 543) : recordDate,
                       recordedBy: {
                         userID: id,
                         name: recordby,
