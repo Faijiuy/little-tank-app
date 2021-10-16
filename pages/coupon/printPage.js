@@ -48,6 +48,8 @@ function PrintPage() {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(true)
+  const [loadingModal, setLoadingModal] = useState(false)
+
   const [customers, setCustomers] = useState([])
   const [printList, setPrintList] = useState([])
 
@@ -84,20 +86,25 @@ function PrintPage() {
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      {/* <h2 id="simple-modal-title"></h2> */}
-      <p id="simple-modal-description">
-        หากท่านทำการปริ้นท์แล้ว กรุณากดปุ่มยืนยัน หากยังไม่ได้ปริ้น กรุณากดปุ่มยกเลิก
-      </p>
-      <Button variant="contained" color="primary" onClick={() => handleClick()}>
-        ยืนยัน
-      </Button>
-      <Button variant="contained" color="secondary" onClick={handleClose}>
-        ปิด
-      </Button>
+
+      {loadingModal ? <h2>Loading</h2> : 
+        <>
+          <p id="simple-modal-description">
+            หากท่านทำการปริ้นท์แล้ว กรุณากดปุ่มยืนยัน หากยังไม่ได้ปริ้น กรุณากดปุ่มยกเลิก
+          </p>
+          <Button variant="contained" color="primary" onClick={() => handleClick()}>
+            ยืนยัน
+          </Button>
+          <Button variant="contained" color="secondary" onClick={handleClose}>
+            ปิด
+          </Button>
+        </>}
     </div>
   );
 
   const handleClick = () => {
+    setLoadingModal(true)
+
     async function toSubmit(){
       for(let i = 0; i < printList.length; i++){
         const promise_fetch = await new Promise(async (resolve) => {
