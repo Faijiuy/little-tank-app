@@ -62,10 +62,9 @@ export default async (req, res) => {
     await db.collection("user").updateOne(
       { _id: ObjectId(_id) },
       {
-        // _id: ObjectId(_id)
-        // _id: _id
         $set: {
             username: username,
+            id: id,
             password: password,
             status: status
         },

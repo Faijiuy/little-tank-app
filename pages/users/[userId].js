@@ -180,27 +180,13 @@ function CreateUser({ user: users }) {
   };
 
   useEffect(() => {
-    const user1 = {
-      username: "",
-      id: "",
-      password: "",
-      loginStatus: false,
-      status: ""
-    };
-
     if (users !== null) {
       setUsername(users.username);
       setId(users.id)
       setPasswordUser(users.password);
       setLoginStatus(users.loginStatus);
       setStatus(users.status)
-    } else {
-      setUsername(user1.username);
-      setId(user1.id)
-      setPasswordUser(user1.password);
-      setLoginStatus(user1.loginStatus);
-      setStatus(user1.status)
-    }
+    } 
   }, []);
 
   const handleChangePass = (e) => {
