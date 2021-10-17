@@ -23,6 +23,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Button from "components/CustomButtons/Button.js";
 
 import TextField from '@material-ui/core/TextField'
+import Modal from '@material-ui/core/Modal';
+
 
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
@@ -86,7 +88,30 @@ const useStyles2 = makeStyles((theme) => ({
       marginLeft: theme.spacing(3),
     },
   },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
 }));
+
+
+function getModalStyle() {
+  const top = 50 ;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 const boxStyle = {
   padding: 0,
@@ -118,6 +143,11 @@ function MissingCoupon({ customers, coupons }) {
   const [couponList, setCouponList] = useState([]);
   // const [selectedDate, setSelectedDate] = React.useState('');
   const [date, setDate] = useState();
+  const [open, setOpen] = useState(false);
+
+  const [modalStyle] = React.useState(getModalStyle);
+
+
 
   useEffect(() => {
     let todayDate = format(new Date(), "dd/MM/yyyy");
@@ -177,6 +207,14 @@ function MissingCoupon({ customers, coupons }) {
 
   const handleChangeType = (event) => {
     setType(event.target.value);
+  };
+
+  const handleOpenModal = () => {
+    setOpen(true)
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false)
   };
 
   const useStyles = makeStyles(styles);
@@ -298,7 +336,7 @@ function MissingCoupon({ customers, coupons }) {
   };
 
   const onSubmit_missing_coupon = (e) => {
-    // console.log("right === ", right)
+    setOpen(true)
 
     right.map((coupon) => {
       if (coupon["used"] == false) {
@@ -348,7 +386,7 @@ function MissingCoupon({ customers, coupons }) {
       }
     });
 
-    alert("ย้ายสำเร็จ");
+    
   };
 
   return (
@@ -482,6 +520,25 @@ function MissingCoupon({ customers, coupons }) {
         >
           ยืนยัน
         </Button>
+
+        <Modal
+          open={open}
+          onClose={handleCloseModal}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <div style={modalStyle} className={classes2.paper}>
+            <h2>ย้ายสำเร็จ</h2>
+
+            <Button
+              className={classes2.button}
+              onClick={() => handleCloseModal()}
+              color="primary"
+            >
+              ยืนยัน
+            </Button>
+          </div>
+        </Modal>
       </div>
     </div>
   );
