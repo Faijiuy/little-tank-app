@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import { StepperContext } from '../../pages/couponMgt/purchaseCoupon'
 
@@ -71,6 +71,8 @@ export default function Choose_Company() {
             total_table, setTotal_table, total_coupons, setTotal_coupons, text_rows, setText_rows,
             ordered_company, setOrdered_company, date, setDate } = useContext(StepperContext)
 
+  const [usedCoupon, setUsedCoupon] = useState([])
+
   const handleChangeCompany = (event) => {
     setTableState(true);
     setCompany(event.target.value);
@@ -79,6 +81,8 @@ export default function Choose_Company() {
 
   useEffect(() => {
     let coupons_in_company = coupons.filter(coupon => coupon.companyRef === company._id && coupon.used === false)
+
+    let coupons_in_company_used = coupons.filter(coupon => coupon.companyRef === company._id && coupon.used !== false)
 
     
     
@@ -104,6 +108,8 @@ export default function Choose_Company() {
       
       let sum = subtotal(array_rows);
       setTotal_table(sum)
+
+      setUsedCoupon(coupons_in_company_used)
 
     
 
@@ -184,7 +190,7 @@ export default function Choose_Company() {
               </TableRow>
             </TableBody>
           </Table>
-        </TableContainer></div> : <div style={{marginTop: "15px" ,marginLeft: "15px", fontSize: 20}}>บริษัทนี้ไม่มีประวัติการซื้อคูปอง</div>) : null
+        </TableContainer></div> : <div style={{marginTop: "15px" ,marginLeft: "15px", fontSize: 20}}>{usedCoupon[0] !== undefined ? <h3>บริษัทนี้ไม่มีคูปองเหลืออยู่</h3> : <h3>บริษัทนี้ไม่มีประวัติการซื้อคูปอง</h3>}</div>) : null
           }
         </div>
   )
