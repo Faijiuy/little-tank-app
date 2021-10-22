@@ -171,15 +171,15 @@ function DeleteCoupon({ customers, coupons }) {
   }, [company]);
 
   useEffect(() => {
-    let activeList = coupons.filter(
+    let unusedCoupons = coupons.filter(
       (coupon) =>
         coupon.companyRef === company._id &&
-        !coupon.used &&
+        (coupon.used !== true) &&
         (date  ? coupon.generatedDate.includes(date) : true) &&
         (type ? coupon.amount === Number(type) : true)
     );
    
-    setCouponList(activeList);
+    setCouponList(unusedCoupons);
   }, [company, date, type]);
 
   function groupByKey(array, key) {
@@ -267,6 +267,7 @@ function DeleteCoupon({ customers, coupons }) {
       <List className={classes.list} dense component="div" role="list">
         {items.map((value, index) => {
           const labelId = `transfer-list-all-item-${value}-label`;
+          const missing_text = (value.used === 'missing' ? '| คูปองสูญหาย' : '')
 
           return (
             <ListItem
@@ -285,7 +286,7 @@ function DeleteCoupon({ customers, coupons }) {
               </ListItemIcon>
               <ListItemText
                 id={labelId}
-                primary={`${value.generatedDate} | ราคา: ${value.amount} | ลำดับที่: ${value.runningNo}`}
+                primary={`${value.generatedDate} | ราคา: ${value.amount} | ลำดับที่: ${value.runningNo} ${missing_text}` }
               />
             </ListItem>
           );

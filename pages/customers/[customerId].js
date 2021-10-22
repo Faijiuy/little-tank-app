@@ -2,10 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-
-// layout for this page
-import Admin from "layouts/Admin.js";
-// core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
@@ -26,13 +22,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
-
-import LicensePlate_List from "../../components/customer/list"
-import LicensePlate_modal from "../../components/customer/modal"
-
-import AuthContext from "../../stores/authContext";
-
-
+// layout for this page
+import Admin from "layouts/Admin.js";
 
 export async function getServerSideProps(props) {
   const { db } = await connectToDatabase();
@@ -201,6 +192,8 @@ function CreateCustomer({customer:customers}) {
   const [loading_update, setLoading_update] = useState(false)
 
   const [registerComplete, setRegisterComplete] = useState(false)
+
+  const [edit_linegroup_id, setEdit_linegroup_id] = useState(false)
 
   const handleChangeText = (index, e) => {
     let newRow = [...licensePlate];
@@ -632,9 +625,9 @@ function CreateCustomer({customer:customers}) {
                         }}
                         inputProps={{
                           // onChange: handleChange,
-                          disabled: customers ? true : false,
+                          disabled: edit_linegroup_id ? false : true,
                           defaultValue: customers !== null ? customers.groupID : null,
-                          value: groupID,
+                          // value: groupID,
                           onBlur: handleSetState
                         }}
                       />
@@ -650,9 +643,16 @@ function CreateCustomer({customer:customers}) {
                         aria-describedby="simple-modal-description"
                       >
                         <div style={modalStyle} className={classes2.paper}>
-                          <h2 id="simple-modal-title">แก้ไขรหัส</h2>
+                          <p>ท่านต้องการแก้ไขรหัสไลน์กลุ่มใช่หรือไม่</p>
+                          <Button variant="contained" color="primary" className={classes.button} onClick={() => {setEdit_linegroup_id(true) 
+                                                                                                                 handleClose()}}>
+                            ใช่
+                          </Button>
+                          <Button variant="contained" color="secondary" className={classes.button} onClick={() => handleClose()}>
+                            ไม่ใช่
+                          </Button>
                         
-                          <form className={classes.root} noValidate autoComplete="off">
+                          {/* <form className={classes.root} noValidate autoComplete="off">
                           
                           <TextField name="LINE" label="รหัสไลน์" style={{ width: 350}} defaultValue={customers.groupID} onChange={(e) => handleChangePass(e)} />
                             <div>
@@ -687,7 +687,7 @@ function CreateCustomer({customer:customers}) {
                                 ยกเลิก
                               </Button>
                             </div>
-                        </form>
+                        </form> */}
 
                         </div>
                       </Modal>

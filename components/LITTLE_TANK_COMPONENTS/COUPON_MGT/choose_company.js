@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
-import { StepperContext } from '../../pages/couponMgt/purchaseCoupon'
+import { StepperContext } from '../../../pages/couponMgt/purchaseCoupon'
 
 import Admin from "layouts/Admin.js";
 

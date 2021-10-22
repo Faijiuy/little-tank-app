@@ -1,14 +1,8 @@
 import Admin from "layouts/Admin.js";
 import React, {useContext, useEffect} from "react";
 
-import { withStyles } from "@material-ui/core/styles";
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
-
 import { connectToDatabase } from "../../util/mongodb";
-import DeleteCoupon from "../../components/couponMgt/delete_coupon";
+import DeleteCoupon from "../../components/LITTLE_TANK_COMPONENTS/COUPON_MGT/delete_coupon";
 import AuthContext from "../../stores/authContext";
 
 export async function getServerSideProps() {

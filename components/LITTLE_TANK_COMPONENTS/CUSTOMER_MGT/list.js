@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import { LicenseContext } from '../../pages/customers/[customerId]';
+import { LicenseContext } from '../../../pages/customers/[customerId]';
 
 const useStyles = makeStyles((theme) => ({
   list: {

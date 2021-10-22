@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { StepperContext } from '../../pages/couponMgt/purchaseCoupon'
+import { StepperContext } from '../../../pages/couponMgt/purchaseCoupon'
 
 function thousands_separators(num) {
   var num_parts = num.toString().split(".");

@@ -15,7 +15,7 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useGridSelection } from "@material-ui/data-grid";
 import router from "next/router";
-import AuthContext from "../stores/authContext";
+import AuthContext from "../../../stores/authContext";
 import { format } from "date-fns";
 
 import moment from 'moment';

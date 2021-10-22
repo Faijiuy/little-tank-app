@@ -159,6 +159,8 @@ function CreateUser({ user: users }) {
 
   const [registerComplete, setRegisterComplete] = useState(false)
 
+  const [edit_password, setEdit_password] = useState(false)
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -445,7 +447,7 @@ function CreateUser({ user: users }) {
                     }}
                     inputProps={{
                       // onChange: handleChange,
-                      disabled: users ? true : false,
+                      disabled: edit_password ? false : true,
                       defaultValue: users !== null ? users.password : null,
                       // value: passwordUser,
                       onBlur: handleSetState,
@@ -468,68 +470,14 @@ function CreateUser({ user: users }) {
                       aria-describedby="simple-modal-description"
                     >
                       <div style={modalStyle} className={classes2.paper}>
-                        <h2 id="simple-modal-title">แก้ไขรหัส</h2>
-
-                        <form
-                          className={classes.root}
-                          noValidate
-                          autoComplete="off"
-                        >
-                          <TextField
-                            name="LINE"
-                            label="รหัสไลน์"
-                            style={{ width: 350 }}
-                            defaultValue={users.password}
-                            onChange={(e) => handleChangePass(e)}
-                          />
-                          <div>
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() => handleOpen_pass()}
-                              // className={classes.button}
-                            >
-                              ยืนยัน
-                            </Button>
-                            <Modal
-                              open={open_new}
-                              onClose={handleClose_pass}
-                              aria-labelledby="simple-modal-title"
-                              aria-describedby="simple-modal-description"
-                            >
-                              <div
-                                style={modalStyle}
-                                className={classes2.paper2}
-                              >
-                                <p id="simple-title">ท่านแน่ใจใช่ไหม</p>
-
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  onClick={handleChange_password}
-                                >
-                                  ยืนยัน
-                                </Button>
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  onClick={handleClose_pass}
-                                >
-                                  ยกเลิก
-                                </Button>
-                              </div>
-                            </Modal>
-
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={handleClose}
-                              // className={classes.button}
-                            >
-                              ยกเลิก
-                            </Button>
-                          </div>
-                        </form>
+                        <p>ท่านต้องการแก้ไขรหัสผ่านใช่หรือไม่</p>
+                        <Button variant="contained" color="primary" className={classes.button} onClick={() => {setEdit_password(true) 
+                                                                                                                handleClose()}}>
+                          ใช่
+                        </Button>
+                        <Button variant="contained" color="secondary" className={classes.button} onClick={() => handleClose()}>
+                          ไม่ใช่
+                        </Button>
                       </div>
                     </Modal>
                   </div>

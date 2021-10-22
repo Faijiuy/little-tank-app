@@ -12,9 +12,9 @@ import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import React, { useState, useEffect, useContext } from "react";
-import Choose_Company from "../../components/couponMgt/choose_company";
-import Buy_Coupons from "../../components/couponMgt/buy_coupons";
-import Confirm from "../../components/couponMgt/confirm";
+import Choose_Company from "../../components/LITTLE_TANK_COMPONENTS/COUPON_MGT/choose_company";
+import Buy_Coupons from "../../components/LITTLE_TANK_COMPONENTS/COUPON_MGT/buy_coupons";
+import Confirm from "../../components/LITTLE_TANK_COMPONENTS/COUPON_MGT/confirm";
 import Modal from '@material-ui/core/Modal';
 
 import { useRouter } from "next/router";
