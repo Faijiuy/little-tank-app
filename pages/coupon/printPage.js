@@ -1,6 +1,5 @@
 import Grid from "./Grid";
 import React, {useEffect, useState} from "react";
-import Box from '@material-ui/core/Box';
 import QRCode from "react-qr-code";
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
@@ -41,19 +40,16 @@ function getModalStyle() {
 }
 
 function PrintPage() {
-  // console.log(customers)
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [modalStyle] = React.useState(getModalStyle);
   const router = useRouter();
 
+  const [open, setOpen] = useState(false);
+  const [modalStyle] = useState(getModalStyle);
   const [isLoading, setIsLoading] = useState(true)
   const [loadingModal, setLoadingModal] = useState(false)
 
   const [customers, setCustomers] = useState([])
   const [printList, setPrintList] = useState([])
-
-  // const result = dotenv.config()
 
   useEffect(() => {
     async function fetchData(){
@@ -75,10 +71,6 @@ function PrintPage() {
   if(isLoading){
     return <h2>Loading..</h2>
   }
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);

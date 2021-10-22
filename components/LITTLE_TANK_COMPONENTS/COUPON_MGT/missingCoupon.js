@@ -1,20 +1,12 @@
-import Admin from "layouts/Admin.js";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import Box from "@material-ui/core/Box";
 
-import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
 import GridContainer from "components/Grid/GridContainer.js";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { DataGrid } from "@material-ui/data-grid";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -32,11 +24,6 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Divider from "@material-ui/core/Divider";
 
 import { format } from "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
 
 const styles = {
   root: {
@@ -141,7 +128,6 @@ function MissingCoupon({ customers, coupons }) {
   const [typeList, setTypeList] = useState([]);
 
   const [couponList, setCouponList] = useState([]);
-  // const [selectedDate, setSelectedDate] = React.useState('');
   const [date, setDate] = useState();
   const [open, setOpen] = useState(false);
 
@@ -155,11 +141,8 @@ function MissingCoupon({ customers, coupons }) {
     if (new Date().getFullYear() >= 2564) {
       let thaiDate = format(new Date(), "dd/MM");
       setDate(thaiDate + "/" + (new Date().getFullYear() - 543));
-      // setSelectedDate(thaiDate + "/" + (new Date().getFullYear() - 543))
     } else {
       setDate(todayDate);
-      // setSelectedDate(todayDate)
-
     }
   }, []);
 
@@ -313,23 +296,6 @@ function MissingCoupon({ customers, coupons }) {
     </Card>
   );
 
-  // const handleDateChange = (selectedDate) => {
-  //   let todayDate = format(selectedDate, "dd/MM/yyyy");
-
-  //   if (selectedDate.getFullYear() >= 2564) {
-  //     let thaiDate = format(selectedDate, "dd/MM");
-  //     let mountDate = format(selectedDate, "MM/dd");
-
-  //     setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543));
-  //     setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543));
-  //   } else {
-  //     let mountDate = format(selectedDate, "MM/dd/yyyy");
-
-  //     setDate(todayDate);
-  //     setSelectedDate(mountDate);
-  //   }
-  // };
-
   
   const handleDateChange = (e) => {
     setDate(e.target.value)
@@ -355,10 +321,6 @@ function MissingCoupon({ customers, coupons }) {
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(coupon), // body data type must match "Content-Type" header
         }).then((response) => response.json());
-        // .then((data) => {
-        //   alert("Add Item:\nResponse from server " + data.message);
-        //   alert("Newly added _id", data._id);
-        // });
       }
     });
 
@@ -379,10 +341,6 @@ function MissingCoupon({ customers, coupons }) {
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(coupon), // body data type must match "Content-Type" header
         }).then((response) => response.json());
-        // .then((data) => {
-        //   alert("Add Item:\nResponse from server " + data.message);
-        //   alert("Newly added _id", data._id);
-        // });
       }
     });
 
@@ -449,25 +407,6 @@ function MissingCoupon({ customers, coupons }) {
               })}
             </Select>
           </FormControl>
-
-          {/* <FormControl className={classes2.formControl}>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                disableToolbar
-                variant="outlined"
-                format="dd/MM/yyyy"
-                margin="normal"
-                id="date-picker-inline"
-                label="วันที่ผลิต"
-                onChange={handleDateChange}
-                // defaultValue={date}
-                value={selectedDate}
-                KeyboardButtonProps={{
-                  "aria-label": "change date",
-                }}
-              />
-            </MuiPickersUtilsProvider>
-          </FormControl> */}
 
           <FormControl className={classes2.formControl1}>
             <TextField label="วัน/เดือน/ปีที่ผลิต" value={date} onChange={(e) => handleDateChange(e)}/>
@@ -543,7 +482,5 @@ function MissingCoupon({ customers, coupons }) {
     </div>
   );
 }
-
-MissingCoupon.layout = Admin;
 
 export default MissingCoupon;

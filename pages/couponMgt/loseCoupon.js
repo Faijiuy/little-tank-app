@@ -1,4 +1,3 @@
-import Admin from "layouts/Admin.js";
 import React from "react";
 
 import { connectToDatabase } from "../../util/mongodb";
@@ -20,19 +19,12 @@ export async function getServerSideProps() {
 }
 
 
-
-
 const boxStyle = {
   padding: 30,
   margin: "50px",
 };
 
-function CouponMgt({ customer: customers, coupon: coupons }) {
-  const [expanded, setExpanded] = React.useState("panel1");
-
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
+function LoseCoupon({ customer: customers, coupon: coupons }) {
 
   return (
     <div style={boxStyle}>
@@ -41,6 +33,4 @@ function CouponMgt({ customer: customers, coupon: coupons }) {
   );
 }
 
-CouponMgt.layout = Admin;
-
-export default CouponMgt;
+export default LoseCoupon;

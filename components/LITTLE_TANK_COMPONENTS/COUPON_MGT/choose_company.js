@@ -1,23 +1,12 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-import TextField from '@material-ui/core/TextField'
+import React, { useContext, useEffect, useState } from 'react'
 import { StepperContext } from '../../../pages/couponMgt/purchaseCoupon'
 
-import Admin from "layouts/Admin.js";
-
 import { makeStyles } from '@material-ui/core/styles';
-
-import Grid from '@material-ui/core/Grid';
-
-
-
-// import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { DataGrid } from "@material-ui/data-grid";
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -54,29 +43,17 @@ return array
     }, {})
 }
 
-const useStyles2 = makeStyles((theme) => ({
-  select: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
-
 export default function Choose_Company() {
   // const classes2 = useStyles2();
 
   const { company, setCompany, customers, coupons, tableState, setTableState, classes, rows, setRows, 
-            total_table, setTotal_table, total_coupons, setTotal_coupons, text_rows, setText_rows,
-            ordered_company, setOrdered_company, date, setDate } = useContext(StepperContext)
+            total_table, setTotal_table, setOrdered_company, date } = useContext(StepperContext)
 
   const [usedCoupon, setUsedCoupon] = useState([])
 
   const handleChangeCompany = (event) => {
     setTableState(true);
     setCompany(event.target.value);
-    // setcompany_name(event.target.value.company)
   };
 
   useEffect(() => {
@@ -84,8 +61,6 @@ export default function Choose_Company() {
 
     let coupons_in_company_used = coupons.filter(coupon => coupon.companyRef === company._id && coupon.used !== false)
 
-    
-    
       let helper = {};
       let result = coupons_in_company.reduce(function(r, o) {
         let key = o.amount + '-' + o.generatedDate;

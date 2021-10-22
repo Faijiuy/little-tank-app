@@ -4,12 +4,7 @@ export default async (req, res) => {
   if (req.method === "PUT") {
     let data = req.body;
 
-    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let { username, userId, status, groupId } = data;
-
-    console.log("DATA ====> ", data);
-
-    // let _id = ObjectID(data._id);
 
     const { db } = await connectToDatabase();
 
@@ -35,7 +30,6 @@ export default async (req, res) => {
             console.log("Update Error", err);
             res.json(err);
           } else {
-            //   console.log("Newly Updated");
             res.json({
               message: "Password Update",
               data: data,
@@ -67,7 +61,6 @@ export default async (req, res) => {
               console.log("Update Error", err);
               res.json(err);
             } else {
-              //   console.log("Newly Updated");
               res.json({
                 message: "Password Update",
                 data: data,
@@ -99,7 +92,6 @@ export default async (req, res) => {
               console.log("Update Error", err);
               res.json(err);
             } else {
-              //   console.log("Newly Updated");
               res.json({
                 message: "Password Update",
                 data: data,
@@ -118,23 +110,16 @@ export default async (req, res) => {
   } else if(req.method === "DELETE"){
     let data = req.body;
 
-    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
       userId,
       
     } = data;
 
-    // let _id = ObjectId(data._id)
-    // delete data._id
-
-    console.log("data ==> ", data)
-    // console.log(data)
     const { db } = await connectToDatabase();
 
 
     await db.collection("admin").deleteOne(
       { userId: userId},
-      // { company: company},
 
       // callback
       (err, result) => {
@@ -142,7 +127,6 @@ export default async (req, res) => {
           console.log("Update Error", err);
           res.json(err);
         } else {
-          //   console.log("Newly Updated");
           res.json({
             message: "delete complete",
           });
@@ -150,8 +134,7 @@ export default async (req, res) => {
       }
     )
 
-  }
-  else if (req.method === "GET") {
+  } else if (req.method === "GET") {
     const { db } = await connectToDatabase();
     const admin = await db
       .collection("admin")

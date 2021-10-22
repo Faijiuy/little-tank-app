@@ -1,9 +1,5 @@
-import Admin from "layouts/Admin.js";
 import Typography from "@material-ui/core/Typography";
-
 import Grid from "@material-ui/core/Grid";
-
-import { connectToDatabase } from "../../util/mongodb";
 import { makeStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -17,14 +13,12 @@ import Buy_Coupons from "../../components/LITTLE_TANK_COMPONENTS/COUPON_MGT/buy_
 import Confirm from "../../components/LITTLE_TANK_COMPONENTS/COUPON_MGT/confirm";
 import Modal from '@material-ui/core/Modal';
 
+import { connectToDatabase } from "../../util/mongodb";
 import { useRouter } from "next/router";
 
 import { format } from "date-fns";
 import AuthContext from "../../stores/authContext";
 
-
-import { ObjectId } from "bson";
-import { object } from "prop-types";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -104,8 +98,6 @@ function getModalStyle() {
     transform: `translate(-${top}%, -${left}%)`,
   };
 }
-
-
 
 // Stepper
 function getSteps() {
@@ -252,9 +244,7 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
 
   const [total_table, setTotal_table] = useState();
   const [total_coupons, setTotal_coupons] = useState();
-  const [text_rows, setText_rows] = useState([
-    { price: null, qty: null, total: null },
-  ]);
+  const [text_rows, setText_rows] = useState([{ price: null, qty: null, total: null },]);
   const [date, setDate] = useState();
   const router = useRouter();
 
@@ -269,10 +259,6 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      {/* <h2 id="simple-modal-title"></h2> */}
-      {/* <p id="simple-modal-description">
-        หากท่านทำการปริ้นท์แล้ว กรุณากดปุ่มยืนยัน หากยังไม่ได้ปริ้น กรุณากดปุ่มยกเลิก
-      </p> */}
       {complete ? 
       <div>
         <p>ระบบทำการสร้างคูปองเรียบร้อยแล้ว สามารถไปที่หน้าปริ้นท์คูปองเพื่อทำการพิมพ์</p>
@@ -282,13 +268,10 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
         <Button variant="contained" color="secondary" className={classes.button} onClick={() => handleClose()}>
           ปิด
         </Button>
-
       </div> : 
       <p>
         ระบบกำลังทำการสร้างคูปอง กรุณารอสักครู่
-      </p>}
-
-      
+      </p>}    
     </div>
   );
 
@@ -304,12 +287,6 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
     let groupArray = groupByKey(filterCoupon, "amount");
 
     setOrdered_company(groupArray);
-  }, [company]);
-
-  useEffect(() => {
-    console.log(
-      Date("6131cca312d2f884f5688130") < Date("613096934aef07e6ba8df98b")
-    );
   }, [company]);
 
   const handleNext = () => {
@@ -362,7 +339,6 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
 
   return (
     <div style={boxStyle}>
-      {/* {(sessionStorage.getItem('status') === "root" || sessionStorage.getItem('status') === "admin") ? ( */}
       <StepperContext.Provider
         value={{
           company,
@@ -478,12 +454,9 @@ function PurchaseCoupon({ customer: customers, coupon: coupons }) {
           
         </Grid>
       </StepperContext.Provider>
-      {/*  ) : <h1>คุณไม่มีสิทธิในการเข้าถึงหน้านี้</h1>} */}
     </div>
   );
 }
-
-PurchaseCoupon.layout = Admin;
 
 export { StepperContext };
 

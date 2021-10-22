@@ -1,33 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 
-// layout for this page
-import Admin from "layouts/Admin.js";
-// core components
+import { makeStyles } from "@material-ui/core/styles";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-
+import Modal from "@material-ui/core/Modal";
 
 import { connectToDatabase } from "../../util/mongodb";
 import { ObjectId } from "bson";
-import Modal from "@material-ui/core/Modal";
-import TextField from "@material-ui/core/TextField";
-import { Box } from "@material-ui/core";
-
-
 
 export async function getServerSideProps(props) {
   const { db } = await connectToDatabase();
@@ -116,18 +106,11 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-// const LicenseContext = React.createContext();
-
 function CreateUser({ user: users }) {
-  console.log("users ===> ", users);
 
   const [username, setUsername] = useState();
   const [passwordUser, setPasswordUser] = useState();
   const [loginStatus, setLoginStatus] = useState(false);
-  //   const [owner_email, setOwner_email] = useState()
-  //   const [contact_name, setContact_name] = useState()
-  //   const [contact_tel, setContact_tel] = useState()
-  //   const [contact_email, setContact_email] = useState()
   const [id, setId] = useState("")
   const [status, setStatus] = useState("");
 
@@ -138,14 +121,6 @@ function CreateUser({ user: users }) {
   const [id_error, setId_error] = useState(false)
   const [id_duplicate, setId_duplicate] = useState(false)
 
-  //   const [owner_telError, setOwner_telError] = useState(false)
-
-  //   const [licensePlate, setLicensePlate] = useState([]);
-  const [row, setRow] = useState([]);
-
-  //   const [address, setAddress] = useState()
-  //   const [TIN, setTIN] = useState()
-  //   const [groupID, setGroupID] = useState()
   const [new_passwordUser, setNew_PasswordUser] = useState();
 
   const router = useRouter();
@@ -228,9 +203,6 @@ function CreateUser({ user: users }) {
         setId_error(true)
       }
     } 
-    // else if (event.target.id === "groupID") {
-    //   setGroupID(event.target.value);
-    // }
   };
 
   const info = {
@@ -327,8 +299,7 @@ function CreateUser({ user: users }) {
           })  
   
       } else if (str === "update") {
-        // console.log(customer._id)
-        // let id = ObjectId(customer._id)
+
         setLoading_update(true)
   
         info["_id"] = users._id;
@@ -361,7 +332,6 @@ function CreateUser({ user: users }) {
   const classes2 = useStyles2();
 
   return (
-    // <form onSubmit={handleSubmit(onSubmit)}>
     <div>
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
@@ -555,25 +525,8 @@ function CreateUser({ user: users }) {
         </div>
       </Modal>
 
-      {/* <Box
-        className="no-print"
-        bgcolor="secondary.main"
-        color="secondary.contrastText"
-        p={2}
-      >
-        <h4>สถานะ</h4>
-        <ul>
-          <li>ธรรมดา : ไม่สามารถเข้าถึงหน้า ซื้อคูปอง และ การจัดการผู้ใช้ได้</li>
-          <li>แอดมิน : สามารถเข้าถึงได้ทุกหน้า</li>
-        </ul> 
-        
-      </Box> */}
     </div>
   );
 }
-
-CreateUser.layout = Admin;
-
-// export { LicenseContext };
 
 export default CreateUser;

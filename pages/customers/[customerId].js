@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
-// @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -8,22 +7,18 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
-import { connectToDatabase } from "../../util/mongodb";
-import { ObjectId } from 'bson';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField'
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
-// layout for this page
-import Admin from "layouts/Admin.js";
+import { connectToDatabase } from "../../util/mongodb";
+import { ObjectId } from 'bson';
+
 
 export async function getServerSideProps(props) {
   const { db } = await connectToDatabase();
@@ -132,9 +127,6 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-
-
-
 const LicenseContext = React.createContext()
 
 
@@ -143,18 +135,6 @@ function CreateCustomer({customer:customers}) {
 
   const classes = useStyles();
   const classes2 = useStyles2();
-  
-  // const { user2, status, auth, setAuth } = useContext(AuthContext)
-
-  // console.log("user2: ", user2)
-
-  // useEffect(() => {
-  //   console.log("user2: ", user2)
-  // }, [])
-
-  // console.log(user2, status, auth)
-  // console.log("customerers ===> ", customers);
-
 
   const [company, setCompany] = useState()
   const [owner, setOwner] = useState()
@@ -171,8 +151,6 @@ function CreateCustomer({customer:customers}) {
   const [contact_tel_Error, setContact_tel_Error] = useState(false)
 
   const [licensePlate, setLicensePlate] = useState([]);
-  const [row, setRow] = useState([]);
-
 
   const [address, setAddress] = useState()
   const [TIN, setTIN] = useState()
@@ -304,20 +282,6 @@ function CreateCustomer({customer:customers}) {
     }
   },[])
 
-  const handleChangePass = (e) => {
-    setNew_GroupID(e.target.value)
-  }
-
-  const handleChange_groupId = () => {
-    setGroupID(new_groupID)
-    setOpen(false)
-    setOpen_new(false)
-    console.log(groupID)
-  }
-
-
-  
-
   const handleSetState = (event) => {
     if (event.target.id === 'company') {
       setCompanyError(false)
@@ -341,7 +305,6 @@ function CreateCustomer({customer:customers}) {
         setContact_tel_Error(true)
       }else{
         setContact_tel(event.target.value)
-
       }
     } else if (event.target.id === 'contact_email') {
       setContact_email(event.target.value)
@@ -353,13 +316,11 @@ function CreateCustomer({customer:customers}) {
       }else{
         setTin_error(false)
         setTIN(event.target.value)
-
       }
     } else if (event.target.id === 'groupID') {
       setGroupID(event.target.value)
     }
   }
-
 
   const info = {
     company: company,
@@ -398,7 +359,6 @@ function CreateCustomer({customer:customers}) {
       if(str === 'add'){
         setLoading(true)
   
-  
         fetch('/api/customer', {
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, *cors, same-origin
@@ -418,13 +378,10 @@ function CreateCustomer({customer:customers}) {
           }) 
           
         }else if(str === 'update'){
-          // console.log(customer._id)
-          // let id = ObjectId(customer._id)
           setLoading_update(true)
           
           info["_id"] = customers._id
   
-          // console.log(id)
           fetch('/api/customer', {
             method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
@@ -443,17 +400,10 @@ function CreateCustomer({customer:customers}) {
             router.push("/customers")
           }) 
         }
-
     }
-
-
-
   }
 
-  
-
   return (
-    // <form onSubmit={handleSubmit(onSubmit)}>
     <div>
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
@@ -475,7 +425,6 @@ function CreateCustomer({customer:customers}) {
                     }}
                     inputProps={{
                       defaultValue: customers !== null ? customers.company : null,
-                      // onChange: handleChange,
                       onBlur: handleSetState,      
                     }}
                   />
@@ -494,7 +443,6 @@ function CreateCustomer({customer:customers}) {
                       error: ownerError
                     }}
                     inputProps={{
-                      // onChange: handleChange,
                       defaultValue: customers !== null ? customers.owner : null,
                       onBlur: handleSetState
                     }}
@@ -506,11 +454,9 @@ function CreateCustomer({customer:customers}) {
                     id="owner_tel"
                     formControlProps={{
                       fullWidth: true,
-                      // required: true,
                       error: owner_telError
                     }}
                     inputProps={{
-                      // onChange: handleChange,
                       defaultValue: customers !== null ? customers.owner_tel : null,
                       onBlur: handleSetState
                     }}
@@ -524,7 +470,6 @@ function CreateCustomer({customer:customers}) {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      // onChange: handleChange,
                       defaultValue: customers !== null ? customers.owner_email : null,
                       onBlur: handleSetState
                     }}
@@ -541,7 +486,6 @@ function CreateCustomer({customer:customers}) {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      // onChange: handleChange,
                       defaultValue: customers !== null ? customers.contact_name : null,
                       onBlur: handleSetState
                     }}
@@ -557,7 +501,6 @@ function CreateCustomer({customer:customers}) {
                       error: contact_tel_Error
                     }}
                     inputProps={{
-                      // onChange: handleChange,
                       defaultValue: customers !== null ? customers.contact_tel : null,
                       onBlur: handleSetState
                     }}
@@ -571,7 +514,6 @@ function CreateCustomer({customer:customers}) {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      // onChange: handleChange,
                       defaultValue: customers !== null ? customers.contact_email : null,
                       onBlur: handleSetState
                     }}
@@ -587,9 +529,7 @@ function CreateCustomer({customer:customers}) {
                   formControlProps={{
                     fullWidth: true,
                   }}
-                  // fullWidth={true}
                   inputProps={{
-                    // onChange: handleChange,
                     defaultValue: customers !== null ? customers.address : null,
                     onBlur: handleSetState
                   }}
@@ -607,7 +547,6 @@ function CreateCustomer({customer:customers}) {
                       error: tin_error
                     }}
                     inputProps={{
-                      // onChange: handleChange,
                       defaultValue: customers !== null ? customers.TIN : null,
                       onBlur: handleSetState
                     }}
@@ -624,10 +563,8 @@ function CreateCustomer({customer:customers}) {
                           fullWidth: true,
                         }}
                         inputProps={{
-                          // onChange: handleChange,
                           disabled: edit_linegroup_id ? false : true,
                           defaultValue: customers !== null ? customers.groupID : null,
-                          // value: groupID,
                           onBlur: handleSetState
                         }}
                       />
@@ -651,43 +588,6 @@ function CreateCustomer({customer:customers}) {
                           <Button variant="contained" color="secondary" className={classes.button} onClick={() => handleClose()}>
                             ไม่ใช่
                           </Button>
-                        
-                          {/* <form className={classes.root} noValidate autoComplete="off">
-                          
-                          <TextField name="LINE" label="รหัสไลน์" style={{ width: 350}} defaultValue={customers.groupID} onChange={(e) => handleChangePass(e)} />
-                            <div>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleOpen_pass()}
-                                // className={classes.button}
-                              >
-                                ยืนยัน
-                              </Button>
-                              <Modal
-                                open={open_new}
-                                onClose={handleClose_pass}
-                                aria-labelledby="simple-modal-title"
-                                aria-describedby="simple-modal-description"
-                              >
-                                <div style={modalStyle} className={classes2.paper2}>
-                                <p id="simple-title">ท่านแน่ใจใช่ไหม</p>
-
-                                <Button variant="contained" color="primary" onClick={handleChange_groupId}>ยืนยัน</Button>
-                                <Button variant="contained" color="primary" onClick={handleClose_pass}>ยกเลิก</Button>
-                                </div>
-                              </Modal>
-
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleClose}
-                                // className={classes.button}
-                              >
-                                ยกเลิก
-                              </Button>
-                            </div>
-                        </form> */}
 
                         </div>
                       </Modal>
@@ -702,39 +602,27 @@ function CreateCustomer({customer:customers}) {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      // onChange: handleChange,
                       defaultValue: customers !== null ? customers.groupID : null,
                       onBlur: handleSetState
                     }}
                   />
                 </GridItem>)}
 
-              
-
               </GridContainer>
 
               <GridContainer>
 
-                <br />
+                <br />      
+                <List className={classes.list} subheader={<li />}>
+                  <ListSubheader>เลขทะเบียนรถ</ListSubheader>
+                    {licensePlate.map((row, index) => (
+                        <ListItem key={index}>
+                        <ListItemText primary={row} />
+                        </ListItem>
 
-              {/* <LicenseContext.Provider value={{ licensePlate, setLicensePlate }}> */}
-                
-                {/* <span> */}
-                  <List className={classes.list} subheader={<li />}>
-                    <ListSubheader>เลขทะเบียนรถ</ListSubheader>
-                      {licensePlate.map((row, index) => (
-                          <ListItem key={index}>
-                          <ListItemText primary={row} />
-                          </ListItem>
+                    ))} 
+                </List>
 
-                      ))} 
-                  </List>
-                {/* </span> */}
-                {/* <span>
-                <LicensePlate_modal />
-                </span> */}
-
-                {/* <span> */}
                   <Button style={{marginTop: 10, marginLeft: 10, height: 40}} onClick={() => setOpenLicensePlateModal(true)}>
                     {licensePlate[0] !== undefined ? "แก้ไขเลขทะเบียนรถ" : "แก้ไข/เพิ่มเลขทะเบียนรถ"} 
                   </Button>
@@ -746,9 +634,7 @@ function CreateCustomer({customer:customers}) {
                   >
                     {body}
                   </Modal>
-                {/* </span> */}
                 </GridContainer>
-              {/* </LicenseContext.Provider> */}
             </CardBody>
             <CardFooter>
               <div>
@@ -799,8 +685,6 @@ function CreateCustomer({customer:customers}) {
       </div>
   );
 }
-
-CreateCustomer.layout = Admin;
 
 export {LicenseContext}
 

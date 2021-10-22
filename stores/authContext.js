@@ -47,16 +47,9 @@ export const AuthContextProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={context}>
            {auth ?
-           (children.type.name == "" && children.type.length == 0 ) ? 
-            // children.type.name == 'PrintPage' ? 
-
-           children
-            : 
-            <Layout>
-                {children} 
-            </Layout>  
+           (children.type.name == "" && children.type.length == 0 ) ? children : <Layout>{children} </Layout>  
            
-           : loading ? <h1>Loading</h1> : 
+            : loading ? <h1>Loading</h1> : 
             <div>
                 <h2 style={{alignContent: 'center', justifyContent: 'center', display: 'flex', fontWeight: 'bold'}}>Little-Tank Coupon Management</h2>
                 <LoginForm />

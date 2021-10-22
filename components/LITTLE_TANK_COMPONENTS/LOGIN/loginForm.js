@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { useGridSelection } from "@material-ui/data-grid";
 import router from "next/router";
 import AuthContext from "../../../stores/authContext";
 import { format } from "date-fns";
@@ -21,12 +20,9 @@ import { format } from "date-fns";
 import moment from 'moment';
 
 moment().format();
-// import UserProfile from './UserProfile';
 
 const LoginForm = () => {
   const [loginTime, setLoginTime] = useState()
-
-
 
   let users = [];
   let user = {
@@ -37,7 +33,6 @@ const LoginForm = () => {
     status: "",
     loginStatus: false,
     loginTime: loginTime
-    // rememberStatus: false
   };
 
   useEffect(() => {
@@ -47,29 +42,14 @@ const LoginForm = () => {
       .then((response) => response.json())
       .then((data) => {
         users.push(...data);
-        // console.log("data ===> ", data);
       });
-    // console.log("users ====> ", users);
   });
-
-  // let user = fetch(process.env.API + "/user", {
-  //   method: "GET", // *GET, POST, PUT, DELETE, etc.
-  // })
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     users.push(data);
-  //     console.log(data);
-  //   });
-  // console.log("user ====> ", users);;
-  const { auth, setUser_id, setAuth, setStatus, status, setLoading } = useContext(AuthContext)
-
+  const { setUser_id, setAuth, setStatus, setLoading } = useContext(AuthContext)
 
   const [username, setUsername] = useState("");
   const [id, setId] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
-  // const [checked, setChecked] = useState(false);
   const [loginStatus, setLoginStatus] = useState(false);
-
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -110,10 +90,6 @@ const LoginForm = () => {
     setPasswordUser(event.target.value);
   };
 
-  // const handleChange = (event) => {
-  //   setChecked(event.target.checked);
-  // };
-
   const handleKeypress = (e) => {
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
@@ -125,12 +101,6 @@ const LoginForm = () => {
   const handleSubmit = () => {
     console.log(
       "Click\nผู้ใช้: " + username
-      // +
-      // "\nรหัสผ่าน: " +
-      // passwordUser
-      // +
-      // "\nCheck: " +
-      // checked
     );
 
     let filterUser = users.filter(
@@ -141,8 +111,7 @@ const LoginForm = () => {
       user._id = u._id;
       user.id = u.id;
       user.password = u.password;
-      // UserProfile.setName(u.username);
-      // console.log("UserProfile.getName() ==> ",UserProfile.getName())
+
       if (id == u.id && passwordUser == u.password) {
         let today = new Date()
         let time = moment(today, "DD/MM/YYYY hh:mm:ss")
@@ -155,7 +124,6 @@ const LoginForm = () => {
           todayDate = thaiDate + "/" + (new Date().getFullYear() - 543);
         } 
      
-
         setLoginStatus(true);
         setAuth(true)
         setUser_id(u._id)
@@ -170,17 +138,15 @@ const LoginForm = () => {
         console.log("Login Successfully");
         user.loginStatus = true;
         user.loginTime = todayDate + " " + split[1].split("+")[0]
-        // user.rememberStatus = checked;
+
       } else {
         setLoginStatus(false);
         console.log("error");
         console.log(loginStatus);
         user.loginStatus = false;
-        // user.rememberStatus = checked;
       }
     });
 
-    // setTimeout(() => {
     fetch("/api/user/loginAPI", {
       method: "PUT", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -196,13 +162,6 @@ const LoginForm = () => {
     })
       .then((response) => response.json())
       .then(router.push("/dashboard"))
-      // .then((data) => {
-      //   alert("Update Login Status:\nResponse from server " + data.message);
-      //   console.log(data);
-      // })
-      ;
-    // }, 2000);
-    // loginStatus ?  : null
   };
 
   return (
@@ -236,28 +195,14 @@ const LoginForm = () => {
             required
           />
           <br />
-          {/*<FormControlLabel
-            control={
-              <Checkbox
-                checked={checked}
-                onChange={handleChange}
-                name="checkedB"
-                color="primary"
-              />
-            }
-            label="จดจำฉันไว้ในระบบ"
-          />*/}
           <Button
             type="submit"
             color="primary"
             variant="contained"
             onClick={
               () => {
-                // handleOpen();
                 handleSubmit();
               }
-              // () => onSubmit()
-              // alert("ผู้ใช้: " + username + "\nรหัสผ่าน: " + passwordUser + "\nCheck: " + checked)
             }
             fullWidth
             onKeyPress={handleKeypress}
@@ -303,10 +248,6 @@ const LoginForm = () => {
             </Box>
           </Modal>
         </FormControl>
-        {/*<Typography>
-          <br />
-          <Link href="#"> ลืมรหัสผ่าน</Link>
-        </Typography>*/}
       </Paper>
     </Grid>
   );

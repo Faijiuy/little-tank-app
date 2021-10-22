@@ -5,17 +5,12 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { connectToDatabase } from "../../util/mongodb";
-import Admin from "layouts/Admin.js";
-import { useRouter } from "next/router";
 import Modal from "@material-ui/core/Modal";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-
-import AuthContext from "../../stores/authContext";
-
+import { connectToDatabase } from "../../util/mongodb";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -79,13 +74,7 @@ function Customers({ customer: customers }) {
 
   const [loading, setLoading] = React.useState(false)
 
-  const { user2, status, auth, setAuth } = React.useContext(AuthContext)
-
-  console.log("user2: ", user2)
-
-
   const handleOpen = (params) => {
-    // console.log(params)
     setCompany(params.row);
     setOpen(true);
   };
@@ -101,9 +90,6 @@ function Customers({ customer: customers }) {
     setEditRowsModel(params.model);
   }, []);
 
-  // const handleBlur = React.useCallback((params) => {
-  //   console.log(params)
-  // }, []);
   const redirect = (path) => {
     router.push(path)
   }
@@ -172,7 +158,6 @@ function Customers({ customer: customers }) {
         return (
           <div>
             <Button
-              // href={"/customers/" + customers[params.row.id]._id}
               onClick={() => redirect("/customers/" + customers[params.row.id]._id)}
               variant="contained"
               color="primary"
@@ -226,17 +211,11 @@ function Customers({ customer: customers }) {
     <div>
         <Box style={boxStyle}>
           <h3>รายชื่อลูกค้า
-          {/* <Box display="flex" > */}
-            {/* <Button variant="contained" color="primary" href="customers/create" style={{position: "relative", left: 610, width: 200, height: 50}}> */}
             <Button variant="contained" color="primary" onClick={()=> redirect("/customers/create")} style={{float: "right", width: 200, height: 50}}> 
               <AddIcon />เพิ่มบริษัท
-            </Button>
-          {/* </Box> */}
-            
+            </Button>            
           </h3>
           <div style={{ width: "100%" }}>
-            {/* <Box style={boxStyle}> */}
-              {/* <br /> */}
               <div style={{ height: 500, width: "100%" }} className={classes.root}>
                 <DataGrid
                   rows={rowCustomer(customers)}
@@ -244,12 +223,8 @@ function Customers({ customer: customers }) {
                   editRowsModel={editRowsModel}
                   onEditRowModelChange={handleEditRowModelChange}
                   hideFooterPagination={true}
-
-                  // checkboxSelection={handleSelectRow}
-                  // icons={EditIcon}
                 />
               </div>
-            {/* </Box> */}
           </div>
 
         </Box>
@@ -293,7 +268,5 @@ const rowCustomer = (props) => {
 
   return row;
 };
-
-Customers.layout = Admin;
 
 export default Customers;

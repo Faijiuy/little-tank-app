@@ -1,20 +1,11 @@
-import Admin from "layouts/Admin.js";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Box from "@material-ui/core/Box";
-
-import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
 import GridContainer from "components/Grid/GridContainer.js";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { DataGrid } from "@material-ui/data-grid";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -24,18 +15,12 @@ import Button from "components/CustomButtons/Button.js";
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField'
 
-
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Divider from "@material-ui/core/Divider";
 
 import { format } from "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
 
 const styles = {
   root: {
@@ -141,7 +126,6 @@ function DeleteCoupon({ customers, coupons }) {
   const [typeList, setTypeList] = useState([]);
 
   const [couponList, setCouponList] = useState([]);
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [date, setDate] = useState();
 
   const [modalStyle] = React.useState(getModalStyle);
@@ -229,18 +213,6 @@ function DeleteCoupon({ customers, coupons }) {
       setChecked(union(checked, items));
     }
   };
-
-//   const handleCheckedRight = () => {
-//     setRight(right.concat(leftChecked));
-//     setCouponList(not(couponList, leftChecked));
-//     setChecked(not(checked, leftChecked));
-//   };
-
-//   const handleCheckedLeft = () => {
-//     setCouponList(couponList.concat(rightChecked));
-//     setRight(not(right, rightChecked));
-//     setChecked(not(checked, rightChecked));
-//   };
 
   const customList = (title, items) => (
     <Card>
@@ -339,23 +311,6 @@ function DeleteCoupon({ customers, coupons }) {
     setOpenModal(false)
   };
 
-  // const handleDateChange = (selectedDate) => {
-  //   let todayDate = format(selectedDate, "dd/MM/yyyy");
-
-  //   if (selectedDate.getFullYear() >= 2564) {
-  //     let thaiDate = format(selectedDate, "dd/MM");
-  //     let mountDate = format(selectedDate, "MM/dd");
-
-  //     setDate(thaiDate + "/" + (selectedDate.getFullYear() - 543));
-  //     setSelectedDate(mountDate + "/" + (selectedDate.getFullYear() - 543));
-  //   } else {
-  //     let mountDate = format(selectedDate, "MM/dd/yyyy");
-
-  //     setDate(todayDate);
-  //     setSelectedDate(mountDate);
-  //   }
-  // };
-
   const onSubmit_delete = () => {
     setLoading(true)
     
@@ -384,88 +339,17 @@ function DeleteCoupon({ customers, coupons }) {
           console.log(i, value)
         })
       }
-      
-      
-      console.log("done")
+            
       router.reload()
-      // setOpenModal(false)
       
     }
 
       syncLoop(checked)
 
-
-
-    // right.map((coupon) => {
-    //   if (coupon["used"] == false) {
-    //     coupon["used"] = "missing";
-
-        // fetch("/api/coupon", {
-        //   method: "PUT", // *GET, POST, PUT, DELETE, etc.
-        //   mode: "cors", // no-cors, *cors, same-origin
-        //   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        //   credentials: "same-origin", // include, *same-origin, omit
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     // 'Content-Type': 'application/x-www-form-urlencoded',
-        //   },
-        //   redirect: "follow", // manual, *follow, error
-        //   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //   body: JSON.stringify(coupon), // body data type must match "Content-Type" header
-        // }).then((response) => response.json());
-        // // .then((data) => {
-        // //   alert("Add Item:\nResponse from server " + data.message);
-        // //   alert("Newly added _id", data._id);
-        // // });
-    //   }
-    // });
-
-    // couponList.map((coupon) => {
-    //   if (coupon["used"] == "missing") {
-    //     coupon["used"] = false;
-
-    //     fetch("/api/coupon", {
-    //       method: "PUT", // *GET, POST, PUT, DELETE, etc.
-    //       mode: "cors", // no-cors, *cors, same-origin
-    //       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-    //       credentials: "same-origin", // include, *same-origin, omit
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         // 'Content-Type': 'application/x-www-form-urlencoded',
-    //       },
-    //       redirect: "follow", // manual, *follow, error
-    //       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    //       body: JSON.stringify(coupon), // body data type must match "Content-Type" header
-    //     }).then((response) => response.json());
-    //     // .then((data) => {
-    //     //   alert("Add Item:\nResponse from server " + data.message);
-    //     //   alert("Newly added _id", data._id);
-    //     // });
-    //   }
-    // });
-
-    // alert("ย้ายสำเร็จ");
   };
 
   return (
     <div>
-      {/* <Box
-        className="no-print"
-        bgcolor="secondary.main"
-        color="secondary.contrastText"
-        p={2}
-      >
-        <h4>วิธีการใช้</h4>
-        <ol>
-          <li>เลือก บริษัท ราคา และวันที่ เพื่อแสดงคูปองคงเหลือ</li>
-          <li>รูปแบบคูปอง {'=>'} "(วันที่ซื้อ) - (ราคา) - (ลำดับเลข)" เช่น "25/09/2021-1000-3" หมายถึง คูปองราคา 1000 บาท ลำดับเลขที่ 3 ซื้อเมื่อ 25/09/2021</li>
-          <li>คลิกเลือกลำดับคูปองที่หายไป </li>
-          <li>กดปุ่ม {'>'} ที่อยู่ข้างกล่อง เพื่อย้ายคูปองไปสู่กล่อง "คูปองสูญหาย"</li>
-          <li>เมื่อเลือกเสร็จหมดแล้ว กดปุ่ม "ยืนยัน" ด้านล่าง</li>
-        </ol> 
-        
-      </Box> */}
-
       <div style={boxStyle}>
         <GridContainer>
           <FormControl className={classes2.formControl1}>
@@ -508,33 +392,10 @@ function DeleteCoupon({ customers, coupons }) {
             </Select>
           </FormControl>
 
-          {/* <FormControl className={classes2.formControl}>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                disableToolbar
-                variant="outlined"
-                format="dd/MM/yyyy"
-                margin="normal"
-                id="date-picker-inline"
-                label="วันที่ผลิต"
-                onChange={handleDateChange}
-                // defaultValue={date}
-                value={selectedDate}
-                KeyboardButtonProps={{
-                  "aria-label": "change date",
-                }}
-              />
-            </MuiPickersUtilsProvider>
-          </FormControl> */}
-
           <FormControl className={classes2.formControl1}>
             <TextField label="วัน/เดือน/ปีที่ผลิต" value={date} onChange={(e) => handleDateChange(e)}/>
 
           </FormControl>
-
-          {/* <div> */}
-
-          {/* <div style={{marginTop: "10px"}}> */}
             <Grid
               container
               spacing={2}
@@ -542,36 +403,8 @@ function DeleteCoupon({ customers, coupons }) {
               alignItems="center"
               className={classes.root}
             >
-              <Grid item>{customList("รายการคูปอง", couponList)}</Grid>
-              {/* <Grid item>
-                <Grid container direction="column" alignItems="center">
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    className={classes.button}
-                    onClick={handleCheckedRight}
-                    disabled={leftChecked.length === 0}
-                    aria-label="move selected right"
-                  >
-                    &gt;
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    className={classes.button}
-                    onClick={handleCheckedLeft}
-                    disabled={rightChecked.length === 0}
-                    aria-label="move selected left"
-                  >
-                    &lt;
-                  </Button>
-                </Grid>
-              </Grid>
-              <Grid item>{customList("คูปองสูญหาย", right)}</Grid> */}
+              <Grid item>{customList("รายการคูปอง", couponList)}</Grid>  
             </Grid>
-          {/* </div> */}
-
-          {/* </div> */}
         </GridContainer>
 
       <br />
@@ -589,7 +422,5 @@ function DeleteCoupon({ customers, coupons }) {
     </div>
   );
 }
-
-DeleteCoupon.layout = Admin;
 
 export default DeleteCoupon;

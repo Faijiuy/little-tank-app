@@ -1,24 +1,17 @@
-// import { ObjectID } from "mongodb";
-// import { ObjectId } from 'bson';
-// import { ObjectId} from "bson";
 import { ObjectId } from "bson";
 import { connectToDatabase } from "../../../util/mongodb";
 
 export default async (req, res) => {
-  // console.log("item API", req);
   console.log("item API method ++++++ " + req.method);
 
   if (req.method === "POST") {
     let data = req.body;
 
-    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let { username, id, password, loginStatus, status} = data;
 
     const { db } = await connectToDatabase();
     await db.collection("user").insertOne(
       {
-        // _id: ObjectId(_id)
-        // _id: _id
         id: id,
         username: username,
         password: password,
@@ -31,7 +24,6 @@ export default async (req, res) => {
           console.log(err);
           res.json(err);
         } else {
-          // console.log("Newly inserted ID", result.insertedId);
           res.json({
             message: "User added",
             _id: result.insertedId,
@@ -42,21 +34,14 @@ export default async (req, res) => {
   } else if (req.method === "PUT") {
     let data = req.body;
 
-    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
       _id,
       username,
       id,
       password,
-      loginStatus,
       status
     } = data;
 
-    // let _id = ObjectId(data._id)
-    // delete data._id
-
-    console.log(data);
-    // console.log(data)
     const { db } = await connectToDatabase();
 
     await db.collection("user").updateOne(
@@ -75,7 +60,6 @@ export default async (req, res) => {
           console.log(err);
           res.json(err);
         } else {
-          // console.log("Newly inserted ID", result.insertedId);
           res.json({
             message: "User Information Updated",
             _id: result.insertedId,
@@ -86,19 +70,12 @@ export default async (req, res) => {
   } else if (req.method === "DELETE") {
     let data = req.body;
 
-    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let { _id } = data;
 
-    // let _id = ObjectId(data._id)
-    // delete data._id
-
-    console.log("data ==> ", data);
-    // console.log(data)
     const { db } = await connectToDatabase();
 
     await db.collection("user").deleteOne(
       { _id: ObjectId(_id) },
-      // { company: company},
 
       // callback
       (err, result) => {
@@ -106,7 +83,6 @@ export default async (req, res) => {
           console.log(err);
           res.json(err);
         } else {
-          // console.log("Newly inserted ID", result.insertedId);
           res.json({
             message: "delete complete",
           });

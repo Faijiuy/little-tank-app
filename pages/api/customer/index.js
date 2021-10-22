@@ -1,17 +1,12 @@
-// import { ObjectID } from "mongodb";
-// import { ObjectId } from 'bson';
-// import { ObjectId} from "bson";
 import { ObjectId } from 'bson';
 import { connectToDatabase } from "../../../util/mongodb";
 
 export default async (req, res) => {
-  // console.log("item API", req);
   console.log("item API method ++++++ " + req.method);
 
   if (req.method === "POST") {
     let data = req.body;
 
-    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
       company,
       owner,
@@ -29,8 +24,6 @@ export default async (req, res) => {
     const { db } = await connectToDatabase();
     await db.collection("customer").insertOne(
       {
-        // _id: ObjectId(_id)
-        // _id: _id
         company: company,
         owner: owner,
         owner_tel: owner_tel,
@@ -49,7 +42,6 @@ export default async (req, res) => {
           console.log(err);
           res.json(err);
         } else {
-          // console.log("Newly inserted ID", result.insertedId);
           res.json({
             message: "Customer added",
             _id: result.insertedId,
@@ -60,7 +52,6 @@ export default async (req, res) => {
   } else if(req.method === 'PUT'){
     let data = req.body;
 
-    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
       _id,
       company,
@@ -76,19 +67,12 @@ export default async (req, res) => {
       licensePlate
     } = data;
 
-    // let _id = ObjectId(data._id)
-    // delete data._id
-
-    console.log(data)
-    // console.log(data)
     const { db } = await connectToDatabase();
 
 
     await db.collection("customer").updateOne(
       { _id: ObjectId(_id)},
       {
-        // _id: ObjectId(_id)
-        // _id: _id
         $set: {
           company: company,
           owner: owner,
@@ -109,7 +93,6 @@ export default async (req, res) => {
           console.log(err);
           res.json(err);
         } else {
-          // console.log("Newly inserted ID", result.insertedId);
           res.json({
             message: "Customer added",
             _id: result.insertedId,
@@ -120,23 +103,15 @@ export default async (req, res) => {
   } else if(req.method === 'DELETE'){
     let data = req.body;
 
-    //   // จะได้ objectID ถ้าใช้โค้ดล่าง อันบนเหมือนจะสร้าง _id เองได้
     let {
       _id,
       
     } = data;
 
-    // let _id = ObjectId(data._id)
-    // delete data._id
-
-    console.log("data ==> ", data)
-    // console.log(data)
     const { db } = await connectToDatabase();
-
 
     await db.collection("customer").deleteOne(
       { _id: ObjectId(_id)},
-      // { company: company},
 
       // callback
       (err, result) => {
@@ -144,15 +119,12 @@ export default async (req, res) => {
           console.log(err);
           res.json(err);
         } else {
-          // console.log("Newly inserted ID", result.insertedId);
           res.json({
             message: "customer delete",
           });
         }
       }
     )
-
-
   }else if(req.method === 'GET'){
     const { db } = await connectToDatabase();
     const customer = await db

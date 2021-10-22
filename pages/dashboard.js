@@ -1,32 +1,9 @@
-import React, { useEffect, useContext } from "react";
-// react plugin for creating charts
-
-import { makeStyles } from "@material-ui/core/styles";
-
-// layout for this page
-import Admin from "layouts/Admin.js";
-import Normal from "../layouts/Normal";
-// core components
-import GridContainer from "components/Grid/GridContainer.js";
-import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
-// import UserProfile from 'components/UserProfile';
+import React, { useEffect } from "react";
 
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
-import { Box, Grid } from "@material-ui/core";
-
-import AuthContext from "../stores/authContext";
-
-// var thisStatus = ""
+import { Box } from "@material-ui/core";
 
 function Dashboard() {
-  
-  var { status } = useContext(AuthContext)
-  var status2 = status
-  console.log("status: ", status)
-
-
-  const useStyles = makeStyles(styles);
-  const classes = useStyles();
 
   useEffect(() => {
 
@@ -77,34 +54,20 @@ function Dashboard() {
       .render(document.getElementById("chart4"))
       .catch(() => window.alert("Chart failed to initialise"));
 
-    // refresh the chart whenenver #refreshButton is clicked
-
-    // document
-    //   .getElementById('refreshButton')
-    //   .addEventListener('click', () => chart.refresh());
   }, []);
 
   return (
     <div>
-      {/*<h3 className="right">{UserProfile.getName()}</h3>*/}
       <span>
-      <Box className="left" id="chart3" />
-
-      <Box className="left" id="chart4" />
+        <Box className="left" id="chart3" />
+        <Box className="left" id="chart4" />
       </span>
       <span>
-      <Box className="left" id="chart" />
-
-      <Box className="left" id="chart2" />
+        <Box className="left" id="chart" />
+        <Box className="left" id="chart2" />
       </span>
-      {/* <Box className="right" id="chart4" /> */}
-      {/* <span>
-
-      </span> */}
     </div>
   );
 }
-
-Dashboard.layout = Admin
 
 export default Dashboard;

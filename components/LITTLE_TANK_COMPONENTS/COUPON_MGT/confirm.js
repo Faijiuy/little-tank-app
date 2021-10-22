@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,8 +14,7 @@ function thousands_separators(num) {
 }
 
 export default function Confirm(){
-    const { company, setCompany, customers, coupons, tableState, setTableState, classes, rows, setRows, 
-        total_table, setTotal_table, total_coupons, setTotal_coupons, text_rows, setText_rows } = useContext(StepperContext)
+    const { company, classes, total_coupons, text_rows } = useContext(StepperContext)
 
     return (
         <form>

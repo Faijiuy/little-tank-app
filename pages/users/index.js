@@ -5,15 +5,11 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { connectToDatabase } from "../../util/mongodb";
-import Admin from "layouts/Admin.js";
-import { useRouter } from "next/router";
+import DeleteIcon from '@mui/icons-material/Delete';
 import Modal from "@material-ui/core/Modal";
 
-import DeleteIcon from '@mui/icons-material/Delete';
-
-// import UserProfile from "components/UserProfile";
+import { connectToDatabase } from "../../util/mongodb";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -65,25 +61,17 @@ function Users({ user: users }) {
   const classes = useStyles();
   const router = useRouter();
 
-  // console.log('users ===>  ', users)
-
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = React.useState("");
-  const [loginStatus, setLoginStatus] = React.useState(false);
   const [deleteComplete, setDeleteComplate] = React.useState(false)
-
   const [loading, setLoading] = React.useState(false)
-
-  console.log('session: ', sessionStorage.getItem('user_id'))
 
   const handleOpen = (params) => {
     console.log(params.row)
     setUser(params.row);
     setOpen(true);
   };
-
-  // const handleOpenLogout = () => setOpen(true);
 
   const handleClose = () => {
     setOpen(false);
@@ -94,10 +82,6 @@ function Users({ user: users }) {
   const handleEditRowModelChange = React.useCallback((params) => {
     setEditRowsModel(params.model);
   }, []);
-
-  // const handleBlur = React.useCallback((params) => {
-  //   console.log(params)
-  // }, []);
 
   const handleDelete = async () => {
     setLoading(true)
@@ -122,44 +106,6 @@ function Users({ user: users }) {
       })
   };
 
-  // const signOut = () => {
-  //   let signOutUser = {
-  //     _id: "",
-  //     username: "",
-  //     password: "",
-  //     loginStatus: "",
-  //   };
-  //   // let locateUser = users.filter((u) => value == u.username);
-  //   users.map((u) => {
-  //     if (u.loginStatus == true) {
-  //       signOutUser._id = u._id;
-  //       signOutUser.username = u.username;
-  //       signOutUser.password = u.password;
-  //       signOutUser.loginStatus = loginStatus;
-  //     }
-  //   });
-  //   console.log("signOutUser ===> ", signOutUser);
-  //   fetch("/api/user/loginAPI", {
-  //     method: "PUT", // *GET, POST, PUT, DELETE, etc.
-  //     mode: "cors", // no-cors, *cors, same-origin
-  //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-  //     credentials: "same-origin", // include, *same-origin, omit
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       // 'Content-Type': 'application/x-www-form-urlencoded',
-  //     },
-  //     redirect: "follow", // manual, *follow, error
-  //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-  //     body: JSON.stringify(signOutUser), // body data type must match "Content-Type" header
-  //   })
-  //     .then((response) => response.json())
-  //     // .then((data) => {
-  //     //   alert("Update Login Status:\nResponse from server " + data.message);
-  //     //   console.log(data);
-  //     // })
-  //     .then(router.reload());
-  // };
-
   const columns = [
     {
       field: "username",
@@ -168,7 +114,6 @@ function Users({ user: users }) {
       width: 180,
       // editable: true,
     },
-    // { field: 'password', headerClassName: 'super-app-theme--header', headerName: 'รหัสผ่าน', width: 180, editable: true },
     {
       field: "loginTime",
       headerClassName: "super-app-theme--header",
@@ -242,7 +187,6 @@ function Users({ user: users }) {
   ];
   return (
     <div style={{ width: "100%" }}>
-      {/* {(sessionStorage.getItem('status') === "root" || sessionStorage.getItem('status') === "admin") ? ( */}
         <Box style={boxStyle}>
           <Box display="flex">
             <Button variant="contained" color="primary" href="users/create">
@@ -257,9 +201,6 @@ function Users({ user: users }) {
               editRowsModel={editRowsModel}
               onEditRowModelChange={handleEditRowModelChange}
               hideFooterPagination={true}
-
-              // checkboxSelection={handleSelectRow}
-              // icons={EditIcon}
             />
           </div>
           <br />
@@ -272,22 +213,16 @@ function Users({ user: users }) {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
         >
+          <div style={modalStyle} className={classes.paper}>
 
+            {deleteComplete ? 
+              <h2 style={{alignContent: "center"}}>ลบสำเร็จ</h2> :
+              
+              loading ? <h2 style={{alignContent: "center"}}>Loading</h2> : null}
 
-            <div style={modalStyle} className={classes.paper}>
-
-          {deleteComplete ? 
-            <h2 style={{alignContent: "center"}}>ลบสำเร็จ</h2> :
-            
-            loading ? <h2 style={{alignContent: "center"}}>Loading</h2> : null
-
-            }
-
-            </div> 
+          </div> 
           
         </Modal>
-
-      {/* ) : <div>ขออภัย คุณไม่มีสิทธิในการเข้าถึงหน้านี้</div> } */}
     </div>
   );
 }
@@ -307,7 +242,5 @@ const rowUser = (props) => {
 
   return row;
 };
-
-Users.layout = Admin;
 
 export default Users;

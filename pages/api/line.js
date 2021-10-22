@@ -1,18 +1,12 @@
+import { format } from 'date-fns'
 var QrCode = require("qrcode-reader");
 var Jimp = require("jimp");
 
-require("dotenv").config();
-
 const line = require("@line/bot-sdk");
-
-import { uploadFile } from "../../util/googledrive";
-
 const request = require("request");
-
-import { format } from 'date-fns'
-
-
 const { Readable } = require("stream");
+
+require("dotenv").config();
 
 export default async function test(req, res) {
   if (req.body.events.length === 0) {
@@ -36,7 +30,7 @@ export default async function test(req, res) {
 
   let getTimeSt = event.timestamp;
   var date = new Date(getTimeSt);
-  // let timeSt = date.toLocaleString();
+
   let tStp = "";
   tStp += date.getDate() + "/";
   tStp += date.getMonth() + 1 + "/";
@@ -44,8 +38,6 @@ export default async function test(req, res) {
 
   if (event.message.text && event.message.text.includes("ขอเป็น admin")) {
     let parts = event.message.text.split(" ");
-    // console.log(passwords)
-    // console.log("part == ", parts)
 
     let passwords = await fetch(process.env.API + "/admin/password", {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -64,7 +56,6 @@ export default async function test(req, res) {
                   credentials: "same-origin", // include, *same-origin, omit
                   headers: {
                     "Content-Type": "application/json",
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
                   },
                   redirect: "follow", // manual, *follow, error
                   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -84,7 +75,6 @@ export default async function test(req, res) {
                   credentials: "same-origin", // include, *same-origin, omit
                   headers: {
                     "Content-Type": "application/json",
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
                   },
                   redirect: "follow", // manual, *follow, error
                   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -305,8 +295,6 @@ export default async function test(req, res) {
 
         stream.on("end", function () {
           
-          let stream = Readable.from(buffer1);
-
           Jimp.read(buffer1, function (err, image) {
             if (err) {
               console.error(err);
@@ -330,16 +318,7 @@ export default async function test(req, res) {
                     (coupon) => coupon.code === value.result
                   )
                 ) {
-                  uploadFile(
-                    customer[0].company +
-                      "-" +
-                      codeDetect[3] +
-                      "-" +
-                      codeDetect[2] +
-                      "-" +
-                      tStp,
-                    stream
-                  );
+                  
 
                   let checkValue = couponUsed["false"].filter(
                     (coupon) => coupon.code !== value.result
@@ -348,18 +327,8 @@ export default async function test(req, res) {
                   let botReply =
                     "น้องรถถังสามารถอ่าน QR-code จากคูปองได้. \n--------------------------------------------------- \nชื่อบริษัท: " +
                     customer[0].company +
-                    // "\nQR-Code: " +
-                    // value.result +
-                    // "\nวันที่ถูกพิมพ์: " +
-                    // splitT[1] +
                     "\nคูปองราคา: " +
                     codeDetect[2] +
-                    // "\nเลขคูปองที่: " +
-                    // splitT[3] +
-                    // "\nวันและเวลาที่บันทึก: " +
-                    // timeSt +
-                    // "\nบันทึกโดย: " +
-                    // recordby +
                     "\n--------------------------------------------------- \nคูปองนี้ได้ถูกบันทึกแล้ว";
 
                   console.log("Picture API", process.env.API + "/coupon/used");
@@ -380,7 +349,6 @@ export default async function test(req, res) {
                     credentials: "same-origin", // include, *same-origin, omit
                     headers: {
                       "Content-Type": "application/json",
-                      // 'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     redirect: "follow", // manual, *follow, error
                     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -424,7 +392,6 @@ export default async function test(req, res) {
                   reply_token,
                   "น้องรถถังไม่สามารถอ่าน QR-code จากคูปองได้. ขอคุณช่วยถ่ายรูปใหม่อีกที."
                 );
-                // TODO handle error
               }
             };
             qr.decode(image.bitmap);
@@ -432,12 +399,6 @@ export default async function test(req, res) {
         });
       });
     }
-  } else {
-    // console.log("Trivial API", process.env.API);
-    // reply(
-    //   reply_token,
-    //   "ขอโทษค่ะ น้องรถถังไม่เข้าสิ่งที่คุณพิมพ์. คุณอาจจะพิมพ์ผิด. ได้โปรดพิมพ์ใหม่อีกครั้งหนึ่ง"
-    // );
   }
 }
 

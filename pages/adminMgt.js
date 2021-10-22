@@ -1,7 +1,6 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import randomString from "@smakss/random-string";
 import { connectToDatabase } from "../util/mongodb";
 import { DataGrid } from "@material-ui/data-grid";
 
@@ -17,18 +16,12 @@ import TextField from "@material-ui/core/TextField";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import CommentIcon from "@material-ui/icons/Comment";
 import ListSubheader from "@material-ui/core/ListSubheader";
 
 import AddIcon from '@mui/icons-material/Add';
 
-
-// layout for this page
-import Admin from "layouts/Admin.js";
 import Modal from "@material-ui/core/Modal";
 import { Box } from "@material-ui/core";
 
@@ -160,12 +153,9 @@ function groupByKey(array, key) {
   }, {});
 }
 
-// const AdminContext = React.createContext();
-
 function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
   const classes = useStyles();
 
-  // const [password, setPassword] = useState();
   const [status, setStatus] = useState();
 
   const [company, setCompany] = useState("");
@@ -244,7 +234,6 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
   };
 
   const handleOpen = (name) => {
-    // console.log(name.row.userId)
     if (name == "add" || name == "password") {
       setOpen(name);
     } else {
@@ -258,7 +247,6 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
   };
 
   const handleOpen_delete = (name) => {
-    // console.log(name.row.userId)
     setAdmin(name.row);
 
     setDel(name.row.userId);
@@ -288,17 +276,14 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
   }, []);
 
   const handleChangeCompany = (event) => {
-    console.log(company);
     setCompany(event.target.value);
   };
 
   const handleChangeStatus = (event) => {
-    // console.log(company)
     setStatus(event.target.value);
   };
 
   const handleChangeStatus_edit = (event) => {
-    // console.log(company)
     setStatus_edit(event.target.value);
   };
 
@@ -342,7 +327,6 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
         groupId: groupId_submit,
       }), // body data type must match "Content-Type" header
     }).then(function(response){
-      // value == "add" ? alert("ลงทะเบียนสำเร็จ") : alert("แก้ไขสำเร็จ")
       setSubmitComplete(true)
       router.reload()
 
@@ -724,9 +708,6 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
             rows={row}
             columns={columns}
             hideFooterPagination={true}
-
-            // checkboxSelection={handleSelectRow}
-            // icons={EditIcon}
           />
         </div>
         <br />
@@ -739,10 +720,5 @@ function AdminMgt({ admin: admins, customer: customers, password: passwords }) {
     </div>
   );
 }
-
-
-AdminMgt.layout = Admin;
-
-// export { AdminContext };
 
 export default AdminMgt;

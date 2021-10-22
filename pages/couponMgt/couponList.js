@@ -1,31 +1,20 @@
-import Admin from "layouts/Admin.js";
 import { DataGrid } from "@material-ui/data-grid";
-import SearchBar from 'material-ui-search-bar';
 import { makeStyles } from "@material-ui/core/styles";
-
 import TextField from '@material-ui/core/TextField'
-
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import DirectionsIcon from '@mui/icons-material/Directions';
-
-import { connectToDatabase } from "../../util/mongodb";
-import { useContext, useEffect, useState } from "react";
-
-import AuthContext from '../../stores/authContext'
-
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/Help';
-
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import AuthContext from '../../stores/authContext'
+import { connectToDatabase } from "../../util/mongodb";
+import { useContext, useEffect, useState } from "react";
 
 
 export async function getServerSideProps() {
@@ -155,23 +144,16 @@ function groupByKey(array, key) {
 
 function CouponList({ customer: customers, coupon: coupons, user: users }) {
 
-    const hello = useContext(AuthContext)
     const classes = useStyles();
 
-    // console.log(hello)
-
     const [rows, setRows] = useState([])
+    const [typeList, setTypeList] = useState([]);
     const [id, setId] = useState("")
     const [company, setCompany] = useState("");
     const [type, setType] = useState("");
-    const [typeList, setTypeList] = useState([]);
-  
     const [selectedDate, setSelectedDate] = useState("");
     const [status, setStatus] = useState("");
-
     const [user, setUser] = useState("")
-
-    
 
     useEffect(() => {
         let couponsOfCompany = coupons.filter(
@@ -248,18 +230,18 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
     <div style={{marginLeft: "15px", marginRight: "15px"}}>
         <br />
         <Paper
-        component="form"
-        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+          component="form"
+          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
         >
-        <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="พิมพ์รหัส id เพื่อค้นหา"
-            inputProps={{ 'aria-label': 'search google maps' }}
-            onChange={(e) => handleSearch(e)}
-        />
-        <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-            <SearchIcon />
-        </IconButton>
+          <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="พิมพ์รหัส id เพื่อค้นหา"
+              inputProps={{ 'aria-label': 'search google maps' }}
+              onChange={(e) => handleSearch(e)}
+          />
+          <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+              <SearchIcon />
+          </IconButton>
         
         </Paper>
         <FormControl style={{width: 120, marginRight: 10}}>
@@ -281,7 +263,7 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
                 );
               })}
             </Select>
-          </FormControl>
+        </FormControl>
 
           <FormControl style={{width: 120, marginRight: 10}}>
             <InputLabel id="demo-simple-select-outlined-label">ราคา</InputLabel>
@@ -313,13 +295,13 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
             >
               
             <MenuItem key={false} value={false}>
-            ยังไม่ถูกใช้
+              ยังไม่ถูกใช้
             </MenuItem>
             <MenuItem key={true} value={true}>
-            ถูกใช้แล้ว
+              ถูกใช้แล้ว
             </MenuItem>
             <MenuItem key={"missing"} value={"missing"}>
-            หาย
+              หาย
             </MenuItem>
                 
             </Select>
@@ -353,18 +335,14 @@ function CouponList({ customer: customers, coupon: coupons, user: users }) {
           
 
         <div style={{ height: 600, width: "100%" }} className={classes.root}>
-        <br />
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              pageSize={10}
-            //   hideFooterPagination={true}
-            />
-          </div>
+          <br />
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={10}
+          />
+        </div>
     </div>);
 }
-
-// CouponList.layout = Admin;
-
 
 export default CouponList;
