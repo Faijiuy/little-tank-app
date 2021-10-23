@@ -50,7 +50,7 @@ export const AuthContextProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={context}>
            {auth ?
-           (children.type.name == "" && children.type.length == 0 ) ? children : <Layout>{children}</Layout>  
+           (children.type.name == "" && children.type.length == 0 ) ? <Layout>{children}</Layout> : children  
            
             : loading ? <h1>Loading</h1> : 
             <div>
