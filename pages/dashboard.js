@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { Box } from "@material-ui/core";
 
-function Dashboard() {
+function Dashboard({ props }) {
 
   useEffect(() => {
 
