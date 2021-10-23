@@ -12,6 +12,7 @@ const AuthContext = createContext({
 
 export const AuthContextProvider = ({ children }) => {
     console.log(children.type.name)
+    console.log(children)
     
     const [user_id, setUser_id] = useState(null)
 
