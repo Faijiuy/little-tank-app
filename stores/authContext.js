@@ -45,10 +45,12 @@ export const AuthContextProvider = ({ children }) => {
     
     const Layout = status === "admin" ? Admin : Normal
 
+    console.log('layout: ', Layout)
+
     return (
         <AuthContext.Provider value={context}>
            {auth ?
-           (children.type.name == "" && children.type.length == 0 ) ? children : <Layout>{children} </Layout>  
+           (children.type.name == "" && children.type.length == 0 ) ? children : <Layout>{children}</Layout>  
            
             : loading ? <h1>Loading</h1> : 
             <div>
