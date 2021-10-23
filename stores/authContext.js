@@ -11,8 +11,9 @@ const AuthContext = createContext({
 })
 
 export const AuthContextProvider = ({ children }) => {
-    console.log(children.type.name)
-    console.log(children)
+    console.log("children: ", children)
+    console.log("children.type.name: ", children.type.name)
+    console.log("children.type.length: ", children.type.length)
     
     const [user_id, setUser_id] = useState(null)
 
@@ -45,12 +46,12 @@ export const AuthContextProvider = ({ children }) => {
     
     const Layout = status === "admin" ? Admin : Normal
 
-    console.log('layout: ', Layout)
+    console.log('result: ', (children.type.name === "" && children.type.length === 0 ))
 
     return (
         <AuthContext.Provider value={context}>
            {auth ?
-           (children.type.name == "" && children.type.length == 0 ) ? <Layout>{children}</Layout> : children  
+           (children.type.name === "" && children.type.length === 0 ) ? children : <Layout>{children}</Layout>  
            
             : loading ? <h1>Loading</h1> : 
             <div>
