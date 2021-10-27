@@ -2577,6 +2577,11 @@ charenc@~0.0.1:
   resolved "https://registry.yarnpkg.com/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
   integrity sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=
 
+chart.js@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.6.0.tgz#a87fce8431d4e7c5523d721f487f53aada1e42fe"
+  integrity sha512-iOzzDKePL+bj+ccIsVAgWQehCXv8xOKGbaU2fO/myivH736zcx535PGJzQGanvcSGVOqX6yuLZsN3ygcQ35UgQ==
+
 chartist@0.10.1:
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/chartist/-/chartist-0.10.1.tgz#3dd513d531dfca6b78e777fe0500d9c7e6406931"
@@ -8222,6 +8227,11 @@ react-chartist@0.14.3:
   integrity sha512-FXIml3c98nClpzautiB4JI9+URc5j9cO5e/ZSEikB7r4bBOoX/6vdxvOlyfoOIm19H4uY6L7zNsIKOuWDGsdDg==
   dependencies:
     prop-types "^15.5.8"
+
+react-chartjs-2@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-3.2.0.tgz#0a44e1ff8ddf35b8147b7b20c3525172852307c2"
+  integrity sha512-UFedkfhOriqyslqYMrdK225TdxFq6YSmGJVQplLC37eoKBfbpkJHxVq+SPMpoVY2oV9fx33RrD4Obv0wKZtclw==
 
 react-client-session@^0.0.7:
   version "0.0.7"
