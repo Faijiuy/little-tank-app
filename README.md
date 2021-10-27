@@ -9,6 +9,11 @@ how to setup
 
 ![image](https://user-images.githubusercontent.com/51190092/138553568-fefe0334-6da3-4b1f-8786-d7e418542704.png)
 
+In "user" collection, add fields (id, username, password, and status) like in the picture (loginStatus is unnecessary)
+
+![image](https://user-images.githubusercontent.com/51190092/139073748-f4beafba-5781-49a6-bb8f-7b232e92f5be.png)
+
+
 2. deploy to VERCEL and add following Environment Variables in to vercel setting:
     1) API: using deployed website URL follow by /api e.g. https://little-tank-app.vercel.app/api
     2) MONGODB_URI
