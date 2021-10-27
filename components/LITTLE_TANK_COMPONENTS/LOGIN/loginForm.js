@@ -50,10 +50,13 @@ const LoginForm = () => {
   const [id, setId] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
   const [loginStatus, setLoginStatus] = useState(false);
+  const [loginFail, setLoginFail] = useState(false)
+  const [password_fail, setPassword_fail] = useState(false)
+  const [id_fail, setId_fail] = useState(false)
 
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  // const handleOpen = () => setOpen(true);
+  const handleClose = () => setLoginFail(false);
 
   const paperStyle = {
     padding: 20,
@@ -103,14 +106,14 @@ const LoginForm = () => {
       "Click\nผู้ใช้: " + username
     );
 
-    let filterUser = users.filter(
-      (u) => id === u.id && passwordUser === u.password
-    );
+    // let filterUser = users.filter(
+    //   (u) => id === u.id && passwordUser === u.password
+    // );
 
-    filterUser.map((u) => {
-      user._id = u._id;
-      user.id = u.id;
-      user.password = u.password;
+    users.map((u) => {
+      // user._id = u._id;
+      // user.id = u.id;
+      // user.password = u.password;
 
       if (id == u.id && passwordUser == u.password) {
         let today = new Date()
@@ -136,32 +139,40 @@ const LoginForm = () => {
         sessionStorage.setItem('status', u.status)
 
         console.log("Login Successfully");
-        user.loginStatus = true;
+        // user.loginStatus = true;
         user.loginTime = todayDate + " " + split[1].split("+")[0]
 
+        
+        fetch("/api/user/loginAPI", {
+          method: "PUT", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(user), // body data type must match "Content-Type" header
+        })
+          .then((response) => response.json())
+          // .then(router.push("/dashboard"))
+
       } else {
+
+        if(id === u.id){
+          setPassword_fail(true)
+        }else{
+          setId_fail(true)
+        }
         setLoginStatus(false);
+        setLoginFail(true)
         console.log("error");
-        console.log(loginStatus);
         user.loginStatus = false;
       }
     });
 
-    fetch("/api/user/loginAPI", {
-      method: "PUT", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(user), // body data type must match "Content-Type" header
-    })
-      .then((response) => response.json())
-      .then(router.push("/dashboard"))
   };
 
   return (
@@ -209,7 +220,7 @@ const LoginForm = () => {
           >
             ลงชื่อเข้าใช้
           </Button>
-          <Modal open={open} onClose={handleClose}>
+          <Modal open={loginFail} onClose={handleClose}>
             <Box sx={modalStyle}>
               <Typography
                 id="modal-modal-title"
@@ -217,34 +228,9 @@ const LoginForm = () => {
                 component="h2"
                 fontSize="50"
               >
-                {loginStatus ? "Welcome!!      " + username : ""}
+                {password_fail ? 'คุณใส่พาสเวิร์ดไม่ถูกต้อง' : id_fail ? 'ไม่มีไอดีนี้อยู่ในระบบ' : ''}
               </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                {loginStatus
-                  ? "Login Successfully."
-                  : "Username or Password are wrong."}
-              </Typography>
-              <div>
-                {loginStatus ? (
-                  <Button
-                    variant="contained"
-                    className="right"
-                    size="medium"
-                    href="/dashboard"
-                  >
-                    ไปหน้า Dashboard
-                  </Button>
-                ) : (
-                  <Button
-                    variant="contained"
-                    className="right"
-                    size="medium"
-                    onClick={handleClose}
-                  >
-                    ปิด
-                  </Button>
-                )}
-              </div>
+              
             </Box>
           </Modal>
         </FormControl>

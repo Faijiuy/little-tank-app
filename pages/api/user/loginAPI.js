@@ -6,7 +6,7 @@ export default async (req, res) => {
     let data = req.body;
     let {
       _id,
-      loginStatus,
+      // loginStatus,
       loginTime
     } = data
 
@@ -17,7 +17,7 @@ export default async (req, res) => {
       { _id: ObjectId(_id)},
       {
         $set: {
-          loginStatus: loginStatus,
+          // loginStatus: loginStatus,
           loginTime: loginTime
         }
       },
